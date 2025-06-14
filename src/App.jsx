@@ -1,5 +1,10 @@
-import NavBar from "./components/navBar"
 import { useState , useEffect } from "react"
+
+import NavBar from "./components/navBar"
+import Content from "./components/content"
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export default function App(){
 
@@ -10,7 +15,6 @@ export default function App(){
   const element = document.documentElement
   useEffect(()=>{
     localStorage.setItem("theme" , theme)
-
     if(theme === "dark"){
       element.classList.add("dark")
     }
@@ -21,6 +25,7 @@ export default function App(){
   return(
     <>
       <NavBar theme={theme} setTheme={setTheme}/>
+      <Content/>
     </>
   )
 }
