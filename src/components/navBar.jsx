@@ -1,60 +1,74 @@
-import { IoSearchOutline } from "react-icons/io5";
-import { FaShoppingCart } from "react-icons/fa";
-import { IoMdSunny , IoIosMoon , IoMdArrowDropdown } from "react-icons/io";
+import { IoIosSearch } from "react-icons/io";
+import { FaCartShopping } from "react-icons/fa6";
+import { FaMoon , FaCaretDown } from "react-icons/fa";
+import { MdSunny } from "react-icons/md";
 
 export default function NavBar(props){
-  
-    const listItem = ["home" , "shop" , "about" ,"blogs"]
 
-    const dropDwonLinks = ["bext selling" , "top products" , "top rating"]
+    const listItem = ["home" , "shop" , "about" , "blogs"]
+    const dropDownList = ["trending products" , "best selling" , "top rated"]
 
     return(
         <>
-          <div className="flex justify-between items-center px-12 py-6 dark:bg-night"> 
-            <div className="flex gap-8 items-center">
-                <h1 className="text-3xl text-primary cursor-pointer font-semibold uppercase tracking-widest">eshop</h1>
-                <div className="hidden lg:block">
-                    <ul className="flex gap-12">
-                        {listItem.map((ele , ind) => (
-                            <li className="cursor-pointer text-secondary  dark:text-gray-night hover:text-black capitalize dark:hover:text-white text-lg" key={ind}>{ele}</li>
+          <div className="flex justify-between items-center px-8 py-4">
+            <div className="flex items-center gap-8">
+                <h1 className="text-2xl sm:text-3xl text-primary tracking-widest uppercase font-semibold cursor-pointer">eshop</h1>
+                <div className="hidden sm:block">
+                    <ul className="flex items-center gap-8">
+                        {listItem.map((ele , ind) =>(
+                            <li 
+                               key={ind}
+                               className="capitalize text-lg text-primary-text cursor-pointer font-semibold hover:text-black dark:hover:text-white" 
+                            >
+                                {ele}
+                            </li>
                         ))}
+                        <li 
+                          className="capitalize text-lg text-primary-text cursor-pointer font-semibold
+                           dark:hover:text-white flex items-center gap-1 group relative" 
+                        >
+                            quick links
+                            <FaCaretDown className="group-hover:rotate-180 transition-all duration-300"/>
 
-                        <li className="relative cursor-pointer group">
-                            <p className="flex items-center  text-secondary dark:text-gray-night hover:text-black dark:hover:text-white text-lg">
-                                Quick Links
-                                <span className="group-hover:rotate-180"><IoMdArrowDropdown/></span>
-                            </p>
-
-                            <div className="dark:bg-night">
-                                <ul className="flex flex-col space-y-2">
-                                    {dropDwonLinks.map((ele , ind) =>(
-                                        <li key={ind} className="text-secondary hover:text-black dark:text-gray-night dark:hover:text-white hover:bg-primary p-2 rounded-lg">{ele}</li>
+                            <div className="absolute z-[9999] hidden group-hover:block bg-white dark:bg-night w-[200px] rounded-md shadow-md p-2 dark:text-primary-text top-6">
+                                 <ul className="space-y-2 group" >
+                                    {dropDownList.map((ele , ind) =>(
+                                        <li 
+                                          key={ind}
+                                          className="hover:text-black dark:hover:text-white p-2 hover:bg-red-300 dark:hover:bg-red-400 rounded-md "
+                                        >
+                                            {ele}
+                                        </li>
                                     ))}
-                                </ul>
+                                 </ul>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div className="flex justify-between items-center gap-8">
-                <div className="items-center group relative hidden sm:block" >
-                    <input type="text" className="searchBar" placeholder="Search.." />
-                    <IoSearchOutline className="absolute right-4 bottom-2 text-xl text-secondary dark:text-gray-night font-semibold group-hover:text-primary duration-200"/>
+            <div className="flex items-center gap-4">
+                <div className="group relative items-center hidden sm:block">
+                    <input className="searchBar" type="text" placeholder="Search.."/>
+                    <IoIosSearch className="text-xl text-primary-text font-semibold group-hover:text-primary absolute bottom-2 right-3 duration-200"/>
                 </div>
 
-                <div className="flex gap-4 items-center">
-                    <button className="relative p-3">
-                        <FaShoppingCart className="text-xl cursor-pointer text-secondary  dark:text-gray-night"/>
-                        <div className="w-4 h-4 items-center justify-center rounded-full bg-primary text-white absolute top-0 right-0 flex" >4</div>
+                <div className="flex items-center gap-8">
+                    <button className="relative p-3 cursor-pointer">
+                        <FaCartShopping className="text-primary-text text-xl z-50"/>
+                        <div className="absolute top-0 right-0 w-4 h-6 text-sm z-0 rounded-full text-white bg-primary">4</div>
                     </button>
 
-                    <button>
-                        {props.theme === "dark" ?
-                           <IoMdSunny className="text-2xl cursor-pointer text-secondary  dark:text-gray-night rounded-full" onClick={()=>props.setTheme("light")}/> :
-                           <IoIosMoon className="text-2xl cursor-pointer text-secondary  dark:text-gray-night rounded-full" onClick={()=>props.setTheme("dark")}/>
-                        }
-                    </button>
+                    {props.theme === "light" ?
+                      (<FaMoon 
+                        className="text-primary-text text-2xl cursor-pointer"
+                        onClick={()=>{props.setTheme("dark")}}
+                      />) : 
+                      (<MdSunny
+                        className="text-primary-text text-2xl cursor-pointer"
+                        onClick={()=>{props.setTheme("light")}}
+                      />)
+                    }
                 </div>
             </div>
           </div>

@@ -1,28 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme{
-  --font-inter : "Inter" , sans-serif ;
   --color-primary : #f42c37 ;
-  --color-secondary : #4b5563 ;
+  --color-primary-text : #6b7280 ;
   --color-night : #111827 ;
-  --color-blue-night : #17202e ;
-  --color-gray-night : #9da4b0
+  --color-night-secondary : #192230 ;
+  --color-night-text : #6b7280 ;
+  --color-bg-primary: #e6e8eb ;
 }
 
 @layer base{
   body{
-    font-family: var(--font-inter);
+    @apply dark:bg-night
   }
 }
 
-@layer utilities{
-  .searchBar{
-    @apply w-0 group-hover:w-[300px] transition-all duration-300
-    group-hover:border-1 dark:bg-blue-night dark:group-hover:text-gray-night group-hover:border-gray-600 px-2 py-1 rounded-2xl
-    text-secondary outline-0
+@layer utilities {
+  .searchBar {
+    @apply w-0 transition-all duration-300 rounded-full px-3 py-1
+           focus:outline-none focus:border-1
+           dark:bg-night-secondary dark:text-night-text;
+  }
 
+  .group:hover .searchBar {
+    @apply w-[300px] border border-primary-text dark:border-night-text;
   }
 }
