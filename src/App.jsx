@@ -1,33 +1,17 @@
-import { useState , useEffect } from "react"
+import { RouterProvider , createBrowserRouter , createRoutesFromElements , Route } from "react-router-dom"
 
-import NavBar from "./components/navBar"
-import Content from "./components/content"
-import Category from "./components/category";
-
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import Layout from "./components/layout"
+import Home from "./pages/home"
 
 export default function App(){
-
-  const [theme , setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
-  )
-
-  const element = document.documentElement
-  useEffect(()=>{
-    localStorage.setItem("theme" , theme)
-    if(theme === "dark"){
-      element.classList.add("dark")
-    }
-    else{
-      element.classList.remove("dark")
-    }
-  },[theme])
+  const router = createBrowserRouter(createRoutesFromElements(
+    <Route element={<Layout/>} >
+      <Route index element={<Home/>}/>
+    </Route>
+  ))
   return(
     <>
-      <NavBar theme={theme} setTheme={setTheme}/>
-      <Content/>
-      <Category/>
+     <RouterProvider router={router} /> 
     </>
   )
 }
