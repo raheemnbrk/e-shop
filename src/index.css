@@ -3,6 +3,7 @@
 @theme{
   --color-primary : #f42c37 ;
   --color-light-text : #6b7280 ;
+  --color-bg-gray : #dee1e5 ;
 }
 
 @layer utilities{
