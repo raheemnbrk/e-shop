@@ -1,20 +1,23 @@
 import { useState } from "react"
-import { Link } from "react-router-dom";
+import { Link , useLocation } from "react-router-dom";
 
 import { FaCircleArrowLeft } from "react-icons/fa6";
 
 export default function Product(props) {
     const productElement = props.product
     const originalPrice = (productElement.price / (1 - productElement.discountPercentage / 100)).toFixed(2)
+    const location = useLocation()
+    const category = location.state?.filterCat || "all"
+    const back = location.state?.search || ""
 
     const [activeImg, setActiveImg] = useState(0)
     return (
         <>
             <div className="p-8">
-                <Link to={'..'} relative="path">
+                <Link to={`..?${back}`} relative="path">
                     <div className="flex gap-2 items-center cursor-pointer textxl font-semibold text-light-text">
                         <FaCircleArrowLeft />
-                        <h1>back to all products</h1>
+                        <h1>back to {category} products</h1>
                     </div>
                 </Link>
                 <div className="grid grid-cols-1 md:grid-cols-2 items-center">
@@ -30,7 +33,7 @@ export default function Product(props) {
 
                         <div className="mt-4 flex gap-8">
                             {productElement.images.map((ele, ind) => (
-                                <img className={`w-24 ${activeImg === ind ? "border-2" : ""} transition-all duration-200 rounded-lg overflow-hidden cursor-pointer`} src={ele} onClick={() => setActiveImg(ind)} />
+                                <img key={ind} className={`w-24 ${activeImg === ind ? "border-2" : ""} transition-all duration-200 rounded-lg overflow-hidden cursor-pointer`} src={ele} onClick={() => setActiveImg(ind)} />
                             ))}
                         </div>
                     </div>

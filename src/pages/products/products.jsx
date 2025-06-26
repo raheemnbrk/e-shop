@@ -1,4 +1,4 @@
-import { useLoaderData, defer, Await, Link } from "react-router-dom"
+import { useLoaderData, defer, Await, useSearchParams } from "react-router-dom"
 import { Suspense } from "react"
 
 import UpperSection from "./upperSection"
@@ -12,7 +12,7 @@ export function loader() {
 
 export default function Products() {
     const products = useLoaderData()
-    console.log(products)
+    const [searchParams, setSearchParams] = useSearchParams()
     return (
         <>
             <div className="p-8 space-y-6">
@@ -21,10 +21,14 @@ export default function Products() {
                 <Suspense fallback={<h1>loading....</h1>}>
                     <Await resolve={products.products}>
                         {(products) => {
+                            const filterCat = searchParams.get("category")
+                            const filterdProducts = filterCat ?
+                                products.filter((prod) => prod.category === filterCat) :
+                                products
                             return (
                                 <>
-                                    <Category products={products} />
-                                    <ProductsCard products={products} />
+                                    <Category products={products} setSearchParams={setSearchParams} filterCat={filterCat} />
+                                    <ProductsCard products={filterdProducts} searchParams={searchParams} filterCat={filterCat} />
                                 </>
                             )
                         }}
