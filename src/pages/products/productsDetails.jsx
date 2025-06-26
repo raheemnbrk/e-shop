@@ -1,4 +1,4 @@
-import { useLoaderData, defer, Await } from "react-router-dom"
+import { useLoaderData, defer, Await, NavLink ,Outlet } from "react-router-dom"
 import { Suspense } from "react"
 
 import Product from "./product"
@@ -18,7 +18,21 @@ export default function ProductsDetails() {
                         {(product) => {
                             return (
                                 <>
-                                  <Product product={product} />  
+
+                                    <Product product={product} />
+
+                                    <ul className="flex gap-8  text-xl font-semibold capitalize px-8">
+                                        <li>
+                                            <NavLink end to={"."} className={({isActive}) =>  isActive ? "text-black border-b-2 border-b-black" : "text-light-text" }>details</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to={"reviews"} className={({isActive}) =>  isActive ? "text-black border-b-2 border-b-black" : "text-light-text" }>reviews</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to={"images"} className={({isActive}) =>  isActive ? "text-black border-b-2 border-b-black" : "text-light-text" }>photos</NavLink>
+                                        </li>
+                                    </ul>
+                                    <Outlet context={product} />
                                 </>
                             )
                         }}
