@@ -32,18 +32,18 @@ export default function Home() {
         <Suspense fallback={<h1>loading...</h1>} >
           <Await resolve={products.products}>
             {(products) => (
-              <div className="bg-bg-gray rounded-lg">
+              <div className="bg-bg-gray dark:bg-secondDarkBg rounded-lg ">
                 <Slider {...settings} >
                 {products.map(ele => (
                   <div key={ele.id}>
                     <div className=" grid grid-cols-1 md:grid-cols-2 items-center justify-between">
                       <div className="p-8 flex flex-col space-y-6 order-2 md:order-1">
-                        <h1 className="text-2xl font-semibold capitalize">{ele.title}</h1>
-                        <h1 className="text-4xl font-bold">{ele.category}</h1>
-                        <h1 className="text-lg text-gray-700" >{ele.description}</h1>
-                        <h1 className="text-xl font-bold" >{ele.price}$</h1>
+                        <h1 className="text-2xl font-semibold capitalize dark:text-white">{ele.title}</h1>
+                        <h1 className="text-4xl md:text-8xl font-bold uppercase text-white">{ele.category}</h1>
+                        <h1 className="text-lg text-light-text dark:text-dark-text" >{ele.description}</h1>
+                        <h1 className="text-xl font-bold dark:text-white" >{ele.price}$</h1>
                         <button className="px-4 py-2 w-fit transition-all duration-300 text-white bg-primary rounded-full capitalize font-semibold hover:scale-105 cursor-pointer" >
-                          <Link to={'products'} >shop now</Link>
+                          <Link to={`products/${ele.id}`}>shop now</Link>
                         </button>
                       </div>
                       <div className="justify-center order-1 md:order-2">

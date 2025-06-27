@@ -20,13 +20,13 @@ export default function NavBar(props) {
                         <ul className="flex gap-8 items-center">
                             {listItems.map(ele => (
                                 <li key={ele}
-                                    className="text-lg text-light-text capitalize font-semibold "  
+                                    className="text-lg text-light-text dark:text-dark-text hover:text-black dark:hover:text-white capitalize font-semibold "  
                                 >
                                     <NavLink to={ele === "home" ? "/" : `${ele}`} >{ele}</NavLink>
                                 </li>
                             ))}
 
-                            <li className="text-lg text-light-text capitalize font-semibold ">
+                            <li className="text-lg text-light-text dark:text-dark-text hover:text-black dark:hover:text-white capitalize font-semibold ">
                                 {loggedIn ?
                                     <NavLink to={'profile'}><LuCircleUser /></NavLink> :
                                     <NavLink to={'login'}>login</NavLink>
@@ -59,7 +59,7 @@ export default function NavBar(props) {
                         </button>
                     </div>
                 </div>
-                <ResponsiveSideBar isOpen = {isOpen} setIsOpen={setIsOpen} /> 
+                <ResponsiveSideBar isOpen = {isOpen} setIsOpen={setIsOpen} theme={props.theme} setTheme={props.setTheme} /> 
             </div>
         </>
     )

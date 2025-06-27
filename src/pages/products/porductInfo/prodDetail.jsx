@@ -4,7 +4,7 @@ export default function ProdDetail() {
     const product = useOutletContext()
     return (
         <>
-            <div className="p-8 space-y-4">
+            <div className="p-8 space-y-4 dark:text-white">
                 <h1>
                     <span className="capitalize font-semibold text-lg">title: </span>
                     <span>{product.title}</span>
@@ -30,7 +30,7 @@ export default function ProdDetail() {
                 <h1>
                     <span className="capitalize font-semibold text-lg">availability: </span>
                     <span>{product.availabilityStatus}</span>
-                    <span className="ml-2 text-light-text font-bold">({product.stock})</span>
+                    <span className="ml-2 text-light-text dark:text-dark-text font-bold">({product.stock})</span>
                 </h1>
                 <h1>
                     <span className="capitalize font-semibold text-lg">warranty: </span>

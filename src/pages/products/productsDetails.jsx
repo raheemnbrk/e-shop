@@ -18,18 +18,16 @@ export default function ProductsDetails() {
                         {(product) => {
                             return (
                                 <>
-
                                     <Product product={product} />
-
                                     <ul className="flex gap-8  text-xl font-semibold capitalize px-8">
                                         <li>
-                                            <NavLink end to={"."} className={({isActive}) =>  isActive ? "text-black border-b-2 border-b-black" : "text-light-text" }>details</NavLink>
+                                            <NavLink end to={"."} className={({isActive}) =>  isActive ? "text-black dark:text-white border-b-2 border-b-black dark:border-b-white" : "text-light-text" }>details</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to={"reviews"} className={({isActive}) =>  isActive ? "text-black border-b-2 border-b-black" : "text-light-text" }>reviews</NavLink>
+                                            <NavLink to={"reviews"} className={({isActive}) =>  isActive ? "text-black dark:text-white border-b-2 border-b-black dark:border-b-white" : "text-light-text" }>reviews</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to={"images"} className={({isActive}) =>  isActive ? "text-black border-b-2 border-b-black" : "text-light-text" }>photos</NavLink>
+                                            <NavLink to={"images"} className={({isActive}) =>  isActive ? "text-black dark:text-white border-b-2 border-b-black dark:border-b-white" : "text-light-text" }>photos</NavLink>
                                         </li>
                                     </ul>
                                     <Outlet context={product} />

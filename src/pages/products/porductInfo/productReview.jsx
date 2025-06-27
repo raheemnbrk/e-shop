@@ -20,24 +20,24 @@ export default function ProductReviews() {
     return (
         <>
             <div className="p-8 space-y-6">
-                <h1 className="text-xl font-bold capitalize">reviews({product.reviews.length})</h1>
+                <h1 className="text-xl font-bold capitalize dark:text-white">reviews({product.reviews.length})</h1>
                 <div>
                     <Slider {...settings}>
                         {product.reviews.map((ele) => (
                             <div key={ele}>
-                                <div className="space-y-4 bg-gray-300 p-6 rounded-2xl">
+                                <div className="space-y-4 bg-gray-300 dark:bg-secondDarkBg dark:text-white p-6 rounded-2xl">
                                     <div className="flex gap-4 items-center ">
                                         <h1 className="text-4xl"><FaCircleUser /></h1>
                                         <div>
                                             <h1 className="font-semibold ">{ele.reviewerName}</h1>
-                                            <h1 className="text-light-text">{ele.reviewerEmail}</h1>
+                                            <h1 className="text-light-text dark:text-dark-text">{ele.reviewerEmail}</h1>
                                         </div>
                                     </div>
                                     <h1>{new Date(ele.date).toLocaleDateString()}</h1>
                                     <h1>rating:{"⭐".repeat(Math.round(ele.rating))}</h1>
                                     <h1>
                                         <span className="text-lg font-semibold">comments: </span>
-                                        <span className="text-light-text">{ele.comment}</span>
+                                        <span className="text-light-text dark:text-dark-text">{ele.comment}</span>
                                     </h1>
                                 </div>
                             </div>
