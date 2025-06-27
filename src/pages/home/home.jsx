@@ -7,6 +7,8 @@ import "slick-carousel/slick/slick-theme.css";
 
 import { getHomeProducts } from "../../data";
 
+import LoadingPage from "../../components/loadingPage";
+
 export function loader() {
   return defer({ products: getHomeProducts() })
 }
@@ -29,7 +31,7 @@ export default function Home() {
   return (
     <>
       <div className="p-8">
-        <Suspense fallback={<h1>loading...</h1>} >
+        <Suspense fallback={<LoadingPage/>} >
           <Await resolve={products.products}>
             {(products) => (
               <div className="bg-bg-gray dark:bg-secondDarkBg rounded-lg ">

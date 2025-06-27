@@ -7,10 +7,13 @@ import ProductsDetails , {loader as productsDetailsLoader } from "./pages/produc
 import ProdDetail from "./pages/products/porductInfo/prodDetail"
 import ProductReviews from "./pages/products/porductInfo/productReview"
 import ProductImages from "./pages/products/porductInfo/productImges"
+import NotFound from "./components/notFound"
+import Login from "./components/login"
+import ErrorPage from "./pages/errorPage"
 
 export default function App(){
   const router = createBrowserRouter(createRoutesFromElements(
-    <Route element={<Layout/>} >
+    <Route element={<Layout/>} errorElement={<ErrorPage/>} >
       <Route index element={<Home/>} loader={homeLoader}/>
       <Route path="products" element={<Products/>} loader={productsLoader} />
       <Route path="products/:id" element={<ProductsDetails/>} loader={productsDetailsLoader}>
@@ -18,6 +21,8 @@ export default function App(){
          <Route path="reviews" element={<ProductReviews/>} />
          <Route path="images" element={<ProductImages/>} />
       </Route>
+      <Route path="*" element={<NotFound/>} />
+      <Route path="login" element={<Login/>}/>
     </Route>
   ))
   return(
