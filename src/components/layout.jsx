@@ -1,5 +1,7 @@
 import NavBar from "./navBar"
 import { Outlet } from "react-router-dom"
+import Footer from "./footer"
+
 import { useEffect , useState } from "react"
 
 export default function Layout(){
@@ -21,6 +23,7 @@ export default function Layout(){
         <>
           <NavBar theme={theme} setTheme={setTheme}/>
           <Outlet/>
+          <Footer/>
         </>
     )
 }

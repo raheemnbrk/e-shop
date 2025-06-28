@@ -9,7 +9,7 @@ export default function Login(){
                type="email" 
                placeholder="Email"
                name="email"
-               className="border-2 border-light-text dark:border-dark-text focus:border-primary focus:outline-0 px-4 py-2 rounded-full w-[400px] mx-auto"
+               className="border-2 dark:text-white border-light-text dark:border-dark-text focus:border-primary focus:outline-0 px-4 py-2 rounded-full w-[400px] mx-auto"
                />
 
                
@@ -17,7 +17,7 @@ export default function Login(){
                type="password"
                placeholder="Password"
                name="password"
-               className="border-2 border-light-text dark:border-dark-text focus:border-primary focus:outline-0 px-4 py-2 rounded-full w-[400px] mx-auto"
+               className="border-2 dark:text-white border-light-text dark:border-dark-text focus:border-primary focus:outline-0 px-4 py-2 rounded-full w-[400px] mx-auto"
                />
               <button className="bg-primary text-white px-4 py-2 rounded-full w-[400px] cursor-pointer capitalize font-semibold text-xl mx-auto">Log in</button>
             </Form>
