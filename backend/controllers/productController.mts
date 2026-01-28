@@ -68,6 +68,79 @@ const getAllProducts = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const getProductById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.query;
+    if (!id) {
+      res.json({ success: false, message: "Provide an id for the product." });
+      return;
+    }
 
+    const product = await Product.findById(id);
+    if (!product) {
+      res.json({ success: false, message: "book not found." });
+      return;
+    }
 
-export { addProduct, getAllProducts };
+    res.json({ success: true, product });
+  } catch (err) {
+    console.log((err as Error).message);
+    res.json({ success: false, message: (err as Error).message });
+  }
+};
+
+const getProductByTitle = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { title } = req.query;
+    if (!title) {
+      res.json({
+        success: false,
+        message: "you must provide a title for the product.",
+      });
+      return;
+    }
+
+    const product = await Product.findOne({
+      title: { $regex: title, $options: "i" },
+    });
+
+    res.json({ success: true, product });
+  } catch (err) {
+    console.log((err as Error).message);
+    res.json({ success: false, message: (err as Error).message });
+  }
+};
+
+const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.query;
+    if (!id) {
+      res.json({
+        success: false,
+        message: "You must provide an id for the product.",
+      });
+      return;
+    }
+
+    const product = await Product.findByIdAndDelete(id);
+    if (!product) {
+      res.json({ success: false, message: "Product not found." });
+      return;
+    }
+    res.json({ success: true, message: "Product deleted successfully." });
+  } catch (err) {
+    console.log((err as Error).message);
+    res.json({ success: false, message: (err as Error).message });
+  }
+};
+
+export {
+  addProduct,
+  getAllProducts,
+  getProductById,
+  getProductByTitle,
+  deleteProduct,
+};

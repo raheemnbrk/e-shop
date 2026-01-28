@@ -105,7 +105,7 @@ const logout = async (req: Request, res: Response): Promise<void> => {
       secure: true,
     });
 
-    res.json({ success: true, messgae: "Log out successfully." });
+    res.json({ success: true, message: "Log out successfully." });
   } catch (err) {
     console.log((err as Error).message);
     res.json({ success: false, message: (err as Error).message });
