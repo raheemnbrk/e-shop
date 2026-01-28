@@ -4,11 +4,13 @@ dotenv.config()
 import express from "express"
 import { connectDB } from "./configs/dbConfig.mts"
 import userRouter from "./routes/userRoutes.mts"
+import connectCloudinary from "./configs/cloudinaryConfig.mts"
 
 const app = express()
 app.use(express.json())
 
 await connectDB()
+connectCloudinary()
 
 app.use('/api/users' , userRouter)
 
