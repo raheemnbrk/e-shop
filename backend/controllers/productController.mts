@@ -1,6 +1,21 @@
 import type { Request, Response } from "express";
 import { v2 as cloudinary } from "cloudinary";
 import Product from "../models/productModel.mts";
+import { z } from "zod";
+
+const addProductSchema = z.object({
+  productName: z.string().min(2),
+  category: z.string().min(2),
+  price: z.number().positive(),
+  discount: z.number().min(0).max(100),
+  brand: z.string().optional(),
+  description: z.string().min(10),
+  rating: z.number().min(0).max(5),
+  availability: z.boolean(),
+  warranty: z.string(),
+  shippingInformation: z.string(),
+  returnPolicy: z.string(),
+});
 
 const addProduct = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -16,7 +31,7 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
       warranty,
       shippingInformation,
       returnPolicy,
-    } = req.body;
+    } = addProductSchema.parse(req.body);
 
     const images = req.files as Express.Multer.File[];
 
@@ -57,10 +72,6 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
 const getAllProducts = async (req: Request, res: Response): Promise<void> => {
   try {
     const products = await Product.find({});
-    if (products.length === 0) {
-      res.json({ success: false, message: "Error fetching products!" });
-      return;
-    }
     res.json({ success: true, products });
   } catch (err) {
     console.log((err as Error).message);
@@ -70,7 +81,7 @@ const getAllProducts = async (req: Request, res: Response): Promise<void> => {
 
 const getProductById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.query;
+    const { id } = req.params;
     if (!id) {
       res.json({ success: false, message: "Provide an id for the product." });
       return;
@@ -78,7 +89,7 @@ const getProductById = async (req: Request, res: Response): Promise<void> => {
 
     const product = await Product.findById(id);
     if (!product) {
-      res.json({ success: false, message: "book not found." });
+      res.json({ success: false, message: "Product not found." });
       return;
     }
 
@@ -94,8 +105,8 @@ const getProductByTitle = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { title } = req.query;
-    if (!title) {
+    const { productName } = req.query;
+    if (!productName || typeof productName !== "string") {
       res.json({
         success: false,
         message: "you must provide a title for the product.",
@@ -103,8 +114,8 @@ const getProductByTitle = async (
       return;
     }
 
-    const product = await Product.findOne({
-      title: { $regex: title, $options: "i" },
+     const product = await Product.findOne({
+      productName: { $regex: productName, $options: "i" },
     });
 
     res.json({ success: true, product });
@@ -116,7 +127,7 @@ const getProductByTitle = async (
 
 const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.query;
+    const { id } = req.params;
     if (!id) {
       res.json({
         success: false,
@@ -137,10 +148,35 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const updateProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      res.json({
+        success: false,
+        message: "You must provide an id for the product.",
+      });
+      return;
+    }
+    const updateProductSchema = addProductSchema.partial();
+    const data = updateProductSchema.parse(req.body);
+    const product = await Product.findByIdAndUpdate(id, data, { new: true });
+    if (!product) {
+      res.json({ success: false, message: "Product not found." });
+      return;
+    }
+    res.json({ success: true, message: "Product updated successfully" });
+  } catch (err) {
+    console.log((err as Error).message);
+    res.json({ success: false, message: (err as Error).message });
+  }
+};
+
 export {
   addProduct,
   getAllProducts,
   getProductById,
   getProductByTitle,
   deleteProduct,
+  updateProduct,
 };

@@ -5,6 +5,7 @@ import {
   getAllProducts,
   getProductById,
   getProductByTitle,
+  updateProduct,
 } from "../controllers/productController.mts";
 import authAdmin from "../middlewares/authAdmin.mts";
 import { upload } from "../configs/multerConfig.mts";
@@ -21,3 +22,6 @@ productRouter.post("/get-products", getAllProducts);
 productRouter.post("/get-product-by-id", getProductById);
 productRouter.post("/get-product-by-title", getProductByTitle);
 productRouter.post("/delete-product", authAdmin, deleteProduct);
+productRouter.post("/update-product", authAdmin, updateProduct);
+
+export default productRouter
