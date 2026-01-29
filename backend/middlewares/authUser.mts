@@ -31,6 +31,7 @@ const authUser = async (
       return;
     }
     (req as any).userId = user._id;
+    next()
   } catch (err) {
     console.log((err as Error).message);
     res.json({ success: false, message: (err as Error).message });
