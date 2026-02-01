@@ -12,6 +12,6 @@ const orderRouter = Router();
 orderRouter.post('/place-order', authUser, placeOrder);
 orderRouter.get("/get-orders", getALLOrders);
 orderRouter.get("/user-orders", authUser, getUserOrders);
-orderRouter.get('/cancel-order' , authUser , cancelOrder)
+orderRouter.post('/cancel-order' , authUser , cancelOrder)
 
 export default orderRouter;

@@ -109,6 +109,10 @@ const getUserOrders = async (
 const cancelOrder = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId } = req as authRequest;
+    if (!userId) {
+      res.json({ success: false, message: "You must login first." });
+      return;
+    }
     const { orderId } = req.body;
     if (!orderId) {
       res.json({
@@ -116,6 +120,7 @@ const cancelOrder = async (req: Request, res: Response): Promise<void> => {
         message: "You must provide an id for the order.",
       });
     }
+
     const order = await Order.findByIdAndUpdate(orderId, {
       status: "cancelled",
     });

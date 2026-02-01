@@ -112,4 +112,24 @@ const logout = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { registerUser, login , logout };
+const isAuth = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId } = req as any;
+    if (!userId) {
+      res.json({ success: false, message: "Not authorized." });
+      return;
+    }
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      res.json({ success: false, message: "Not authorized. user not found." });
+      return;
+    }
+
+    res.json({ success: true, user });
+  } catch (err) {
+    console.log((err as Error).message);
+    res.json({ success: false, message: (err as Error).message });
+  }
+};
+
+export { registerUser, login, logout , isAuth };
