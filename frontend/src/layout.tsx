@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./components/navbar";
 import { BrowserRouter } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Footer from "./components/footer";
 
 export default function Layout() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -15,9 +16,10 @@ export default function Layout() {
   }, [theme]);
 
   return (
-    <div className="flex flex-col space-y-12" >
+    <div className="flex flex-col space-y-12">
       <Navbar theme={theme} setTheme={setTheme} />
       <Outlet />
+      <Footer />
     </div>
   );
 }
