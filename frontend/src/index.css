@@ -1,28 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Allura&family=Betania+Patmos&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
+* {
+  font-family: "Outfit", sans-serif;
+}
+
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
-@theme{
-  --color-primary : #f42c37 ;
-  --color-light-text : #6b7280 ;
-  --color-dark-text : #6b7280 ;
-  --color-bg-gray : #dee1e5 ;
-  --color-darkBg : #111827 ;
-  --color-secondDarkBg : #18202f ;
+@theme {
+  --color-primary: #615fff;
 }
 
-@layer base{
-  body{
-    @apply bg-white dark:bg-darkBg
-  }
+body::-webkit-scrollbar{
+  display: none;
 }
 
-@layer utilities{
-  .search{
-    @apply w-0 px-3 py-1 rounded-full transition-all duration-300
-           focus:outline-0 
-  }
-  .group:hover .search{
-    @apply w-[300px] border border-gray-600
-  }
-}
