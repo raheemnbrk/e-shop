@@ -84,9 +84,11 @@ export default function Navbar({ theme, setTheme }: NavbarProps) {
           </button>
         </div>
 
-        <button className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full">
-          Login
-        </button>
+        <Link to={"login"} >
+          <button className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full">
+            Login
+          </button>
+        </Link>
       </div>
 
       <button
