@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./components/navbar";
-import { BrowserRouter } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Footer from "./components/footer";
 

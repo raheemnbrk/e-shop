@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="flex flex-col md:flex-row justify-between w-full gap-10 border-b border-gray-500/30 pb-6">
         <div className="md:max-w-96">
           <Link to="/">
-            <div className="flex items-center justify-center gap-2 cursor-pointer">
+            <div className="flex items-center gap-2 cursor-pointer">
               <h1 className="bg-primary px-2 py-0.5 rounded-sm text-white text-xl font-bold">
                 e
               </h1>
