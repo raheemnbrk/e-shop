@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 import { LuSun, LuMoon } from "react-icons/lu";
 
@@ -12,7 +12,7 @@ export default function Navbar({ theme, setTheme }: NavbarProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
+    <nav className="flex items-center justify-between px-4 md:px-8 py-4 border-b border-gray-300 bg-white relative transition-all">
       <Link to="/">
         <div className="flex items-center justify-center gap-2 cursor-pointer">
           <h1 className="bg-primary px-2 py-0.5 rounded-sm text-white text-xl font-bold">
@@ -24,8 +24,18 @@ export default function Navbar({ theme, setTheme }: NavbarProps) {
 
       {/* Desktop Menu */}
       <div className="hidden sm:flex items-center gap-8">
-        <Link to={"/"}>Home</Link>
-        <Link to={"/products"}>Products</Link>
+        <NavLink
+          className={({ isActive }) => (isActive ? "text-primary" : "")}
+          to={"/"}
+        >
+          Home
+        </NavLink>
+        <NavLink
+          className={({ isActive }) => (isActive ? "text-primary" : "")}
+          to={"/products"}
+        >
+          Products
+        </NavLink>
 
         <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
           <input
@@ -84,7 +94,7 @@ export default function Navbar({ theme, setTheme }: NavbarProps) {
           </button>
         </div>
 
-        <Link to={"login"} >
+        <Link to={"login"}>
           <button className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full">
             Login
           </button>

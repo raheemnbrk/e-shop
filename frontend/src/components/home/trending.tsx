@@ -4,7 +4,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 export default function Trending() {
   return (
-    <div className="md:p-6 bg-amber-50 flex flex-col space-y-8">
+    <div className="py-6 md:px-6 bg-amber-50 flex flex-col space-y-8">
       <div className="flex items-center justify-between md:px-6 px-4">
         <div>
           <h1 className="text-3xl capitalize font-semibold">

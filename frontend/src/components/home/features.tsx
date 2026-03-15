@@ -29,7 +29,7 @@ export default function Features() {
     },
   ];
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 items-center justify-items-center md:p-8 border-b-2 pb-4 border-b-gray-300">
+    <div className="grid grid-cols-1 md:grid-cols-4 items-center p-4 md:p-8 border-b-2 pb-4 gap-4 md:justify-items-center border-b-gray-300">
       {featuresList.map((ele, ind) => (
         <div key={ind} className="flex items-center gap-3">
           <h1 className="p-3 rounded-full text-primary font-bold bg-purple-200 md:text-2xl" >{ele.icon}</h1>

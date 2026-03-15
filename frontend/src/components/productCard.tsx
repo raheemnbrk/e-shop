@@ -4,7 +4,7 @@ import image from "../assets/images/clothing.jpg";
 
 export default function ProductCard() {
   return (
-    <div className="w-72 rounded-lg shadow-xl px-4 py-6 group cursor-pointer bg-white">
+    <div className="w-48 md:w-72 rounded-lg shadow-xl px-4 py-6 group cursor-pointer bg-white">
       <div>
         <div className="bg-gray-100 rounded-lg overflow-hidden">
           <img src={image} alt="" className="w-full" />
@@ -20,7 +20,7 @@ export default function ProductCard() {
           </div>
         </div>
         <div className="flex items-center justify-between mt-4" >
-          <button className="px-14 py-1 rounded-2xl bg-gray-200 capitalize font-semibold cursor-pointer shadow-lg">
+          <button className="px-4 md:px-14 py-1 rounded-2xl bg-gray-200 capitalize font-semibold cursor-pointer shadow-lg">
             more details
           </button>
           <button className="bg-primary rounded-full cursor-pointer p-2 text-white" >
