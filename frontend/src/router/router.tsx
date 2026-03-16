@@ -11,6 +11,9 @@ import Orders from "../pages/orders";
 import NotFound from "../pages/notFound";
 import OrderDetails from "../pages/orderDetails";
 import ProductDetails from "../pages/productsDetails";
+import Description from "../components/products/description";
+import Reviews from "../components/products/reviews";
+import Specification from "../components/products/specifications";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,7 +25,11 @@ const router = createBrowserRouter(
         <Route path="orders" element={<Orders />} />
         <Route path="orders/:id" element={<OrderDetails />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="details" element={<ProductDetails />} />
+        <Route path="details" element={<ProductDetails />}>
+          <Route index element={<Description />} />
+          <Route path="reviews" element={<Reviews />} />
+          <Route path="specifications" element={<Specification />} />
+        </Route>
       </Route>
     </>,
   ),
