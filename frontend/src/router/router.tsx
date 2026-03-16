@@ -14,6 +14,7 @@ import ProductDetails from "../pages/productsDetails";
 import Description from "../components/products/description";
 import Reviews from "../components/products/reviews";
 import Specification from "../components/products/specifications";
+import Cart from "../pages/cart";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +31,7 @@ const router = createBrowserRouter(
           <Route path="reviews" element={<Reviews />} />
           <Route path="specifications" element={<Specification />} />
         </Route>
+        <Route path="cart" element={<Cart />} />
       </Route>
     </>,
   ),
