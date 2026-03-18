@@ -15,6 +15,8 @@ import Description from "../components/products/description";
 import Reviews from "../components/products/reviews";
 import Specification from "../components/products/specifications";
 import Cart from "../pages/cart";
+import Dashboard from "../pages/products";
+import DashboardLayout from "../pages/dashboardLayout";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +34,9 @@ const router = createBrowserRouter(
           <Route path="specifications" element={<Specification />} />
         </Route>
         <Route path="cart" element={<Cart />} />
+        <Route path="dashboard" element={<DashboardLayout />}>
+          <Route index element={<Dashboard />} />
+        </Route>
       </Route>
     </>,
   ),

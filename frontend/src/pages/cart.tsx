@@ -36,7 +36,7 @@ export default function Cart() {
                       +
                     </p>
                   </div>
-                  <h1 className="text-xl font-semibold" >$300</h1>
+                  <h1 className="text-xl font-semibold">$300</h1>
                 </div>
               </div>
             </div>

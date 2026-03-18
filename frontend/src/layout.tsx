@@ -1,10 +1,11 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./components/navbar";
 import { useEffect, useState } from "react";
 import Footer from "./components/footer";
 
 export default function Layout() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const location = useLocation();
 
   const element = document.documentElement;
   useEffect(() => {
@@ -14,11 +15,13 @@ export default function Layout() {
       : element.classList.add("dark");
   }, [theme]);
 
+  const isDashboard = location.pathname.startsWith("/dashboard");
+
   return (
     <div className="flex flex-col space-y-12">
-      <Navbar theme={theme} setTheme={setTheme} />
+      {!isDashboard && <Navbar theme={theme} setTheme={setTheme} />}
       <Outlet />
-      <Footer />
+      {!isDashboard && <Footer />}
     </div>
   );
 }
