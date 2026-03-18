@@ -1,5 +1,6 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
-import type { Request, Response, NextFunction } from "express";
+import type { Response, Request, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import type { JwtPayload } from "jsonwebtoken";
 import User from "../models/userModels.mts";
 
 type AuthPayload = JwtPayload & {
