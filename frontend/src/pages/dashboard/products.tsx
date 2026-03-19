@@ -24,7 +24,7 @@ export default function DashboardProducts() {
   return (
     <div className="bg-[#f7f7f5] p-6 flex flex-col space-y-8 w-full">
       <div className="flex flex-col md:flex-row gap-5 justify-between md:items-center">
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col">
           <h1 className="text-3xl font-semibold capitalize">Products</h1>
           <p className="text-gray-600 capitalize">
             manage your product catalog
@@ -163,7 +163,7 @@ export default function DashboardProducts() {
                   </span>
                 </td>
 
-                <td className="px-4 py-3 hidden md:table-cell">$30</td>
+                <td className="px-4 py-3 hidden md:table-cell font-semibold">$30</td>
 
                 <td className="px-4 py-3 hidden md:table-cell">
                   <span className="px-2 py-1 bg-gray-200 rounded-full">29</span>
