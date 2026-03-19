@@ -19,6 +19,7 @@ import Dashboard from "../pages/dashboard/dashboard";
 import DashboardLayout from "../pages/dashboard/dashboardLayout";
 import DashboardProducts from "../pages/dashboard/products";
 import DashboardOrders from "../pages/dashboard/order";
+import Users from "../pages/dashboard/users";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
           <Route index element={<Dashboard />} />
           <Route path="products" element={<DashboardProducts />} />
           <Route path="orders" element={<DashboardOrders />} />
+          <Route path="users" element={<Users/>} />
         </Route>
       </Route>
     </>,
