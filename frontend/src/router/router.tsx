@@ -15,7 +15,7 @@ import Description from "../components/products/description";
 import Reviews from "../components/products/reviews";
 import Specification from "../components/products/specifications";
 import Cart from "../pages/cart";
-import Dashboard from "../pages/products";
+import Dashboard from "../pages/dashboard";
 import DashboardLayout from "../pages/dashboardLayout";
 
 const router = createBrowserRouter(
@@ -28,7 +28,7 @@ const router = createBrowserRouter(
         <Route path="orders" element={<Orders />} />
         <Route path="orders/:id" element={<OrderDetails />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="details" element={<ProductDetails />}>
+        <Route path="products/:id" element={<ProductDetails />}>
           <Route index element={<Description />} />
           <Route path="reviews" element={<Reviews />} />
           <Route path="specifications" element={<Specification />} />
