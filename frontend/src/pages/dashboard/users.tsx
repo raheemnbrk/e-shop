@@ -106,7 +106,10 @@ export default function Users() {
         </div>
       </div>
       <div className="flex flex-col px-6 py-4 rounded-md border border-gray-300 shadow-sm gap-6">
-        <h1 className="text-xl font-semibold capitalize">all users(0)</h1>
+        <h1 className="text-xl font-semibold capitalize flex items-center gap-2">
+          <FaUsers />
+          all users(0)
+        </h1>
         <div className="w-full overflow-x-auto rounded-md bg-white border border-gray-200 shadow-sm">
           <table className="w-full text-sm text-left">
             <thead className="hidden md:table-header-group text-gray-700 bg-gray-50">
@@ -140,7 +143,10 @@ export default function Users() {
                     </span>
                     <span>raheem tipana</span>
                   </p>
-                  <p className="md:hidden flex gap-4">fdfif@jsj.com  <span className="text-green-600 font-medium" >admin</span></p>
+                  <p className="md:hidden flex gap-4">
+                    fdfif@jsj.com
+                    <span className="text-green-600 font-medium">admin</span>
+                  </p>
                 </td>
 
                 <td className="px-4 py-3 hidden md:table-cell">
@@ -158,8 +164,12 @@ export default function Users() {
                   </div>
                 </td>
 
-                <td className="px-4 py-3 text-center hidden md:table-cell">120</td>
-                <td className="px-4 py-3 text-center hidden md:table-cell">120</td>
+                <td className="px-4 py-3 text-center hidden md:table-cell">
+                  120
+                </td>
+                <td className="px-4 py-3 text-center hidden md:table-cell">
+                  120
+                </td>
                 <td className="px-4 py-3 text-center">
                   <button className="text-lg font-semibold hover:bg-gray-200 cursor-pointer rounded-full p-3">
                     <FaEdit />

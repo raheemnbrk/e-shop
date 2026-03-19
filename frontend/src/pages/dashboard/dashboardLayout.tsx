@@ -6,7 +6,7 @@ import {
   MdOutlinePayment,
 } from "react-icons/md";
 import { IoCartOutline } from "react-icons/io5";
-import { TbReportAnalytics } from "react-icons/tb";
+import { TbReportAnalytics, TbFileInvoice } from "react-icons/tb";
 import { FaUsers } from "react-icons/fa";
 
 export default function DashboardLayout() {
@@ -20,6 +20,7 @@ export default function DashboardLayout() {
     { name: "orders", path: "orders", icon: <IoCartOutline /> },
     { name: "payment", path: "payment", icon: <MdOutlinePayment /> },
     { name: "reports", path: "reports", icon: <TbReportAnalytics /> },
+    { name: "invoices", path: "invoices", icon: <TbFileInvoice /> },
     { name: "users", path: "users", icon: <FaUsers /> },
   ];
   return (
