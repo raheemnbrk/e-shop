@@ -1,4 +1,4 @@
-import DashboardNavbar from "../components/dashboardNavbar";
+import DashboardNavbar from "../../components/dashboardNavbar";
 import { Outlet, NavLink } from "react-router-dom";
 import {
   MdOutlineDashboard,
@@ -23,10 +23,11 @@ export default function DashboardLayout() {
     { name: "users", path: "users", icon: <FaUsers /> },
   ];
   return (
-    <div>
+    <div className="h-screen flex flex-col">
       <DashboardNavbar />
-      <div className="flex">
-        <div className="md:w-52 w-16 h-[100vh] border-r text-base border-gray-300 pt-4 flex flex-col transition-all duration-300">
+
+      <div className="flex flex-1">
+        <div className="md:w-52 w-16 border-r border-gray-300 pt-4 flex flex-col">
           {sidebarLinks.map((item, index) => (
             <NavLink
               end
@@ -41,7 +42,10 @@ export default function DashboardLayout() {
             </NavLink>
           ))}
         </div>
-        <Outlet />
+
+        <div className="flex-1 overflow-y-auto">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

@@ -36,7 +36,7 @@ export default function DashBoard() {
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-6">
-        <div className="w-full md:flex-[50%] h-[250px] flex flex-col space-y-6 bg-white border border-gray-300 shadow-sm rounded-md px-6 py-6">
+        <div className="w-full md:flex-[50%] flex flex-col space-y-6 bg-white border border-gray-300 shadow-sm rounded-md px-6 py-6">
           <h1 className="text-2xl font-semibold capitalize">recent orders</h1>
           <div className="flex items-center justify-between" >
             <p>order-90</p>
