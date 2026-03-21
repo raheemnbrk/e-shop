@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./components/navbar";
 import { useEffect, useState } from "react";
 import Footer from "./components/footer";
+import { Toaster } from "react-hot-toast";
 
 export default function Layout() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -20,6 +21,7 @@ export default function Layout() {
   return (
     <div className="flex flex-col space-y-12">
       {!isDashboard && <Navbar theme={theme} setTheme={setTheme} />}
+      <Toaster />
       <Outlet />
       {!isDashboard && <Footer />}
     </div>

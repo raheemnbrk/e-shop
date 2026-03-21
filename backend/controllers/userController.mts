@@ -5,16 +5,20 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  firstName: z.string().min(2, "FIrst name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
   email: z.string().email("Invalid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 type roleType = "user" | "admin";
+const isProduction = process.env.NODE_ENV === "production";
 
 const registerUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, password } = registerSchema.parse(req.body);
+    const { firstName, lastName, email, password } = registerSchema.parse(
+      req.body,
+    );
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -30,7 +34,8 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
 
     const role: roleType = adminEmails.includes(email) ? "admin" : "user";
     const user = await User.create({
-      name,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       role,
@@ -44,8 +49,8 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -67,12 +72,14 @@ const login = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = loginSchema.parse(req.body);
     const user = await User.findOne({ email });
     if (!user) {
-      res.json({ success: false, message: "User not found!" });
+      res.json({ success: false, message: "Bad credentials." });
+      console.log("user not found.");
       return;
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      res.json({ success: false, message: "Wrong password!" });
+      res.json({ success: false, message: "Bad credentials" });
+      console.log("Wrong password.");
       return;
     }
 
@@ -84,8 +91,8 @@ const login = async (req: Request, res: Response): Promise<void> => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -132,4 +139,4 @@ const isAuth = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { registerUser, login, logout , isAuth };
+export { registerUser, login, logout, isAuth };

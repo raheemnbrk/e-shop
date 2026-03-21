@@ -6,8 +6,17 @@ import { connectDB } from "./configs/dbConfig.mts";
 import userRouter from "./routes/userRoutes.mts";
 import connectCloudinary from "./configs/cloudinaryConfig.mts";
 import productRouter from "./routes/productRouter.mts";
+import cors from "cors";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
 
 await connectDB();

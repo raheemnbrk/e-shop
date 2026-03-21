@@ -2,6 +2,11 @@ import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 import { LuSun, LuMoon } from "react-icons/lu";
+import { useAuthUser } from "../zustand/authUser";
+import { FaBoxOpen } from "react-icons/fa6";
+import { FaUser } from "react-icons/fa";
+import { TbLogout } from "react-icons/tb";
+import { RiAdminFill } from "react-icons/ri";
 
 interface NavbarProps {
   theme: string;
@@ -9,7 +14,15 @@ interface NavbarProps {
 }
 
 export default function Navbar({ theme, setTheme }: NavbarProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const profileLinks = [
+    { text: "my orders", link: "orders", icon: <FaBoxOpen /> },
+    { text: "my profile", link: "my-profile", icon: <FaUser /> },
+  ];
+
+  const { user } = useAuthUser();
 
   return (
     <nav className="flex items-center justify-between px-4 md:px-8 py-4 border-b border-gray-300 bg-white relative transition-all">
@@ -96,11 +109,58 @@ export default function Navbar({ theme, setTheme }: NavbarProps) {
           </div>
         </Link>
 
-        <Link to={"login"}>
-          <button className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full">
-            Login
-          </button>
-        </Link>
+        {!user ? (
+          <Link to={"login"}>
+            <button className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full">
+              Login
+            </button>
+          </Link>
+        ) : (
+          <div className="flex flex-col w-44 text-sm">
+            <button
+              type="button"
+              onClick={() => setIsOpen(!isOpen)}
+              className="peer group bg-purple-100 text-primary w-fit mx-auto px-3 py-2 cursor-pointer relative rounded-full font-semibold"
+            >
+              {user.firstName[0]}
+              {user.lastName[0]}
+            </button>
+
+            {isOpen && (
+              <ul className="w-36 bg-white border border-gray-300 rounded shadow-md mt-1 py-2 absolute top-full right-0 mr-8 z-50">
+                {profileLinks.map((ele, ind) => (
+                  <Link to={ele.link} key={ind}>
+                    <li
+                      className="px-4 py-2 hover:bg-indigo-500 hover:text-white cursor-pointer flex gap-2 items-center capitalize"
+                      onClick={() => setIsOpen(!isOpen)}
+                    >
+                      <p>{ele.icon}</p>
+                      <p>{ele.text}</p>
+                    </li>
+                  </Link>
+                ))}
+                {user.role === "admin" && (
+                  <Link to={"dashboard"}>
+                    <li
+                      className="px-4 py-2 hover:bg-indigo-500 hover:text-white cursor-pointer flex gap-2 items-center capitalize"
+                      onClick={() => setIsOpen(!isOpen)}
+                    >
+                      <RiAdminFill />
+                      <p>dashboard</p>
+                    </li>
+                  </Link>
+                )}
+                <li
+                  className="px-4 py-2 hover:bg-indigo-500 hover:text-white cursor-pointer flex gap-2 items-center capitalize"
+                  onClick={() => setIsOpen(!isOpen)}
+                >
+                  <TbLogout />
+                  <p>logout</p>
+                </li>
+              </ul>
+            )}
+          </div>
+        )}
       </div>
 
       <button
@@ -140,9 +200,11 @@ export default function Navbar({ theme, setTheme }: NavbarProps) {
           {theme === "dark" ? <LuSun /> : <LuMoon />}
           <h1>{theme === "dark" ? `light mode` : `dark mode`}</h1>
         </button>
-        <button className="cursor-pointer px-6 py-2 mt-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full text-sm">
-          Login
-        </button>
+        <Link to={"login"}>
+          <button className="cursor-pointer px-6 py-2 mt-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full text-sm">
+            Login
+          </button>
+        </Link>
       </div>
     </nav>
   );
