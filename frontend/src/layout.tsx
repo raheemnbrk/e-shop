@@ -3,6 +3,7 @@ import Navbar from "./components/navbar";
 import { useEffect, useState } from "react";
 import Footer from "./components/footer";
 import { Toaster } from "react-hot-toast";
+import { useAuth } from "./queries/authUser";
 
 export default function Layout() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -17,6 +18,12 @@ export default function Layout() {
   }, [theme]);
 
   const isDashboard = location.pathname.startsWith("/dashboard");
+
+  const { isAuth } = useAuth();
+
+  useEffect(() => {
+    isAuth.mutate();
+  }, []);
 
   return (
     <div className="flex flex-col space-y-12">

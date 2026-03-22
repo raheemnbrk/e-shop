@@ -27,7 +27,7 @@ const authUser = async (
 
     const decodedToken = jwt.verify(
       token,
-      process.env.JWT_KEY_SECRET!
+      process.env.JWT_SECRET_KEY!
     ) as authPayload;
 
     const user = await User.findById(decodedToken.id);

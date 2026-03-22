@@ -11,7 +11,7 @@ type User = {
 
 type authUser = {
   user: User | null;
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void;
 };
 
 export const useAuthUser = create<authUser>((set) => ({

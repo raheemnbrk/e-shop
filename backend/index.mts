@@ -7,8 +7,10 @@ import userRouter from "./routes/userRoutes.mts";
 import connectCloudinary from "./configs/cloudinaryConfig.mts";
 import productRouter from "./routes/productRouter.mts";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
+app.use(cookieParser());
 
 app.use(
   cors({

@@ -28,3 +28,13 @@ export const loginUser = async (data: loginUser) => {
   });
   return res.data;
 };
+
+export const authUser = async () => {
+  const res = await axios.post("/api/users/is-auth" , {}, { withCredentials: true });
+  return res.data;
+};
+
+export const logoutUser = async () => {
+  const res = await axios.post("/api/users/logout" , {}, { withCredentials: true });
+  return res.data;
+};

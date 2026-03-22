@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type JSX } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 import { LuSun, LuMoon } from "react-icons/lu";
@@ -7,23 +7,35 @@ import { FaBoxOpen } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
 import { RiAdminFill } from "react-icons/ri";
+import { useAuth } from "../queries/authUser";
 
 interface NavbarProps {
   theme: string;
   setTheme: (theme: string) => void;
 }
 
+interface profileLink {
+  text: string;
+  link: string;
+  icon: JSX.Element;
+}
+
 export default function Navbar({ theme, setTheme }: NavbarProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const profileLinks = [
+  const profileLinks: profileLink[] = [
     { text: "my orders", link: "orders", icon: <FaBoxOpen /> },
     { text: "my profile", link: "my-profile", icon: <FaUser /> },
   ];
 
   const { user } = useAuthUser();
 
+  const { logout } = useAuth();
+  const handleLogout = () => {
+    logout.mutate();
+    setIsOpen(!isOpen);
+  };
   return (
     <nav className="flex items-center justify-between px-4 md:px-8 py-4 border-b border-gray-300 bg-white relative transition-all">
       <Link to="/">
@@ -152,7 +164,7 @@ export default function Navbar({ theme, setTheme }: NavbarProps) {
                 )}
                 <li
                   className="px-4 py-2 hover:bg-indigo-500 hover:text-white cursor-pointer flex gap-2 items-center capitalize"
-                  onClick={() => setIsOpen(!isOpen)}
+                  onClick={handleLogout}
                 >
                   <TbLogout />
                   <p>logout</p>
@@ -186,10 +198,10 @@ export default function Navbar({ theme, setTheme }: NavbarProps) {
       <div
         className={`${open ? "flex" : "hidden"} absolute top-[60px] z-50 left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}
       >
-        <Link to={"/"} className="block">
+        <Link to={"/"} onClick={() => setOpen(!open)} className="block">
           Home
         </Link>
-        <Link to={"products"} className="block">
+        <Link to={"products"} onClick={() => setOpen(!open)} className="block">
           Products
         </Link>
 
@@ -200,11 +212,44 @@ export default function Navbar({ theme, setTheme }: NavbarProps) {
           {theme === "dark" ? <LuSun /> : <LuMoon />}
           <h1>{theme === "dark" ? `light mode` : `dark mode`}</h1>
         </button>
-        <Link to={"login"}>
-          <button className="cursor-pointer px-6 py-2 mt-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full text-sm">
-            Login
+        {!user && (
+          <Link to={"login"} onClick={() => setOpen(!open)}>
+            <button className="cursor-pointer px-6 py-2 mt-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full text-sm">
+              Login
+            </button>
+          </Link>
+        )}
+        {user && (
+          <Link
+            to={"my-profile"}
+            onClick={() => setOpen(!open)}
+            className="block"
+          >
+            my-profile
+          </Link>
+        )}
+        {user && (
+          <Link to={"orders"} onClick={() => setOpen(!open)} className="block">
+            my orders
+          </Link>
+        )}
+        {user && user.role === "admin" && (
+          <Link
+            to={"dashboard"}
+            onClick={() => setOpen(!open)}
+            className="block"
+          >
+            dashboard
+          </Link>
+        )}
+        {user && (
+          <button
+            className="cursor-pointer px-6 py-2 mt-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full text-sm"
+            onClick={handleLogout}
+          >
+            Logout
           </button>
-        </Link>
+        )}
       </div>
     </nav>
   );

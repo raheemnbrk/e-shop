@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { loginUser, registerUser } from "../api/userApi";
+import { authUser, loginUser, logoutUser, registerUser } from "../api/userApi";
 import { useAuthUser } from "../zustand/authUser";
 import toast from "react-hot-toast";
 
@@ -36,5 +36,31 @@ export const useAuth = () => {
       toast.error(error?.response?.data?.message || "Something went wrong.");
     },
   });
-  return { register, login };
+
+  const isAuth = useMutation({
+    mutationFn: authUser,
+    onSuccess: (data) => {
+      if (data.success) setUser(data.user);
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Something went wrong.");
+    },
+  });
+
+  const logout = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: (data) => {
+      if (data.success) {
+        setUser(null);
+        toast.success("User logged out successfully.");
+      }
+      else{
+        toast.error(data?.message || "logging out failed");
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Something went wrong.");
+    },
+  });
+  return { register, login, isAuth, logout };
 };
