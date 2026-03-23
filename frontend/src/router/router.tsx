@@ -21,6 +21,7 @@ import DashboardProducts from "../pages/dashboard/products";
 import DashboardOrders from "../pages/dashboard/order";
 import Users from "../pages/dashboard/users";
 import Invoices from "../pages/dashboard/invoices";
+import AdminRoute from "./adminRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,12 +39,15 @@ const router = createBrowserRouter(
           <Route path="specifications" element={<Specification />} />
         </Route>
         <Route path="cart" element={<Cart />} />
-        <Route path="dashboard" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="products" element={<DashboardProducts />} />
-          <Route path="orders" element={<DashboardOrders />} />
-          <Route path="users" element={<Users />} />
-          <Route path="invoices" element={<Invoices />} />
+
+        <Route path="dashboard" element={<AdminRoute />}>
+          <Route element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="products" element={<DashboardProducts />} />
+            <Route path="orders" element={<DashboardOrders />} />
+            <Route path="users" element={<Users />} />
+            <Route path="invoices" element={<Invoices />} />
+          </Route>
         </Route>
       </Route>
     </>,

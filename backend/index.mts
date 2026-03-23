@@ -8,6 +8,7 @@ import connectCloudinary from "./configs/cloudinaryConfig.mts";
 import productRouter from "./routes/productRouter.mts";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import dashboardRouter from "./routes/dashboardRouter.mts";
 
 const app = express();
 app.use(cookieParser());
@@ -25,7 +26,8 @@ await connectDB();
 connectCloudinary();
 
 app.use("/api/users", userRouter);
-app.use("/api/product", productRouter);
+app.use("/api/products", productRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 app.get("/", (req, res) => {
   console.log("hello world");

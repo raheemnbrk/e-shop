@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 export const useAuth = () => {
   const setUser = useAuthUser((state) => state.setUser);
+  const setLoading = useAuthUser((state) => state.setLoading);
 
   const register = useMutation({
     mutationFn: registerUser,
@@ -45,6 +46,7 @@ export const useAuth = () => {
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || "Something went wrong.");
     },
+    onSettled: () => setLoading(false),
   });
 
   const logout = useMutation({
@@ -53,8 +55,7 @@ export const useAuth = () => {
       if (data.success) {
         setUser(null);
         toast.success("User logged out successfully.");
-      }
-      else{
+      } else {
         toast.error(data?.message || "logging out failed");
       }
     },

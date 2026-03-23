@@ -11,7 +11,7 @@ const registerSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-type roleType = "user" | "admin";
+type roleType = "customer" | "admin";
 const isProduction = process.env.NODE_ENV === "production";
 
 const registerUser = async (req: Request, res: Response): Promise<void> => {
@@ -32,7 +32,7 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
       .split(",")
       .map((email) => email.trim());
 
-    const role: roleType = adminEmails.includes(email) ? "admin" : "user";
+    const role: roleType = adminEmails.includes(email) ? "admin" : "customer";
     const user = await User.create({
       firstName,
       lastName,

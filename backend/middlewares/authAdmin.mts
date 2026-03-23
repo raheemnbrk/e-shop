@@ -18,7 +18,7 @@ const authAdmin = async (
     return;
   }
   try {
-    const decodedToken = (await jwt.verify(
+    const decodedToken = (jwt.verify(
       token,
       process.env.JWT_SECRET_KEY!,
     )) as AuthPayload;

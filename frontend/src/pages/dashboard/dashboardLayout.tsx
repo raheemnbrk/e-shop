@@ -8,6 +8,8 @@ import {
 import { IoCartOutline } from "react-icons/io5";
 import { TbReportAnalytics, TbFileInvoice } from "react-icons/tb";
 import { FaUsers } from "react-icons/fa";
+import { useEffect } from "react";
+import { useDashboardQueries } from "../../queries/dashboard/dashboard";
 
 export default function DashboardLayout() {
   const sidebarLinks = [
@@ -23,6 +25,11 @@ export default function DashboardLayout() {
     { name: "invoices", path: "invoices", icon: <TbFileInvoice /> },
     { name: "users", path: "users", icon: <FaUsers /> },
   ];
+
+  const { getStats } = useDashboardQueries();
+  useEffect(() => {
+    getStats.refetch();
+  }, []);
   return (
     <div className="h-screen flex flex-col">
       <DashboardNavbar />

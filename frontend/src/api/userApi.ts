@@ -23,18 +23,16 @@ export const registerUser = async (data: registerUser) => {
 };
 
 export const loginUser = async (data: loginUser) => {
-  const res = await axios.post("/api/users/login", data, {
-    withCredentials: true,
-  });
+  const res = await axios.post("/api/users/login", data);
   return res.data;
 };
 
 export const authUser = async () => {
-  const res = await axios.post("/api/users/is-auth" , {}, { withCredentials: true });
+  const res = await axios.post("/api/users/is-auth");
   return res.data;
 };
 
 export const logoutUser = async () => {
-  const res = await axios.post("/api/users/logout" , {}, { withCredentials: true });
+  const res = await axios.post("/api/users/logout");
   return res.data;
 };
