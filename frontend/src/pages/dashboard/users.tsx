@@ -3,6 +3,7 @@ import { FaRegUser, FaUsers, FaEdit, FaUser } from "react-icons/fa";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { useDashboard } from "../../zustand/dashboard";
 import { useUsersQueries } from "../../queries/dashboard/users";
+import { IoClose } from "react-icons/io5";
 
 type selected = "all users" | "admin" | "customer";
 
@@ -10,6 +11,11 @@ export default function Users() {
   const [selected, setSelected] = useState<selected>("all users");
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<string | "">("");
+  const [editingUser, setEditingUser] = useState<any | null>(null);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [role, setRole] = useState<"admin" | "customer">("customer");
+  const [openRole, setOpenRole] = useState<boolean>(false);
   const status: string[] = ["all users", "admin", "customer"];
 
   const handleSelect = (ele: selected): void => {
@@ -18,7 +24,7 @@ export default function Users() {
   };
 
   const { users, dashboardStats } = useDashboard();
-  const { getUsers } = useUsersQueries(value);
+  const { getUsers, updateUser } = useUsersQueries(value);
   useEffect(() => {
     getUsers.refetch();
   }, [value]);
@@ -28,8 +34,12 @@ export default function Users() {
       ? users.filter((ele) => ele.role === selected)
       : users;
 
+  const handleUpdateUser = (id: string) => {
+    updateUser.mutate({ id, firstName, lastName, role });
+    setEditingUser(null);
+  };
   return (
-    <div className="bg-[#f7f7f5] p-6 flex flex-col space-y-8 w-full">
+    <div className="bg-[#f7f7f5] p-6 flex flex-col space-y-8 w-full relative">
       <h1 className="text-3xl font-semibold capitalize">user management</h1>
       <div className="grid md:grid-cols-4 grid-cols-1 gap-4">
         <div className="w-full md:w-62 px-4 py-6 flex flex-col space-y-4 border border-gray-300 shadow-sm rounded-md bg-white">
@@ -64,7 +74,7 @@ export default function Users() {
         </div>
       </div>
       <div className="flex flex-col md:flex-row justify-center md:items-center gap-4 px-6 py-4 rounded-md bg-white border border-gray-300 shadow-sm">
-        <div className="flex items-center border pl-4 gap-2 bg-white border-gray-500/30 h-[46px] rounded-full overflow-hidden max-w-[770px] w-full">
+        <div className="flex items-center border pl-4 gap-2 bg-white border-gray-500/30 h-11 rounded-full overflow-hidden max-w-3xl w-full">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="30"
@@ -199,7 +209,15 @@ export default function Users() {
                     120
                   </td>
                   <td className="px-4 py-3 text-center">
-                    <button className="text-lg font-semibold hover:bg-gray-200 cursor-pointer rounded-full p-3">
+                    <button
+                      className="text-lg font-semibold hover:bg-gray-200 cursor-pointer rounded-full p-3"
+                      onClick={() => {
+                        setEditingUser(ele);
+                        setFirstName(ele.firstName);
+                        setLastName(ele.lastName);
+                        setRole(ele.role);
+                      }}
+                    >
                       <FaEdit />
                     </button>
                   </td>
@@ -207,6 +225,99 @@ export default function Users() {
               </tbody>
             ))}
           </table>
+          {editingUser && (
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+              <div className="bg-white px-6 py-8 rounded-md w-100">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-semibold ">Edit User</h2>
+                  <button
+                    className="text-2xl font-light cursor-pointer hover:text-red-500 hover:bg-red-100 p-1 rounded-full"
+                    onClick={() => setEditingUser(null)}
+                  >
+                    <IoClose />
+                  </button>
+                </div>
+                <div className="flex flex-col gap-4">
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="border p-2 rounded outline-primary border-gray-300 shadow-md"
+                    placeholder="First name"
+                  />
+
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="border p-2 rounded outline-primary border-gray-300 shadow-md"
+                    placeholder="Last name"
+                  />
+                  <div className="flex flex-col  text-sm relative">
+                    <button
+                      type="button"
+                      onClick={() => setOpenRole(!openRole)}
+                      className="w-full text-left px-4 pr-2 py-2 border bg-white text-gray-800 border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none cursor-pointer h-11"
+                    >
+                      <span className="capitalize">{role}</span>
+                      <svg
+                        className={`w-5 h-5 inline float-right transition-transform duration-200 ${openRole ? "rotate-0" : "-rotate-90"}`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="#6B7280"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+
+                    {openRole && (
+                      <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-md mt-1 py-2 z-50">
+                        <li
+                          className="px-4 py-2 hover:bg-indigo-500 hover:text-white cursor-pointer capitalize"
+                          onClick={() => {
+                            setRole("admin");
+                            setOpenRole(false);
+                          }}
+                        >
+                          admin
+                        </li>
+                        <li
+                          className="px-4 py-2 hover:bg-indigo-500 hover:text-white cursor-pointer capitalize"
+                          onClick={() => {
+                            setRole("customer");
+                            setOpenRole(false);
+                          }}
+                        >
+                          customer
+                        </li>
+                      </ul>
+                    )}
+                  </div>
+                  <div className="flex gap-2 items-center justify-end mt-6">
+                    <button
+                      className="bg-gray-300 px-4 py-2 rounded cursor-pointer"
+                      onClick={() => setEditingUser(null)}
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      className="bg-primary hover:bg-primary/90 cursor-pointer text-white px-4 py-2 rounded"
+                      onClick={() => handleUpdateUser(editingUser._id)}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

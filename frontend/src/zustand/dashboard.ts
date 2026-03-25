@@ -18,8 +18,8 @@ type dashboardStats = {
 };
 
 type useDashboard = {
-  users: User[] | [];
-  setUsers: (users: User[] | []) => void;
+  users: User[];
+  setUsers: (users: User[]) => void;
   dashboardStats: dashboardStats;
   setDashboardStats: (stats: dashboardStats) => void;
 };

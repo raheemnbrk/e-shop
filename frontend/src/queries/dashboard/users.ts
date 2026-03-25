@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useDashboard } from "../../zustand/dashboard";
 import { getAllUsers } from "../../api/admin/users";
 import toast from "react-hot-toast";
+import { updateUserApi } from "../../api/admin/dashboard";
 
 export const useUsersQueries = (value: string) => {
   const setUsers = useDashboard((state) => state.setUsers);
@@ -30,5 +31,19 @@ export const useUsersQueries = (value: string) => {
     }
   }, [isError]);
 
-  return { getUsers };
+  const updateUser = useMutation({
+    mutationFn: ({ id, ...rest }: any) => updateUserApi(id, rest),
+    onSuccess: (data) => {
+      if (data.success) {
+        const users = useDashboard.getState().users;
+
+        setUsers(users.map((u) => (u._id === data.user._id ? data.user : u)));
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    },
+  });
+
+  return { getUsers, updateUser };
 };

@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import User from "../models/userModels.mts";
 import Order from "../models/orderModel.mts";
 import Product from "../models/productModel.mts";
+import { z } from "zod";
 
 const getDashboardStats = async (
   req: Request,
@@ -63,4 +64,45 @@ const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { getDashboardStats, getAllUsers };
+const updateUserSchema = z.object({
+  firstName: z
+    .string()
+    .min(2, "First name must be at least 2 characters")
+    .optional(),
+  lastName: z
+    .string()
+    .min(2, "Last name must be at least 2 characters")
+    .optional(),
+  role: z.enum(["admin", "customer"]).optional(),
+});
+
+const updateUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { adminId } = req as any;
+    if (!adminId) {
+      console.log("Not authorized.");
+      res.json({ success: false, message: "Only admin can access this page." });
+      return;
+    }
+    const { id, ...data } = req.body;
+    const parsedData = updateUserSchema.safeParse(data);
+
+    if (!parsedData.success) {
+      res.json({
+        success: false,
+        message: parsedData.error.issues[0].message,
+      });
+      return;
+    }
+
+    const user = await User.findByIdAndUpdate(id, parsedData.data, {
+      new: true,
+    }).select("-password");
+    res.json({ success: true, message: "User modified successfully.", user });
+  } catch (err) {
+    console.log((err as Error).message);
+    res.json({ success: false, message: (err as Error).message });
+  }
+};
+
+export { getDashboardStats, getAllUsers, updateUser };
