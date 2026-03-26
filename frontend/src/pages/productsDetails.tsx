@@ -1,21 +1,41 @@
-import image from "../assets/images/store.jpg";
 import { RiStarSFill } from "react-icons/ri";
 import { FaShoppingCart } from "react-icons/fa";
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 import ProductCard from "../components/productCard";
+import { useDashboard } from "../zustand/dashboard";
+
+type Product = {
+  _id: string;
+  productName: string;
+  category: string;
+  description: string;
+  price: number;
+  stock: number;
+  discount: number;
+  image: string;
+};
 
 export default function ProductDetails() {
+  const { products } = useDashboard();
+  const { id } = useParams();
+  const product: Product | undefined = products.find((prod) => prod._id === id);
+
+  const relatedProducts: Product[] | undefined = products.filter(
+    (prod) => prod.category === product?.category && prod._id !== product?._id,
+  );
   return (
     <div className="px-6 py-4 flex flex-col space-y-6">
       <div className="flex flex-col md:flex-row gap-12">
         <div className="overflow-hidden rounded-md w-full md:w-[50%]">
-          <img className="w-full rounded-md" src={image} alt="" />
+          <img className="w-full rounded-md" src={product?.image} alt="" />
         </div>
         <div className="flex flex-col space-y-4 w-full md:w-[50%]">
           <p className="px-6 py-1 rounded-full bg-purple-100 text-primary font-medium capitalize w-fit">
-            category
+            {product?.category}
           </p>
-          <h1 className="text-2xl font-semibold capitalize">title</h1>
+          <h1 className="text-2xl font-semibold capitalize">
+            {product?.productName}
+          </h1>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-1 text-yellow-500 text-xl">
               <RiStarSFill />
@@ -26,14 +46,22 @@ export default function ProductDetails() {
             <p className="text-gray-600">(876)reviews</p>
           </div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold">$300</h1>
-            <h1 className="text-gray-600 line-through font-medium">$400</h1>
+            <h1 className="text-2xl font-semibold">${product?.price}</h1>
+            {product && (
+              <h1 className="text-gray-600 line-through font-medium">
+                $
+                {(
+                  product.price +
+                  (product.price * product.discount) / 100
+                ).toFixed(2)}
+              </h1>
+            )}
             <p className="px-6 py-1 rounded-full bg-purple-100 text-primary font-medium capitalize w-fit">
-              save 30%
+              save %{product?.discount}
             </p>
           </div>
           <p className="text-gray-600 py-3 border-b border-b-gray-700">
-            description
+            {product?.description}
           </p>
           <div>
             <h1 className="text-xl font-semibold capitalize">quantity</h1>
@@ -92,13 +120,21 @@ export default function ProductDetails() {
         </ul>
       </div>
       <Outlet />
-      <div className="flex flex-col space-y-6" >
-        <h1 className="text-3xl md:text-4xl font-semibold capitalize" >related products</h1>
-        <div className="flex items-center gap-6 bg-amber-50 rounded-md md:p-6 py-3" >
-            <ProductCard/>
-            <ProductCard/>
+      {relatedProducts.length > 0 && (
+        <div className="flex flex-col space-y-6">
+          <h1 className="text-3xl md:text-4xl font-semibold capitalize">
+            related products
+          </h1>
+
+          <div className="flex items-center gap-6 rounded-md md:p-6 py-3">
+            {relatedProducts.map((ele) => (
+              <Link to={`/products/${ele._id}`}>
+                <ProductCard product={ele} />
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

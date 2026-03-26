@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export default function Header() {
+type props = {
+  setSortingKey: (s: string) => void;
+};
+
+export default function Header({ setSortingKey }: props) {
   const list = [
     "newest first",
     "price:low to high",
@@ -14,9 +18,10 @@ export default function Header() {
   const handleSelect = (ele: string) => {
     setSelected(ele);
     setIsOpen(false);
+    setSortingKey(ele);
   };
   return (
-    <div className="flex flex-col md:flex-row gap-4 justify-between p-4">
+    <div className="flex flex-col md:flex-row gap-4 justify-between mb-4">
       <div>
         <h1 className="text-3xl md:text-4xl font-semibold capitalize">
           all products
@@ -30,7 +35,7 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full text-left px-4 pr-2 py-2 border rounded bg-white text-gray-800 border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none cursor-pointer"
+          className="w-full text-left px-4 pr-2 py-2 border rounded bg-white text-gray-800 border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none cursor-pointer relative"
         >
           <span className="capitalize">{selected}</span>
           <svg
@@ -50,7 +55,7 @@ export default function Header() {
         </button>
 
         {isOpen && (
-          <ul className="w-full bg-white border border-gray-300 rounded shadow-md mt-1 py-2">
+          <ul className="w-full bg-white border border-gray-300 rounded shadow-md mt-1 py-2 absolute top-10">
             {list.map((ele) => (
               <li
                 key={ele}

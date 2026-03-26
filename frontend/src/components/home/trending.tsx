@@ -1,10 +1,13 @@
 import ProductCard from "../productCard";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+import { useDashboard } from "../../zustand/dashboard";
 
 export default function Trending() {
+  const { products } = useDashboard();
+  
   return (
-    <div className="py-6 md:px-6 bg-amber-50 flex flex-col space-y-8">
+    <div className="py-6 md:px-6 flex flex-col space-y-8">
       <div className="flex items-center justify-between md:px-6 px-4">
         <div>
           <h1 className="text-3xl capitalize font-semibold">
@@ -19,15 +22,12 @@ export default function Trending() {
           </button>
         </Link>
       </div>
-      <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 mx-auto">
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
+      <div className="flex flex-wrap items-center gap-6">
+        {products.map((ele) => (
+          <Link to={`/products/${ele._id}`}>
+            <ProductCard product={ele} />
+          </Link>
+        ))}
       </div>
     </div>
   );
