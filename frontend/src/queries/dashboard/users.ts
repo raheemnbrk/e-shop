@@ -4,9 +4,11 @@ import { useDashboard } from "../../zustand/dashboard";
 import { getAllUsers } from "../../api/admin/users";
 import toast from "react-hot-toast";
 import { updateUserApi } from "../../api/admin/dashboard";
+import { useDashboardQueries } from "./dashboard";
 
 export const useUsersQueries = (value: string) => {
   const setUsers = useDashboard((state) => state.setUsers);
+  const { getStats } = useDashboardQueries();
 
   const getUsers = useQuery({
     queryKey: ["users", value],
@@ -38,6 +40,7 @@ export const useUsersQueries = (value: string) => {
         const users = useDashboard.getState().users;
 
         setUsers(users.map((u) => (u._id === data.user._id ? data.user : u)));
+        getStats.refetch();
         toast.success(data.message);
       } else {
         toast.error(data.message);

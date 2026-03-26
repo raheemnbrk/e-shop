@@ -29,7 +29,7 @@ export default function DashboardLayout() {
   const { getStats } = useDashboardQueries();
   useEffect(() => {
     getStats.refetch();
-  }, []);
+  }, [getStats]);
   return (
     <div className="h-screen flex flex-col">
       <DashboardNavbar />

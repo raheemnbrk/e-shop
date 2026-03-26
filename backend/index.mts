@@ -23,7 +23,7 @@ app.use(
 app.use(express.json());
 
 await connectDB();
-connectCloudinary();
+await connectCloudinary();
 
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);

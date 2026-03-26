@@ -15,6 +15,18 @@ type dashboardStats = {
   totalAdmins: number;
   totalOrders: number;
   totalProducts: number;
+  lowStock: number;
+};
+
+type Product = {
+  _id: string;
+  productName: string;
+  description: string;
+  category: string;
+  price: number;
+  discount: number;
+  image: string;
+  stock: number;
 };
 
 type useDashboard = {
@@ -22,6 +34,8 @@ type useDashboard = {
   setUsers: (users: User[]) => void;
   dashboardStats: dashboardStats;
   setDashboardStats: (stats: dashboardStats) => void;
+  products: Product[];
+  setProducts: (p: Product[]) => void;
 };
 
 export const useDashboard = create<useDashboard>((set) => ({
@@ -33,7 +47,10 @@ export const useDashboard = create<useDashboard>((set) => ({
     totalAdmins: 0,
     totalOrders: 0,
     totalProducts: 0,
+    lowStock: 0,
   },
-
   setDashboardStats: (stats) => set({ dashboardStats: stats }),
+
+  products: [],
+  setProducts: (products) => set({ products }),
 }));

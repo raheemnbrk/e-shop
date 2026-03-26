@@ -95,7 +95,7 @@ export default function Users() {
           <button
             type="button"
             onClick={() => setOpen(!open)}
-            className="w-full text-left px-4 pr-2 py-2 border bg-white text-gray-800 border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none cursor-pointer rounded-full h-[46px]"
+            className="w-full text-left px-4 pr-2 py-2 border bg-white text-gray-800 border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none cursor-pointer rounded-full h-11"
           >
             <span className="capitalize">{selected}</span>
             <svg

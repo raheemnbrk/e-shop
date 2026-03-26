@@ -19,6 +19,7 @@ const getDashboardStats = async (
     const totalAdmins = await User.countDocuments({ role: "admin" });
     const totalOrders = await Order.countDocuments();
     const totalProducts = await Product.countDocuments();
+    const lowStock = await Product.countDocuments({ stock: { $lt: 10 } });
 
     res.json({
       success: true,
@@ -28,6 +29,7 @@ const getDashboardStats = async (
         totalAdmins: totalAdmins,
         totalOrders: totalOrders,
         totalProducts: totalProducts,
+        lowStock: lowStock,
       },
     });
   } catch (err) {
