@@ -82,3 +82,41 @@ export const logoutService = async (token: string) => {
     data: { isRevoked: true },
   });
 };
+
+export const refreshTokenService = async (token: string) => {
+  const stored = await prisma.refreshToken.findFirst({
+    where: { token },
+    include: { user: true },
+  });
+  if (!stored || stored.expiredAt < new Date())
+    throw new ApiError(401, "Unauthorized access. Please login again.");
+
+  const payload: Payload = { id: stored.user.id, role: stored.user.role };
+
+  const refreshToken = signRefreshToken(payload);
+  const accessToken = signAccessToken(payload);
+
+  await prisma.refreshToken.update({
+    where: { id: stored.id },
+    data: { isRevoked: true, replacedBy: refreshToken },
+  });
+
+  await prisma.refreshToken.create({
+    data: {
+      token: refreshToken,
+      expiredAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRES_MS),
+      userId: stored.user.id,
+    },
+  });
+
+  await prisma.refreshToken.deleteMany({
+    where: { id: stored.userId, expiredAt: { lt: new Date() } },
+  });
+
+  const user = await prisma.user.findUnique({
+    where: { id: stored.userId },
+    omit: { password: true },
+  });
+
+  return { user, accessToken, refreshToken };
+};

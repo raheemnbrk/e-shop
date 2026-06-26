@@ -6,6 +6,7 @@ import {
 import { REFRESH_TOKEN_EXPIRES_MS } from "../../shared/utils/jwt";
 import * as authService from "./authServices";
 import { loginInput, registerInput } from "../../shared/types/authTypes";
+import { ApiError } from "../../shared/utils/apiError";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -78,6 +79,31 @@ export const logoutController = async (
     res
       .status(200)
       .json({ success: true, message: "Logged out successfully." });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const refreshController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { refreshToken } = (req as any).cookies;
+    if (!refreshController)
+      throw new ApiError(401, "Unauthorized access. Please login again.");
+    const result = await authService.refreshTokenService(refreshToken);
+
+    res.cookie("refreshToken", result.refreshToken, cookiesOptions);
+
+    return res
+      .status(200)
+      .json({
+        success: true,
+        accessToken: result.accessToken,
+        user: result.user,
+      });
   } catch (err) {
     next(err);
   }
