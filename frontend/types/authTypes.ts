@@ -1,4 +1,8 @@
-import { loginSchema, registerSchema } from "@/lib/validators/auth.schema";
+import {
+  loginSchema,
+  registerSchema,
+  verifyOtpSchema,
+} from "@/lib/validators/auth.schema";
 import z from "zod";
 
 export interface User {
@@ -10,6 +14,7 @@ export interface User {
   role: "ADMIN" | "SELLER" | "CUSTOMER";
   phoneNumber?: string | null;
   createdAt: string;
+  isVerified: boolean;
 }
 
 export interface AuthStore {
@@ -28,7 +33,13 @@ export type registerInput = Omit<
 >;
 export type loginInput = z.infer<typeof loginSchema>;
 
+export type verifyOtpInput = z.infer<typeof verifyOtpSchema>;
+
 export interface authResponse {
   accessToken: string;
   user: User;
+}
+
+export interface messageResponse {
+  message: string;
 }

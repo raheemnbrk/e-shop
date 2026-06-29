@@ -29,3 +29,11 @@ export const loginSchema = z.object({
     .min(1, "Password is required")
     .min(8, "Password must at least contains 8 characters."),
 });
+
+export const verifyOtpSchema = z.object({
+  email: z.string().min(1, "Email is required."),
+  otp: z
+    .string()
+    .length(6, "OTP must be 6 digits")
+    .regex(/^\d+$/, "OTP must contain only digits"),
+});

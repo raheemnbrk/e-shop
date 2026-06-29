@@ -17,6 +17,7 @@ model User{
   image       String?
   phoneNumber String?
   role        Role      @default(CUSTOMER)
+  isVerified  Boolean   @default(false)  
 
 
   createdAt   DateTime  @default(now())

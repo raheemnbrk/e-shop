@@ -1,12 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import {
   loginSchema,
+  otpSchema,
   registerSchema,
+  resendOtpSchema,
 } from "../../shared/validations/authValidation";
 import { REFRESH_TOKEN_EXPIRES_MS } from "../../shared/utils/jwt";
 import * as authService from "./authServices";
-import { loginInput, registerInput } from "../../shared/types/authTypes";
+import {
+  loginInput,
+  otpInput,
+  registerInput,
+  resendOtpInout,
+} from "../../shared/types/authTypes";
 import { ApiError } from "../../shared/utils/apiError";
+import { success } from "zod";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -27,13 +35,43 @@ export const registerController = async (
 
     const result = await authService.registerService(input);
 
+    return res.status(201).json({ success: true, message: result.message });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const verifyOtpController = async (
+  req: Request<{}, {}, otpInput>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = otpSchema.parse(req.body);
+    const result = await authService.verifyOtpService(input);
+
     res.cookie("refreshToken", result.refreshToken, cookiesOptions);
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       accessToken: result.accessToken,
       user: result.user,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const resendOtpController = async (
+  req: Request<{}, {}, resendOtpInout>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = resendOtpSchema.parse((req as any).body);
+
+    const result = await authService.resendOtpService(input);
+    return res.status(200).json({ success: true, message: result.message });
   } catch (err) {
     next(err);
   }
@@ -97,13 +135,11 @@ export const refreshController = async (
 
     res.cookie("refreshToken", result.refreshToken, cookiesOptions);
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        accessToken: result.accessToken,
-        user: result.user,
-      });
+    return res.status(200).json({
+      success: true,
+      accessToken: result.accessToken,
+      user: result.user,
+    });
   } catch (err) {
     next(err);
   }

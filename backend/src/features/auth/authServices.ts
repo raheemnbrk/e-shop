@@ -3,8 +3,10 @@ import prisma from "../../shared/config/prisma";
 import {
   AuthResponse,
   loginInput,
+  otpInput,
   Payload,
   registerInput,
+  resendOtpInout,
 } from "../../shared/types/authTypes";
 import { ApiError } from "../../shared/utils/apiError";
 import bcrypt from "bcrypt";
@@ -13,12 +15,18 @@ import {
   signAccessToken,
   signRefreshToken,
 } from "../../shared/utils/jwt";
+import { generateOTP, saveOtp, verifyOtp } from "../../shared/utils/otp";
+import { sendOtpEmail } from "../../shared/utils/email";
 
 export const registerService = async (input: registerInput) => {
   const { firstName, lastName, email, password } = input;
 
   const existingUser = await prisma.user.findFirst({ where: { email } });
-  if (existingUser) throw new ApiError(409, "User already exists.");
+  if (existingUser && existingUser.isVerified)
+    throw new ApiError(409, "User already exists.");
+
+  if (existingUser && !existingUser.isVerified)
+    await prisma.user.delete({ where: { email } });
 
   const hashed = await bcrypt.hash(password, 10);
 
@@ -27,8 +35,30 @@ export const registerService = async (input: registerInput) => {
 
   const role: Role = adminEmails.includes(email) ? "ADMIN" : "CUSTOMER";
 
-  const user = await prisma.user.create({
-    data: { firstName, lastName, email, password: hashed, role: role },
+  await prisma.user.create({
+    data: { firstName, lastName, email, password: hashed, role },
+    omit: { password: true },
+  });
+
+  const otp = generateOTP();
+  await saveOtp(email, otp);
+  await sendOtpEmail(email, otp);
+
+  return { message: "Verification code is sent to your email." };
+};
+
+export const verifyOtpService = async (input: otpInput) => {
+  const { email, otp } = input;
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new ApiError(404, "User not found");
+  if (user.isVerified) throw new ApiError(400, "Email is already in use.");
+
+  const valid = await verifyOtp(email, otp);
+  if (!valid) throw new ApiError(400, "Invalid or expired code.");
+
+  const verifiedUser = await prisma.user.update({
+    where: { email },
+    data: { isVerified: true },
     omit: { password: true },
   });
 
@@ -45,7 +75,20 @@ export const registerService = async (input: registerInput) => {
     },
   });
 
-  return { accessToken, refreshToken, user } as AuthResponse;
+  return { accessToken, refreshToken, user: verifiedUser } as AuthResponse;
+};
+
+export const resendOtpService = async (input: resendOtpInout) => {
+  const { email } = input;
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new ApiError(404, "User not found");
+  if (user.isVerified) throw new ApiError(400, "Email is already in use.");
+
+  const otp = generateOTP();
+  await saveOtp(email, otp);
+  await sendOtpEmail(email, otp);
+
+  return { message: "New verification code sent." };
 };
 
 export const loginService = async (input: loginInput) => {
