@@ -68,6 +68,7 @@ export default function VerifyOtpPage() {
               size="sm"
               onClick={handleResend}
               disabled={isResending}
+              className="cursor-pointer"
             >
               <RefreshCwIcon className={isResending ? "animate-spin" : ""} />
               {isResending ? "Sending..." : "Resend Code"}
@@ -93,7 +94,7 @@ export default function VerifyOtpPage() {
 
         <CardFooter className="flex flex-col gap-3">
           <Button
-            className="w-full"
+            className="w-full cursor-pointer"
             onClick={handleSubmit}
             disabled={isPending || otp.length < 6}
           >

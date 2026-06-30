@@ -5,12 +5,10 @@ import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: {
-    default: "e-shop",
-    template: "%s  | e-shop",
-  },
+  title: "e-shop",
   description:
     "Discover premium electronics, fashion, home essentials, and more at unbeatable prices.",
+  icons: "/logo.svg",
 };
 
 const inter = Inter({

@@ -25,6 +25,6 @@ export const verifyOtp = async (
 };
 
 export const resendOtp = async (email: string): Promise<messageResponse> => {
-  const res = await api.post("/auth/resend", email);
+  const res = await api.post("/auth/resend", {email});
   return res.data;
 };

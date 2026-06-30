@@ -16,7 +16,7 @@ export const useVerifyOtp = (email: string) => {
       setIsPending(true);
       const data = await verifyOtp({ email, otp });
       setAuth(data.user, data.accessToken);
-      localStorage.removeItem("verify_email");
+      sessionStorage.removeItem("verify_email");
       toast.success("Email verified! Welcome");
       router.push("/");
     } catch (err: any) {
@@ -33,6 +33,8 @@ export const useVerifyOtp = (email: string) => {
       toast.success(data.message);
     } catch (err: any) {
       toast.error(err?.response?.data?.message ?? "Invalid code");
+    } finally {
+      setIsResending(false);
     }
   };
 
