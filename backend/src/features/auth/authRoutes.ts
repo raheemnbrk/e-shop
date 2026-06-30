@@ -1,5 +1,7 @@
 import { Router } from "express";
 import {
+  googleAuthController,
+  googleCallbackController,
   loginController,
   logoutController,
   refreshController,
@@ -22,5 +24,7 @@ authRouter.post("/logout", logoutController);
 authRouter.post("/refresh", refreshController);
 authRouter.post("/verify-otp", verifyOtpLimiter, verifyOtpController);
 authRouter.post("/resend", resendOtpLimiter, resendOtpController);
+authRouter.get("/google", googleAuthController);
+authRouter.get("/google/callback", googleCallbackController);
 
 export default authRouter;

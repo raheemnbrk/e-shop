@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./features/auth/authRoutes";
 import { errorHandler } from "./shared/middlewares/errorHandler";
 import cors from "cors";
+import passport from "./shared/config/passport";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(passport.initialize());
 
 app.use("/api/auth", authRouter);
 

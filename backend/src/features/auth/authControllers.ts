@@ -14,7 +14,7 @@ import {
   resendOtpInout,
 } from "../../shared/types/authTypes";
 import { ApiError } from "../../shared/utils/apiError";
-import { success } from "zod";
+import passport from "../../shared/config/passport";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -144,3 +144,29 @@ export const refreshController = async (
     next(err);
   }
 };
+
+export const googleAuthController = passport.authenticate("google", {
+  scope: ["profile", "email"],
+  session: false,
+});
+
+export const googleCallbackController = [
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/login",
+  }),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = (req as any).user;
+
+      const { accessToken, refreshToken } =
+        await authService.googleAuthService(user);
+
+      res.cookie("refreshToken", refreshToken, cookiesOptions);
+
+      res.redirect(`${process.env.CLIENT_URL}/callback`);
+    } catch (err) {
+      next(err);
+    }
+  },
+];

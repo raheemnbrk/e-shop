@@ -1,4 +1,4 @@
-import { Role } from "../../generated/prisma";
+import { Role, User } from "../../generated/prisma";
 import prisma from "../../shared/config/prisma";
 import {
   AuthResponse,
@@ -96,6 +96,13 @@ export const loginService = async (input: loginInput) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new ApiError(401, "Invalid credentials.");
 
+  if (!user.password) {
+    throw new ApiError(
+      400,
+      "This account uses Google sign-in. Please continue with Google.",
+    );
+  }
+
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) throw new ApiError(401, "Invalid credentials.");
 
@@ -162,4 +169,21 @@ export const refreshTokenService = async (token: string) => {
   });
 
   return { user, accessToken, refreshToken };
+};
+
+export const googleAuthService = async (user: User) => {
+  const payload: Payload = { id: user.id, role: user.role };
+
+  const accessToken = signAccessToken(payload);
+  const refreshToken = signRefreshToken(payload);
+
+  await prisma.refreshToken.create({
+    data: {
+      token: refreshToken,
+      userId: user.id,
+      expiredAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRES_MS),
+    },
+  });
+
+  return { accessToken, refreshToken, user } as AuthResponse;
 };
