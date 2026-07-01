@@ -1,10 +1,14 @@
 import { JwtPayload } from "jsonwebtoken";
 import { Role, User } from "../../generated/prisma";
 import {
+  changePasswordSchema,
+  forgotPasswordSchema,
   loginSchema,
   otpSchema,
   registerSchema,
   resendOtpSchema,
+  resetPasswordSchema,
+  verifyOtpSchema,
 } from "../validations/authValidation";
 import z from "zod";
 
@@ -23,3 +27,8 @@ export interface AuthResponse {
   refreshToken: string;
   user: Omit<User, "password">;
 }
+
+export type forgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type verifyResetOtpInput = z.infer<typeof verifyOtpSchema>;
+export type resetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type changePasswordInput = z.infer<typeof changePasswordSchema>;

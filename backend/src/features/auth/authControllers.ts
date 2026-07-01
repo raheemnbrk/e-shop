@@ -1,17 +1,25 @@
 import { NextFunction, Request, Response } from "express";
 import {
+  changePasswordSchema,
+  forgotPasswordSchema,
   loginSchema,
   otpSchema,
   registerSchema,
   resendOtpSchema,
+  resetPasswordSchema,
+  verifyOtpSchema,
 } from "../../shared/validations/authValidation";
 import { REFRESH_TOKEN_EXPIRES_MS } from "../../shared/utils/jwt";
 import * as authService from "./authServices";
 import {
+  changePasswordInput,
+  forgotPasswordInput,
   loginInput,
   otpInput,
   registerInput,
   resendOtpInout,
+  resetPasswordInput,
+  verifyResetOtpInput,
 } from "../../shared/types/authTypes";
 import { ApiError } from "../../shared/utils/apiError";
 import passport from "../../shared/config/passport";
@@ -170,3 +178,68 @@ export const googleCallbackController = [
     }
   },
 ];
+
+export const forgotPasswordController = async (
+  req: Request<{}, {}, forgotPasswordInput>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = forgotPasswordSchema.parse(req.body);
+
+    const message = await authService.forgotPasswordService(input);
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const verifyResetPasswordController = async (
+  req: Request<{}, {}, verifyResetOtpInput>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = verifyOtpSchema.parse(req.body);
+
+    const resetToken = await authService.verifyResetPasswordOtpService(input);
+
+    return res.status(200).json({ success: true, resetToken });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const resetPasswordController = async (
+  req: Request<{}, {}, resetPasswordInput>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = resetPasswordSchema.parse(req.body);
+
+    const message = await authService.resetPasswordService(input);
+
+    return res.json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const changePasswordController = async (
+  req: Request<{}, {}, changePasswordInput>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = changePasswordSchema.parse(req.body);
+    const { id } = (req as any).user;
+
+    const message = await authService.changePasswordService(input, id);
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};

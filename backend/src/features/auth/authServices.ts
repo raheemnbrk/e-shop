@@ -2,11 +2,15 @@ import { Role, User } from "../../generated/prisma";
 import prisma from "../../shared/config/prisma";
 import {
   AuthResponse,
+  changePasswordInput,
+  forgotPasswordInput,
   loginInput,
   otpInput,
   Payload,
   registerInput,
   resendOtpInout,
+  resetPasswordInput,
+  verifyResetOtpInput,
 } from "../../shared/types/authTypes";
 import { ApiError } from "../../shared/utils/apiError";
 import bcrypt from "bcrypt";
@@ -15,7 +19,14 @@ import {
   signAccessToken,
   signRefreshToken,
 } from "../../shared/utils/jwt";
-import { generateOTP, saveOtp, verifyOtp } from "../../shared/utils/otp";
+import {
+  generateOTP,
+  saveOtp,
+  saveResetToken,
+  verifyOtp,
+  verifyResetOtp,
+  verifyResetToken,
+} from "../../shared/utils/otp";
 import { sendOtpEmail } from "../../shared/utils/email";
 
 export const registerService = async (input: registerInput) => {
@@ -186,4 +197,90 @@ export const googleAuthService = async (user: User) => {
   });
 
   return { accessToken, refreshToken, user } as AuthResponse;
+};
+
+export const forgotPasswordService = async (input: forgotPasswordInput) => {
+  const { email } = input;
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new ApiError(404, "User not found.");
+
+  if (!user.password) {
+    throw new ApiError(
+      400,
+      "This account uses Google sign-in. No password to change.",
+    );
+  }
+
+  const otp = generateOTP();
+  await saveOtp(email, otp);
+  await sendOtpEmail(email, otp);
+
+  return { message: "Password reset code sent to your email" };
+};
+
+export const verifyResetPasswordOtpService = async (
+  input: verifyResetOtpInput,
+) => {
+  const { email, otp } = input;
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new ApiError(404, "User not found");
+
+  const valid = await verifyResetOtp(email, otp);
+  if (!valid) throw new ApiError(400, "Invalid or expired code.");
+
+  const resetToken = crypto.randomUUID();
+  await saveResetToken(email, resetToken);
+
+  return { resetToken };
+};
+
+export const resetPasswordService = async (input: resetPasswordInput) => {
+  const { email, password, resetToken } = input;
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new ApiError(404, "User not found");
+
+  const valid = await verifyResetToken(email, resetToken);
+  if (!valid) throw new ApiError(400, "Invalid or expired token.");
+
+  const hashed = await bcrypt.hash(password, 10);
+
+  await prisma.user.update({ where: { email }, data: { password: hashed } });
+
+  return { message: "Password reset successfully." };
+};
+
+export const changePasswordService = async (
+  input: changePasswordInput,
+  userId: string,
+) => {
+  const { currentPassword, newPassword } = input;
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new ApiError(404, "User not found.");
+
+  if (!user.password) {
+    throw new ApiError(
+      400,
+      "This account uses Google sign-in. No password to change.",
+    );
+  }
+
+  const valid = await bcrypt.compare(currentPassword, user.password);
+  if (valid) throw new ApiError(400, "Current password is incorrect.");
+
+  const isSame = await bcrypt.compare(newPassword, user.password);
+  if (isSame)
+    throw new ApiError(400, "New password must not match the old password.");
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: newPassword },
+  });
+
+  return { message: "Password successfully changed." };
 };

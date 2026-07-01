@@ -35,3 +35,35 @@ export const otpSchema = z.object({
 export const resendOtpSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email."),
 });
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().min(1, "Email is required.").email("Invalid email."),
+});
+
+export const verifyOtpSchema = z.object({
+  email: z.string().min(1, "Email is required.").email("Invalid email."),
+  otp: z
+    .string()
+    .length(6, "The verification code must be 6 digits")
+    .regex(/^\d+$/, "OTP must contain only digits"),
+});
+
+export const resetPasswordSchema = z.object({
+  email: z.string().min(1, "Email is required.").email("Invalid email."),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must contains 8 characters."),
+  resetToken: z.string().min(1, "reset token is required."),
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must contains 8 characters."),
+  newPassword: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must contains 8 characters."),
+});
