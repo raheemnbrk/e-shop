@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { RefreshCwIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,33 +18,17 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useVerifyOtp } from "@/lib/hooks/auth/useVerifyOtp";
-import { toast } from "sonner";
+import { otpType } from "@/types/authTypes";
+import { useSearchParams } from "next/navigation";
 
 export default function VerifyOtpPage() {
-  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const { submitOtp, isPending, handleResend, isResending } =
-    useVerifyOtp(email);
 
-  useEffect(() => {
-    const stored = sessionStorage.getItem("verify_email");
+  const searchParams = useSearchParams();
+  const type = (searchParams.get("type") as otpType) ?? "register";
 
-    if (!stored) {
-      toast.error("Session expired, please register again");
-      return;
-    }
-
-    setEmail(stored);
-  }, []);
-
-  const handleSubmit = () => {
-    if (otp.length < 6) {
-      toast.error("Please enter the full 6-digit code");
-      return;
-    }
-
-    submitOtp(otp);
-  };
+  const { submitOtp, isPending, handleResend, isResending, email } =
+    useVerifyOtp(type);
 
   return (
     <div className="flex min-h-screen items-center justify-center px-8">
@@ -95,7 +79,7 @@ export default function VerifyOtpPage() {
         <CardFooter className="flex flex-col gap-3">
           <Button
             className="w-full cursor-pointer"
-            onClick={handleSubmit}
+            onClick={() => submitOtp(otp)}
             disabled={isPending || otp.length < 6}
           >
             {isPending ? "Verifying..." : "Verify email"}

@@ -44,6 +44,6 @@ export const verifyResetToken = async (
 ): Promise<Boolean> => {
   const stored = await redis.get(`reset-token:${email}`);
   if (!stored || stored !== token) return false;
-  await redis.del(`reset-token : ${email}`);
+  await redis.del(`reset-token:${email}`);
   return true;
 };

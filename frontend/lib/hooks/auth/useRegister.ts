@@ -15,7 +15,7 @@ export const useRegister = () => {
       const data = await register(input);
       sessionStorage.setItem("verify_email", input.email);
       toast.success(data.message);
-      router.push("/otp-verification");
+      router.push("/otp-verification?type=register");
     } catch (err: any) {
       toast.error(err?.response?.data?.message ?? "Register failed");
     } finally {

@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { Role, User } from "../../generated/prisma";
 import prisma from "../../shared/config/prisma";
 import {
@@ -22,6 +23,7 @@ import {
 import {
   generateOTP,
   saveOtp,
+  saveResetOtp,
   saveResetToken,
   verifyOtp,
   verifyResetOtp,
@@ -213,7 +215,7 @@ export const forgotPasswordService = async (input: forgotPasswordInput) => {
   }
 
   const otp = generateOTP();
-  await saveOtp(email, otp);
+  await saveResetOtp(email, otp);
   await sendOtpEmail(email, otp);
 
   return { message: "Password reset code sent to your email" };
@@ -269,7 +271,7 @@ export const changePasswordService = async (
   }
 
   const valid = await bcrypt.compare(currentPassword, user.password);
-  if (valid) throw new ApiError(400, "Current password is incorrect.");
+  if (!valid) throw new ApiError(400, "Current password is incorrect.");
 
   const isSame = await bcrypt.compare(newPassword, user.password);
   if (isSame)
@@ -279,7 +281,7 @@ export const changePasswordService = async (
 
   await prisma.user.update({
     where: { id: userId },
-    data: { password: newPassword },
+    data: { password: hashed },
   });
 
   return { message: "Password successfully changed." };

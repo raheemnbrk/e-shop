@@ -137,7 +137,7 @@ export const refreshController = async (
 ) => {
   try {
     const { refreshToken } = (req as any).cookies;
-    if (!refreshController)
+    if (!refreshToken)
       throw new ApiError(401, "Unauthorized access. Please login again.");
     const result = await authService.refreshTokenService(refreshToken);
 
@@ -187,7 +187,7 @@ export const forgotPasswordController = async (
   try {
     const input = forgotPasswordSchema.parse(req.body);
 
-    const message = await authService.forgotPasswordService(input);
+    const { message } = await authService.forgotPasswordService(input);
 
     return res.status(200).json({ success: true, message });
   } catch (err) {
@@ -203,7 +203,8 @@ export const verifyResetPasswordController = async (
   try {
     const input = verifyOtpSchema.parse(req.body);
 
-    const resetToken = await authService.verifyResetPasswordOtpService(input);
+    const { resetToken } =
+      await authService.verifyResetPasswordOtpService(input);
 
     return res.status(200).json({ success: true, resetToken });
   } catch (err) {
@@ -219,7 +220,7 @@ export const resetPasswordController = async (
   try {
     const input = resetPasswordSchema.parse(req.body);
 
-    const message = await authService.resetPasswordService(input);
+    const { message } = await authService.resetPasswordService(input);
 
     return res.json({ success: true, message });
   } catch (err) {
@@ -236,7 +237,7 @@ export const changePasswordController = async (
     const input = changePasswordSchema.parse(req.body);
     const { id } = (req as any).user;
 
-    const message = await authService.changePasswordService(input, id);
+    const { message } = await authService.changePasswordService(input, id);
 
     return res.status(200).json({ success: true, message });
   } catch (err) {

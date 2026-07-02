@@ -15,7 +15,7 @@ export const registerSchema = z
       .string()
       .min(1, "Password is required")
       .min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"), // ← matches state + input
+    confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -37,3 +37,22 @@ export const verifyOtpSchema = z.object({
     .length(6, "OTP must be 6 digits")
     .regex(/^\d+$/, "OTP must contain only digits"),
 });
+
+export const forgetPasswordSchema = z.object({
+  email: z.string().min(1, "Email is required.").email("Invalid email."),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    email: z.string().min(1, "Email is required.").email("Invalid email."),
+    password: z
+      .string()
+      .min(1, "Password is required")
+      .min(8, "Password must contains 8 characters."),
+    confirmedPassword: z.string().min(1, "Please confirm your password."),
+    resetToken: z.string().min(1, "reset token is required."),
+  })
+  .refine((data) => data.password === data.confirmedPassword, {
+    message: "Password do not match.",
+    path: ["confirmedPassword"],
+  });

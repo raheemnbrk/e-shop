@@ -1,6 +1,8 @@
 import {
+  forgetPasswordSchema,
   loginSchema,
   registerSchema,
+  resetPasswordSchema,
   verifyOtpSchema,
 } from "@/lib/validators/auth.schema";
 import z from "zod";
@@ -43,3 +45,11 @@ export interface authResponse {
 export interface messageResponse {
   message: string;
 }
+
+export type forgetPasswordInput = z.infer<typeof forgetPasswordSchema>;
+export type resetPasswordInput = Omit<
+  z.infer<typeof resetPasswordSchema>,
+  "confirmedPassword"
+>;
+
+export type otpType = "register" | "reset";

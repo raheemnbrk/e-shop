@@ -1,13 +1,17 @@
 import {
   authResponse,
+  forgetPasswordInput,
   loginInput,
   messageResponse,
   registerInput,
+  resetPasswordInput,
   verifyOtpInput,
 } from "@/types/authTypes";
 import api from "./axios";
 
-export const register = async (input: registerInput): Promise<messageResponse> => {
+export const register = async (
+  input: registerInput,
+): Promise<messageResponse> => {
   const res = await api.post("/auth/register", input);
   return res.data;
 };
@@ -25,6 +29,27 @@ export const verifyOtp = async (
 };
 
 export const resendOtp = async (email: string): Promise<messageResponse> => {
-  const res = await api.post("/auth/resend", {email});
+  const res = await api.post("/auth/resend", { email });
+  return res.data;
+};
+
+export const forgetPassword = async (
+  input: forgetPasswordInput,
+): Promise<messageResponse> => {
+  const res = await api.post("/auth/forgot-password", input);
+  return res.data;
+};
+
+export const verifyResetOtp = async (
+  input: verifyOtpInput,
+): Promise<string> => {
+  const res = await api.post("/auth/verify-reset-otp", input);
+  return res.data.resetToken;
+};
+
+export const resetPassword = async (
+  input: resetPasswordInput,
+): Promise<messageResponse> => {
+  const res = await api.post("/auth/reset-password", input);
   return res.data;
 };
