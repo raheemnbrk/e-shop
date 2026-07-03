@@ -7,7 +7,6 @@ import {
   registerSchema,
   resendOtpSchema,
   resetPasswordSchema,
-  updateProfileSchema,
   verifyOtpSchema,
 } from "../../shared/validations/authValidation";
 import { REFRESH_TOKEN_EXPIRES_MS } from "../../shared/utils/jwt";
@@ -246,36 +245,3 @@ export const changePasswordController = async (
   }
 };
 
-export const getMeController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const id = (req as any).user.id;
-
-    const { user } = await authService.getMeService(id);
-
-    return res.json({ success: true, user });
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const updateProfileController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const id = (req as any).user.id;
-    const input = updateProfileSchema.parse(req.body);
-    const file = req.file;
-
-    const result = await authService.updateProfileService(id, input, file);
-
-    return res.json({ success: true, user: result.user });
-  } catch (err) {
-    next(err);
-  }
-};
