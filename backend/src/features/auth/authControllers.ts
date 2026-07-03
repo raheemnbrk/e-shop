@@ -95,10 +95,19 @@ export const loginController = async (
 
     const result = await authService.loginService(input);
 
+    if (!result.verified) {
+      return res.json({
+        success: true,
+        verified: false,
+        message: "Please verify your email. A new code has been sent.",
+      });
+    }
+
     res.cookie("refreshToken", result.refreshToken, cookiesOptions);
 
     return res.status(200).json({
       success: true,
+      verified: true,
       accessToken: result.accessToken,
       user: result.user,
     });
@@ -244,4 +253,3 @@ export const changePasswordController = async (
     next(err);
   }
 };
-

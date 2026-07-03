@@ -13,12 +13,19 @@ export const useVerifyOtp = (type: otpType) => {
   const router = useRouter();
 
   useEffect(() => {
-    const key = type === "register" ? "verify_email" : "reset_email";
+    const key =
+      type === "register" || type === "login" ? "verify_email" : "reset_email";
     const stored = sessionStorage.getItem(key);
 
     if (!stored) {
       toast.error("Session expired.");
-      router.replace(type === "register" ? "/register" : "/forgot-password");
+      router.replace(
+        type === "register"
+          ? "/register"
+          : type === "login"
+            ? "/login"
+            : "/forgot-password",
+      );
       return;
     }
     setEmail(stored);
@@ -27,7 +34,7 @@ export const useVerifyOtp = (type: otpType) => {
   const submitOtp = async (otp: string) => {
     setIsPending(true);
     try {
-      if (type === "register") {
+      if (type === "register" || type === "login") {
         const data = await verifyOtp({ email, otp });
         setAuth(data.user, data.accessToken);
         sessionStorage.removeItem("verify_email");

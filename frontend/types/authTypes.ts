@@ -42,6 +42,10 @@ export interface authResponse {
   user: User;
 }
 
+export type loginResponse =
+  | { verified: false; message: string }
+  | { verified: true; accessToken: string; user: User };
+
 export interface messageResponse {
   message: string;
 }
@@ -52,4 +56,4 @@ export type resetPasswordInput = Omit<
   "confirmedPassword"
 >;
 
-export type otpType = "register" | "reset";
+export type otpType = "register" | "reset" | "login";

@@ -95,7 +95,7 @@ export const resendOtpService = async (input: resendOtpInout) => {
   const { email } = input;
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new ApiError(404, "User not found");
-  if (user.isVerified) throw new ApiError(400, "Email is already in use.");
+  if (user.isVerified) throw new ApiError(400, "Email is already verified.");
 
   const otp = generateOTP();
   await saveOtp(email, otp);
@@ -104,7 +104,9 @@ export const resendOtpService = async (input: resendOtpInout) => {
   return { message: "New verification code sent." };
 };
 
-export const loginService = async (input: loginInput) => {
+export const loginService = async (
+  input: loginInput,
+): Promise<AuthResponse | { verified: false }> => {
   const { email, password } = input;
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new ApiError(401, "Invalid credentials.");
@@ -118,6 +120,14 @@ export const loginService = async (input: loginInput) => {
 
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) throw new ApiError(401, "Invalid credentials.");
+
+  if (!user.isVerified) {
+    const otp = generateOTP();
+    await saveOtp(email, otp);
+    await sendOtpEmail(email, otp);
+
+    return { verified: false };
+  }
 
   const payload: Payload = { id: user.id, role: user.role };
 
@@ -133,10 +143,11 @@ export const loginService = async (input: loginInput) => {
   });
 
   return {
+    verified: true,
     accessToken,
     refreshToken,
     user,
-  } as AuthResponse;
+  };
 };
 
 export const logoutService = async (token: string) => {
@@ -151,7 +162,7 @@ export const refreshTokenService = async (token: string) => {
     where: { token },
     include: { user: true },
   });
-  if (!stored || stored.expiredAt < new Date())
+  if (!stored || stored.isRevoked || stored.expiredAt < new Date())
     throw new ApiError(401, "Unauthorized access. Please login again.");
 
   const payload: Payload = { id: stored.user.id, role: stored.user.role };
@@ -173,7 +184,7 @@ export const refreshTokenService = async (token: string) => {
   });
 
   await prisma.refreshToken.deleteMany({
-    where: { id: stored.userId, expiredAt: { lt: new Date() } },
+    where: { userId: stored.userId, expiredAt: { lt: new Date() } },
   });
 
   const user = await prisma.user.findUnique({
@@ -286,5 +297,3 @@ export const changePasswordService = async (
 
   return { message: "Password successfully changed." };
 };
-
-

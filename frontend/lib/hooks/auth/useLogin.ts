@@ -14,10 +14,16 @@ export const useLogin = () => {
     setIsPending(true);
     try {
       const data = await login(input);
+      if (!data.verified) {
+        sessionStorage.setItem("verify_email", input.email);
+        toast.info(data.message);
+        router.push("/otp-verification?type=login");
+        return;
+      }
       setAuth(data.user, data.accessToken);
       toast.success("Welcome back!");
       router.push("/");
-    } catch (err : any) {
+    } catch (err: any) {
       toast.error(err?.response?.data?.message ?? "Login failed");
     } finally {
       setIsPending(false);

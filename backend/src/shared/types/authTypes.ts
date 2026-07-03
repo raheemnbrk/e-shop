@@ -23,6 +23,7 @@ export type otpInput = z.infer<typeof otpSchema>;
 export type resendOtpInout = z.infer<typeof resendOtpSchema>;
 
 export interface AuthResponse {
+  verified?: true;
   accessToken: string;
   refreshToken: string;
   user: Omit<User, "password">;
@@ -32,5 +33,3 @@ export type forgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type verifyResetOtpInput = z.infer<typeof verifyOtpSchema>;
 export type resetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type changePasswordInput = z.infer<typeof changePasswordSchema>;
-
-

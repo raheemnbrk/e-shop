@@ -2,6 +2,7 @@ import {
   authResponse,
   forgetPasswordInput,
   loginInput,
+  loginResponse,
   messageResponse,
   registerInput,
   resetPasswordInput,
@@ -16,7 +17,7 @@ export const register = async (
   return res.data;
 };
 
-export const login = async (input: loginInput): Promise<authResponse> => {
+export const login = async (input: loginInput): Promise<loginResponse> => {
   const res = await api.post("/auth/login", input);
   return res.data;
 };
