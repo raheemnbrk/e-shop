@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   changePasswordController,
   forgotPasswordController,
+  getMeController,
   googleAuthController,
   googleCallbackController,
   loginController,
@@ -10,6 +11,7 @@ import {
   registerController,
   resendOtpController,
   resetPasswordController,
+  updateProfileController,
   verifyOtpController,
   verifyResetPasswordController,
 } from "./authControllers";
@@ -21,6 +23,7 @@ import {
   verifyOtpLimiter,
 } from "../../shared/middlewares/authLimiter";
 import { authenticate } from "../../shared/middlewares/authenticate";
+import { upload } from "../../shared/config/multer";
 
 const authRouter = Router();
 
@@ -44,5 +47,12 @@ authRouter.post(
 );
 authRouter.post("/reset-password", resetPasswordController);
 authRouter.post("/change-password", authenticate, changePasswordController);
+authRouter.get("/me", authenticate, getMeController);
+authRouter.post(
+  "/update-profile",
+  authenticate,
+  upload.single("image"),
+  updateProfileController,
+);
 
 export default authRouter;

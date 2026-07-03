@@ -8,6 +8,7 @@ import {
   registerSchema,
   resendOtpSchema,
   resetPasswordSchema,
+  updateProfileSchema,
   verifyOtpSchema,
 } from "../validations/authValidation";
 import z from "zod";
@@ -32,3 +33,5 @@ export type forgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type verifyResetOtpInput = z.infer<typeof verifyOtpSchema>;
 export type resetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type changePasswordInput = z.infer<typeof changePasswordSchema>;
+
+export type updateProfileInput = z.infer<typeof updateProfileSchema>;

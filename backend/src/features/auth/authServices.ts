@@ -11,6 +11,7 @@ import {
   registerInput,
   resendOtpInout,
   resetPasswordInput,
+  updateProfileInput,
   verifyResetOtpInput,
 } from "../../shared/types/authTypes";
 import { ApiError } from "../../shared/utils/apiError";
@@ -30,6 +31,7 @@ import {
   verifyResetToken,
 } from "../../shared/utils/otp";
 import { sendOtpEmail } from "../../shared/utils/email";
+import { uploadImage } from "../../shared/utils/uploadImage";
 
 export const registerService = async (input: registerInput) => {
   const { firstName, lastName, email, password } = input;
@@ -285,4 +287,45 @@ export const changePasswordService = async (
   });
 
   return { message: "Password successfully changed." };
+};
+
+export const getMeService = async (id: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id },
+    omit: { password: true },
+  });
+  if (!user) throw new ApiError(404, "User not found.");
+
+  return { user };
+};
+
+export const updateProfileService = async (
+  id: string,
+  input: updateProfileInput,
+  file?: Express.Multer.File,
+) => {
+  let user = await prisma.user.findUnique({
+    where: { id },
+    omit: { password: true },
+  });
+  if (!user) throw new ApiError(404, "User not found.");
+
+  const { firstName, lastName, phoneNumber } = input;
+  let imageURl: string | undefined;
+  if (file) {
+    const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+    imageURl = await uploadImage(base64, `e-shop/users`);
+  }
+
+  user = await prisma.user.update({
+    where: { id },
+    data: {
+      ...(firstName && { firstName }),
+      ...(lastName && { lastName }),
+      ...(phoneNumber && { phoneNumber }),
+      ...(imageURl && { image: imageURl }),
+    },
+  });
+
+  return { user };
 };

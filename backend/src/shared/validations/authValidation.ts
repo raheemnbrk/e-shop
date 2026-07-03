@@ -4,7 +4,7 @@ export const registerSchema = z.object({
   firstName: z
     .string()
     .min(1, "First name is required.")
-    .min(3, "FirstName must br at least 3 characters."),
+    .min(3, "FirstName must be at least 3 characters."),
   lastName: z
     .string()
     .min(1, "Last name is required.")
@@ -66,4 +66,23 @@ export const changePasswordSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(8, "Password must contains 8 characters."),
+});
+
+export const updateProfileSchema = z.object({
+  firstName: z
+    .string()
+    .min(3, "first name must be at least 3 characters.")
+    .optional(),
+  lastName: z
+    .string()
+    .min(3, "last name must be at least 3 characters.")
+    .optional(),
+  phoneNumber: z
+    .string()
+    .regex(
+      /^(05|06|07)\d{8}$/,
+      "Phone number must be a valid Algerian mobile number",
+    )
+    .length(10, "phone number must contains 10 digits.")
+    .optional(),
 });
