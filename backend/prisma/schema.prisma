@@ -26,6 +26,7 @@ model User{
   addresses           Address[]
   refreshTokens       RefreshToken[] 
   account             Account[]
+  Seller              Seller?
 }
 
 enum Role{
@@ -74,4 +75,20 @@ model Account{
   createdAt           DateTime  @default(now())
 
   @@unique([provider , providerAccountId])
+}
+
+model Seller{
+  userId        String    @id
+  user          User      @relation(fields:[userId] , references : [id] , onDelete : Cascade)
+  storeName     String    
+  storeSlug     String    @unique
+  description   String
+  logo          String
+  status        SellerStatus  @default(PENDING)
+}
+
+enum SellerStatus{
+  REJECTED
+  PENDING
+  APPROVED
 }

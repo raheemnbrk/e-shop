@@ -5,6 +5,7 @@ import { errorHandler } from "./shared/middlewares/errorHandler";
 import cors from "cors";
 import passport from "./shared/config/passport";
 import userRouter from "./features/user/userRoutes";
+import sellerRouter from "./features/seller/sellerRouter";
 
 const app = express();
 
@@ -28,7 +29,8 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use("/api/auth", authRouter);
-app.use("/api/user" , userRouter)
+app.use("/api/user", userRouter);
+app.use("/api/seller", sellerRouter);
 
 app.use(errorHandler);
 
