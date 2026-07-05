@@ -19,7 +19,7 @@ import {
   registerLimiter,
   resendOtpLimiter,
   verifyOtpLimiter,
-} from "../../shared/middlewares/authLimiter";
+} from "../../shared/middlewares/limiters/authLimiter";
 import { authenticate } from "../../shared/middlewares/authenticate";
 
 const authRouter = Router();

@@ -1,4 +1,4 @@
-import { createLimiter } from "../utils/createLimiter";
+import { createLimiter } from "../../utils/createLimiter";
 
 export const registerLimiter = createLimiter(
   5,
@@ -29,4 +29,3 @@ export const forgetPasswordLimiter = createLimiter(
   60 * 60 * 1000,
   "Too many password reset attempts, please try again in an hour.",
 );
-

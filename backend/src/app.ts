@@ -6,6 +6,7 @@ import cors from "cors";
 import passport from "./shared/config/passport";
 import userRouter from "./features/user/userRoutes";
 import sellerRouter from "./features/seller/sellerRouter";
+import adminRouter from "./features/admin/adminRoutes";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(passport.initialize());
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/seller", sellerRouter);
+app.use("/api/admin", adminRouter);
 
 app.use(errorHandler);
 
