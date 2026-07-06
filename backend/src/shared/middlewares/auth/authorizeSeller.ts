@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../utils/apiError";
-import prisma from "../config/prisma";
+import { ApiError } from "../../utils/apiError";
+import prisma from "../../config/prisma";
 
 export const authorizeSeller = async (
   req: Request,

@@ -1,5 +1,9 @@
 import prisma from "../../shared/config/prisma";
+import { addCategoryInput } from "../../shared/types/categoryTypes";
 import { ApiError } from "../../shared/utils/apiError";
+import slugify from "slugify";
+import { takenSlug } from "../../shared/utils/logic/verifySlug";
+import { uploadImage } from "../../shared/utils/uploadImage";
 
 export const approveSellerServices = async (userId: string) => {
   const seller = await prisma.seller.findUnique({ where: { userId } });
@@ -36,4 +40,32 @@ export const rejectSellerServices = async (userId: string) => {
   });
 
   return { message: "Seller rejected successfully." };
+};
+
+export const addCategoryServices = async (
+  input: addCategoryInput,
+  file?: Express.Multer.File,
+) => {
+  let slug: string = slugify(input.name, { lower: true, strict: true });
+
+  slug = await takenSlug(slug, "category");
+
+  let image: string | undefined;
+
+  if (file) {
+    const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+    image = await uploadImage(base64, "e-shop/categories");
+  }
+
+  await prisma.category.create({
+    data: {
+      name: input.name,
+      parentId: input.parentId ?? null,
+      slug,
+      image,
+    },
+  });
+
+  return { message: "Category created successfully." };
 };

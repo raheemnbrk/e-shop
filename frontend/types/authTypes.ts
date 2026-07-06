@@ -46,9 +46,7 @@ export type loginResponse =
   | { verified: false; message: string }
   | { verified: true; accessToken: string; user: User };
 
-export interface messageResponse {
-  message: string;
-}
+
 
 export type forgetPasswordInput = z.infer<typeof forgetPasswordSchema>;
 export type resetPasswordInput = Omit<

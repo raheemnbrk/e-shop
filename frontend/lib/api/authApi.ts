@@ -3,7 +3,6 @@ import {
   forgetPasswordInput,
   loginInput,
   loginResponse,
-  messageResponse,
   registerInput,
   resetPasswordInput,
   verifyOtpInput,
@@ -12,7 +11,7 @@ import api from "./axios";
 
 export const register = async (
   input: registerInput,
-): Promise<messageResponse> => {
+): Promise<MessageResponse> => {
   const res = await api.post("/auth/register", input);
   return res.data;
 };
@@ -29,14 +28,14 @@ export const verifyOtp = async (
   return res.data;
 };
 
-export const resendOtp = async (email: string): Promise<messageResponse> => {
+export const resendOtp = async (email: string): Promise<MessageResponse> => {
   const res = await api.post("/auth/resend", { email });
   return res.data;
 };
 
 export const forgetPassword = async (
   input: forgetPasswordInput,
-): Promise<messageResponse> => {
+): Promise<MessageResponse> => {
   const res = await api.post("/auth/forgot-password", input);
   return res.data;
 };
@@ -50,7 +49,7 @@ export const verifyResetOtp = async (
 
 export const resetPassword = async (
   input: resetPasswordInput,
-): Promise<messageResponse> => {
+): Promise<MessageResponse> => {
   const res = await api.post("/auth/reset-password", input);
   return res.data;
 };

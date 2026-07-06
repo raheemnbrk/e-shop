@@ -5,12 +5,24 @@ export const applySellerSchema = z.object({
     .string()
     .min(1, "Store Name is required.")
     .min(3, "Store Name must contains at least 3 characters."),
-  storeSlug: z
-    .string()
-    .min(1, "Store slung is required.")
-    .min(3, "Store slung must contain at least 3 characters."),
   description: z
     .string()
     .min(1, "Description is required.")
     .min(10, "Description must contains at least 10 characters."),
+});
+
+export const createProductSchema = z.object({
+  name: z.string().min(1, "Product name is required."),
+  description: z
+    .string()
+    .min(1, "Product description is required.")
+    .min(10, "Product name must be at least 10 characters."),
+  price: z
+    .number({ error: "Price must be a number." })
+    .positive("Price must be greater than 0."),
+  stock: z
+    .number({ error: "Stock must be a number." })
+    .int({ error: "Stock must be a whole number." })
+    .positive("Stock must be greater than 0."),
+  categoryId: z.string().min(1, "Category is required."),
 });

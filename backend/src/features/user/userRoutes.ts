@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { upload } from "../../shared/config/multer";
-import { authenticate } from "../../shared/middlewares/authenticate";
+import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
   addAddressController,
   deleteAddressController,

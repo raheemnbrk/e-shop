@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../utils/apiError";
-import { verifyAccessToken } from "../utils/jwt";
+import { ApiError } from "../../utils/apiError";
+import { verifyAccessToken } from "../../utils/jwt";
 
 export const authenticate = async (
   req: Request,
