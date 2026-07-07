@@ -28,11 +28,14 @@ export const createProductSchema = z.object({
 });
 
 export const updateProductSchema = z.object({
-  name: z.string().optional(),
-  description: z.string().optional(),
+  name: z
+    .string()
+    .min(3, "name must at least contain 3 characters.")
+    .optional(),
+  description: z.string().min(10, "description must at least contain 10 characters.").optional(),
   price: z
     .number({ error: "price must be a number." })
-    .positive("pirce must be greater than 0.")
+    .positive("price must be greater than 0.")
     .optional(),
   stock: z
     .number({ error: "stock must be a number." })
