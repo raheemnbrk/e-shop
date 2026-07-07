@@ -5,9 +5,6 @@ import {
   addAddressController,
   deleteAddressController,
   getAllAddressesController,
-  getAllProductsController,
-  getCategoriesController,
-  getCategoryBySlugController,
   getMeController,
   updateAddressController,
   updateProfileController,
@@ -26,8 +23,6 @@ userRouter.get("/addresses", authenticate, getAllAddressesController);
 userRouter.post("/add-address", authenticate, addAddressController);
 userRouter.patch("/update-address/:id", authenticate, updateAddressController);
 userRouter.delete("/delete-address/:id", authenticate, deleteAddressController);
-userRouter.get("/products", getAllProductsController);
-userRouter.get("/categories", getCategoriesController);
-userRouter.get("/categories/:slug", getCategoryBySlugController);
+
 
 export default userRouter;

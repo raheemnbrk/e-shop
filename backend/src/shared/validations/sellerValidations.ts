@@ -26,3 +26,18 @@ export const createProductSchema = z.object({
     .positive("Stock must be greater than 0."),
   categoryId: z.string().min(1, "Category is required."),
 });
+
+export const updateProductSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  price: z
+    .number({ error: "price must be a number." })
+    .positive("pirce must be greater than 0.")
+    .optional(),
+  stock: z
+    .number({ error: "stock must be a number." })
+    .int({ error: "Stock must be a whole number." })
+    .positive("Stock must be greater than 0.")
+    .optional(),
+  categoryId: z.string().optional(),
+});

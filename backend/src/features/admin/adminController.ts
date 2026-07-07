@@ -35,20 +35,4 @@ export const rejectSellerController = async (
   }
 };
 
-export const createCategoryController = async (
-  req: Request<{}, {}, addCategoryInput>,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const input = addCategorySchema.parse(req.body);
 
-    const file = req.file as Express.Multer.File;
-
-    const { message } = await adminServices.addCategoryServices(input, file);
-
-    return res.status(201).json({ success: true, message });
-  } catch (err) {
-    next(err);
-  }
-};

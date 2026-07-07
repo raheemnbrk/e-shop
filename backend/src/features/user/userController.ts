@@ -112,46 +112,6 @@ export const deleteAddressController = async (
   }
 };
 
-export const getCategoriesController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const categories = await userServices.getAllCategoriesServices();
-    return res.status(200).json({ success: true, categories });
-  } catch (err) {
-    next(err);
-  }
-};
 
-export const getCategoryBySlugController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { slug } = req.params as { slug: string };
 
-    const category = await userServices.getCategoryBySlugServices(slug);
 
-    return res.status(200).json({ success: true, category });
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const getAllProductsController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  console.log("products controller hit")
-  try {
-    const products = await userServices.getAllProductsService();
-
-    return res.status(200).json({ success: true, products });
-  } catch (err) {
-    next(err);
-  }
-};

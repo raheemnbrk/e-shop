@@ -69,38 +69,4 @@ export const applySellerService = async (
   };
 };
 
-export const createProductService = async (
-  sellerId: string,
-  input: createProductInput,
-  files: Express.Multer.File[],
-) => {
-  let slug: string = slugify(input.name, { lower: true, strict: true });
-  slug = await takenSlug(slug, "product");
 
-  const images = await Promise.all(
-    files.map(async (file) => {
-      const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
-      return await uploadImage(base64, "e-shop/products");
-    }),
-  );
-
-  await prisma.product.create({
-    data: {
-      ...input,
-      slug,
-      images,
-      sellerId,
-    },
-  });
-
-  return { message: "Product created successfully." };
-};
-
-export const deleteProductService = async (id: string, sellerId: string) => {
-  const product = await prisma.product.findFirst({ where: { id, sellerId } });
-  if (!product) throw new ApiError(404, "Product not found.");
-
-  await prisma.product.delete({ where: { id } });
-
-  return { message: "Product deleted successfully." };
-};

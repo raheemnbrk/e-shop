@@ -7,6 +7,8 @@ import passport from "./shared/config/passport";
 import userRouter from "./features/user/userRoutes";
 import sellerRouter from "./features/seller/sellerRouter";
 import adminRouter from "./features/admin/adminRoutes";
+import productRouter from "./features/products/productRoutes";
+import categoryRouter from "./features/category/categoryRoutes";
 
 const app = express();
 
@@ -29,12 +31,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
 
-app.get("/ping", (req, res) => res.json({ ok: true }))
-
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/seller", sellerRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/product", productRouter);
+app.use("/api/category", categoryRouter);
 
 app.use(errorHandler);
 
