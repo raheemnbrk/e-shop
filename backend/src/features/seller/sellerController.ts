@@ -38,7 +38,7 @@ export const createProductController = async (
 ) => {
   try {
     const sellerId = (req as any).seller.id as string;
-    console.log(req.body)
+    console.log(req.body);
     const input = createProductSchema.parse({
       ...req.body,
       price: Number(req.body.price),
@@ -55,6 +55,24 @@ export const createProductController = async (
       input,
       files,
     );
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteProductController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params as { id: string };
+
+    const sellerId = (req as any).seller.id;
+
+    const { message } = await sellerServices.deleteProductService(id , sellerId);
 
     return res.status(200).json({ success: true, message });
   } catch (err) {

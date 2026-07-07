@@ -3,6 +3,7 @@ import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
   applySellerController,
   createProductController,
+  deleteProductController,
 } from "./sellerController";
 import { upload } from "../../shared/config/multer";
 import { applyLimiter } from "../../shared/middlewares/limiters/sellerLimiter";
@@ -24,6 +25,13 @@ sellerRouter.post(
   authorizeSeller,
   upload.array("images", 5),
   createProductController,
+);
+
+sellerRouter.delete(
+  "/product/delete/:id",
+  authenticate,
+  authorizeSeller,
+  deleteProductController,
 );
 
 export default sellerRouter;

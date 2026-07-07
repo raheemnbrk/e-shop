@@ -107,3 +107,38 @@ export const deleteAddress = async (userId: string, addressId: string) => {
 
   return { message: "Address deleted successfully." };
 };
+
+export const getAllCategoriesServices = async () => {
+  const categories = await prisma.category.findMany({
+    where: { parentId: null },
+    include: { children: true },
+    orderBy: { name: "asc" },
+  });
+
+  return categories;
+};
+
+export const getCategoryBySlugServices = async (slug: string) => {
+  const category = await prisma.category.findUnique({
+    where: { slug },
+    include: {
+      children: true,
+      products: { where: { available: true }, orderBy: { createdAt: "desc" } },
+    },
+  });
+
+  if (!category) throw new ApiError(404, "Category not found.");
+
+  return category;
+};
+
+export const getAllProductsService = async () => {
+  const products = await prisma.product.findMany({
+    where: { available: true },
+    include: { category: true, seller: true },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return products;
+};
+

@@ -29,6 +29,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
 
+app.get("/ping", (req, res) => res.json({ ok: true }))
+
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/seller", sellerRouter);

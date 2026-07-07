@@ -4,6 +4,7 @@ import {
   createProductInput,
 } from "../../shared/types/sellerTypes";
 import { ApiError } from "../../shared/utils/apiError";
+import { takenSlug } from "../../shared/utils/logic/verifySlug";
 import { uploadImage } from "../../shared/utils/uploadImage";
 import slugify from "slugify";
 
@@ -73,9 +74,8 @@ export const createProductService = async (
   input: createProductInput,
   files: Express.Multer.File[],
 ) => {
-  let slug = slugify(input.name, { lower: true, strict: true });
-  const existing = await prisma.product.findFirst({ where: { slug } });
-  if (existing) slug = `${slug}-${new Date()}`;
+  let slug: string = slugify(input.name, { lower: true, strict: true });
+  slug = await takenSlug(slug, "product");
 
   const images = await Promise.all(
     files.map(async (file) => {
@@ -94,4 +94,13 @@ export const createProductService = async (
   });
 
   return { message: "Product created successfully." };
+};
+
+export const deleteProductService = async (id: string, sellerId: string) => {
+  const product = await prisma.product.findFirst({ where: { id, sellerId } });
+  if (!product) throw new ApiError(404, "Product not found.");
+
+  await prisma.product.delete({ where: { id } });
+
+  return { message: "Product deleted successfully." };
 };
