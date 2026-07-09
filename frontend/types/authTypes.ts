@@ -10,7 +10,7 @@ import z from "zod";
 export interface User {
   id: string;
   firstName: string;
-  LastName: string;
+  lastName: string;
   email: string;
   image: string;
   role: "ADMIN" | "SELLER" | "CUSTOMER";
@@ -23,6 +23,7 @@ export interface AuthStore {
   user: User | null;
   accessToken: string | null;
   setAuth: (user: User, accessToken: string) => void;
+  setUser: (user: User) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
   setAccessToken: (token: string) => void;
@@ -45,8 +46,6 @@ export interface authResponse {
 export type loginResponse =
   | { verified: false; message: string }
   | { verified: true; accessToken: string; user: User };
-
-
 
 export type forgetPasswordInput = z.infer<typeof forgetPasswordSchema>;
 export type resetPasswordInput = Omit<

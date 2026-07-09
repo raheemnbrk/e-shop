@@ -1,5 +1,5 @@
+import { ShoppingBag } from "lucide-react";
 import Image from "next/image";
-import { Heart } from "lucide-react";
 
 export default function AuthLayout({ children }: Children) {
   return (
@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: Children) {
         />
         <div className="relative z-10 flex items-center gap-2">
           <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center">
-            <Heart className="w-3.5 h-3.5 text-white fill-white" />
+            <ShoppingBag className="w-3.5 h-3.5 text-white fill-white" />
           </div>
           <span className="text-white font-semibold text-sm tracking-tight">
             e-shop

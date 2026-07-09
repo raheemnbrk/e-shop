@@ -1,4 +1,4 @@
-import { sellerApplicationInput } from "@/types/sellerInput";
+import { sellerApplicationInput } from "@/types/sellerTypes";
 import api from "./axios";
 
 export const applySeller = async (input: sellerApplicationInput) => {

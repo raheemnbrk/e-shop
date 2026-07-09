@@ -9,6 +9,7 @@ import {
   createProductInput,
   updateProductInput,
 } from "../../shared/types/sellerTypes";
+import { productQuery } from "../../shared/types/productTypes";
 
 export const createProductController = async (
   req: Request<{}, {}, createProductInput>,
@@ -42,12 +43,17 @@ export const createProductController = async (
 };
 
 export const getAllProductsController = async (
-  req: Request,
+  req: Request<{}, {}, {}, productQuery>,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const products = await productServices.getAllProductsService();
+    const { search, filter } = req.query;
+
+    const products = await productServices.getAllProductsService(
+      search,
+      filter,
+    );
 
     return res.status(200).json({ success: true, products });
   } catch (err) {

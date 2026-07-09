@@ -1,16 +1,15 @@
 import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
+
+import { upload } from "../../shared/config/multer";
 import {
   createCategoryController,
   deleteCategoryController,
-  updateCategoryController,
-} from "./categoryController";
-import { upload } from "../../shared/config/multer";
-import {
   getCategoriesController,
   getCategoryBySlugController,
-} from "./categoryController";
+  updateCategoryController,
+} from "./CategoryController";
 
 const categoryRouter = Router();
 

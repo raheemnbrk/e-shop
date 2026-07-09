@@ -5,6 +5,7 @@ import {
   loginResponse,
   registerInput,
   resetPasswordInput,
+  User,
   verifyOtpInput,
 } from "@/types/authTypes";
 import api from "./axios";
@@ -52,4 +53,9 @@ export const resetPassword = async (
 ): Promise<MessageResponse> => {
   const res = await api.post("/auth/reset-password", input);
   return res.data;
+};
+
+export const getMe = async (): Promise<User> => {
+  const res = await api.get("/user/me");
+  return res.data.user;
 };

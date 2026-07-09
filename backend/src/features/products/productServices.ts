@@ -35,11 +35,24 @@ export const createProductService = async (
   return { message: "Product created successfully." };
 };
 
-export const getAllProductsService = async () => {
+export const getAllProductsService = async (
+  search?: string,
+  filter?: string,
+) => {
+  const orderBy =
+    filter === "lower price"
+      ? { price: "asc" as const }
+      : filter === "higher price"
+        ? { price: "desc" as const }
+        : filter === "name"
+          ? { name: "asc" as const }
+          : { createdAt: "desc" as const };
   const products = await prisma.product.findMany({
-    where: { available: true },
-    include: { category: true, seller: true },
-    orderBy: { createdAt: "desc" },
+    where: {
+      available: true,
+      ...(search && { name: { contains: search, mode: "insensitive" } }),
+    },
+    orderBy,
   });
 
   return products;
@@ -55,7 +68,10 @@ export const deleteProductService = async (id: string, sellerId: string) => {
 };
 
 export const getSingleProductServices = async (slug: string) => {
-  const product = await prisma.product.findUnique({ where: { slug } });
+  const product = await prisma.product.findUnique({
+    where: { slug },
+    include: { category: true, seller: true },
+  });
   if (!product) throw new ApiError(404, "Product not found.");
 
   return product;
