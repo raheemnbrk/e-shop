@@ -88,6 +88,7 @@ export const getSingleProductServices = async (slug: string) => {
       name: true,
       slug: true,
       price: true,
+      discount: true,
       stock: true,
       images: true,
       description: true,
@@ -164,4 +165,28 @@ export const toggleAvailabilityServices = async (
     : "You product is available now.";
 
   return { message };
+};
+
+export const getRelatedProductsService = async (slug: string) => {
+  const product = await prisma.product.findUnique({ where: { slug } });
+  if (!product) throw new ApiError(404, "Product not found.");
+
+  const relatedProducts = await prisma.product.findMany({
+    where: {
+      categoryId: product.categoryId,
+      NOT: { id: product.id },
+      available: true,
+    },
+    select: {
+      id: true,
+      slug: true,
+      images: true,
+      price: true,
+      discount: true,
+      name: true,
+      category: { select: { name: true } },
+    },
+  });
+
+  return relatedProducts;
 };

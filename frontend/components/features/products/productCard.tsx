@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { Product } from "@/types/productTypes";
 
@@ -13,10 +12,9 @@ export default function ProductCard({ product }: { product: Product }) {
           <Heart className="h-4 w-4" />
         </button>
 
-        <Image
+        <img
           src={product.images[0]}
           alt={product.name}
-          fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>

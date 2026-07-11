@@ -4,6 +4,7 @@ import {
   createProductController,
   deleteProductController,
   getAllProductsController,
+  getRelatedProductsController,
   getSingleProductController,
   toggleAvailabilityController,
   updateProductController,
@@ -44,6 +45,8 @@ productRouter.patch(
   authorizeSeller,
   toggleAvailabilityController,
 );
+
+productRouter.get("/related/:slug", getRelatedProductsController);
 
 productRouter.get("/:slug", getSingleProductController);
 

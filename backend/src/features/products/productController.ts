@@ -147,3 +147,20 @@ export const toggleAvailabilityController = async (
     next(err);
   }
 };
+
+export const getRelatedProductsController = async (
+  req: Request<{ slug: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { slug } = req.params;
+
+    const relatedProducts =
+      await productServices.getRelatedProductsService(slug);
+
+    return res.status(200).json({ success: true, relatedProducts });
+  } catch (err) {
+    next(err);
+  }
+};

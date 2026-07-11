@@ -10,3 +10,8 @@ export const getSingleProduct = async (slug: string): Promise<Product> => {
   const res = await api.get(`/product/${slug}`);
   return res.data.product;
 };
+
+export const getRelatedProducts = async (slug: string): Promise<Product[]> => {
+  const res = await api.get(`/product/related/${slug}`);
+  return res.data.relatedProducts;
+};
