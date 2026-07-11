@@ -9,15 +9,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLogout } from "@/lib/hooks/auth/useLogout";
 import { User } from "@/types/authTypes";
 
 export function DropdownMenuProfile({ user }: { user: User }) {
+  const { handleLogout } = useLogout();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold uppercase text-primary cursor-pointer">
-          {user?.lastName[0]}
           {user?.firstName[0]}
+          {user?.lastName[0]}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-2 mt-2 bg-card dark:bg-dark-card border-border dark:border-dark-border">
@@ -33,7 +35,10 @@ export function DropdownMenuProfile({ user }: { user: User }) {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-border dark:bg-dark-border" />
-        <DropdownMenuItem className="cursor-pointer text-red-600">
+        <DropdownMenuItem
+          className="cursor-pointer text-red-600"
+          onClick={handleLogout}
+        >
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

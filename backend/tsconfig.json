@@ -16,5 +16,9 @@
     "prisma.config.ts",
     "server.ts",
     "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
   ]
 }

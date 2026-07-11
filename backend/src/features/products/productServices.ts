@@ -52,6 +52,19 @@ export const getAllProductsService = async (
       available: true,
       ...(search && { name: { contains: search, mode: "insensitive" } }),
     },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      price: true,
+      stock: true,
+      images: true,
+      available: true,
+      description: true,
+      createdAt: true,
+      seller: { select: { storeName: true, storeSlug: true, logo: true } },
+      category: { select: { name: true, slug: true, image: true } },
+    },
     orderBy,
   });
 
@@ -70,7 +83,28 @@ export const deleteProductService = async (id: string, sellerId: string) => {
 export const getSingleProductServices = async (slug: string) => {
   const product = await prisma.product.findUnique({
     where: { slug },
-    include: { category: true, seller: true },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      price: true,
+      stock: true,
+      images: true,
+      description: true,
+      available: true,
+      createdAt: true,
+      category: { select: { name: true, slug: true, image: true } },
+      seller: { select: { storeName: true, storeSlug: true, logo: true } },
+      reviews: {
+        select: {
+          rating: true,
+          comment: true,
+          createdAt: true,
+          user: { select: { firstName: true, lastName: true, image: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      },
+    },
   });
   if (!product) throw new ApiError(404, "Product not found.");
 

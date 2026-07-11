@@ -9,6 +9,7 @@ import sellerRouter from "./features/seller/sellerRouter";
 import adminRouter from "./features/admin/adminRoutes";
 import productRouter from "./features/products/productRoutes";
 import categoryRouter from "./features/category/categoryRoutes";
+import reviewRouter from "./features/review/reviewRoutes";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/api/seller", sellerRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/product", productRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/review", reviewRouter);
 
 app.use(errorHandler);
 

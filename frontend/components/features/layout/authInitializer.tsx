@@ -1,21 +1,27 @@
 "use client";
 
-import { useGetMe } from "@/lib/hooks/auth/usGetMe";
+import { getMe } from "@/lib/api/authApi";
+import { refreshToken } from "@/lib/hooks/auth/useRefreshToken";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useEffect } from "react";
 
 export default function AuthInitializer() {
-  const { setUser, setLoading } = useAuthStore();
-  const { data, isSuccess, isError } = useGetMe();
+  const { setUser, setLoading, setAccessToken } = useAuthStore();
 
   useEffect(() => {
-    if (isSuccess && data) {
-      setUser(data);
-    }
-    if (isSuccess || isError) {
-      setLoading(false);
-    }
-  }, [isSuccess, isError, data]);
+    const init = async () => {
+      try {
+        const { accessToken } = await refreshToken();
+        setAccessToken(accessToken);
+        const user = await getMe();
+        setUser(user);
+      } catch {
+      } finally {
+        setLoading(false);
+      }
+    };
+    init();
+  }, []); 
 
   return null;
 }

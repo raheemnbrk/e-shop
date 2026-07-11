@@ -27,6 +27,7 @@ model User{
   refreshTokens       RefreshToken[] 
   account             Account[]
   Seller              Seller?
+  reviews             Review[]
 }
 
 enum Role{
@@ -102,6 +103,7 @@ model Product{
   description     String 
   price           Float
   stock           Int      @default(0)
+  discount        Int      @default(0)
   images          String[]
   available       Boolean  @default(true)
 
@@ -112,7 +114,9 @@ model Product{
   seller      Seller   @relation(fields: [sellerId], references: [userId], onDelete: Cascade)
 
   createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt()      
+  updatedAt       DateTime       @updatedAt()  
+
+  reviews         Review[]    
 }
 
 model Category {
@@ -125,4 +129,20 @@ model Category {
   children      Category[] @relation("CategoryTree")
   products      Product[]
   createdAt     DateTime   @default(now())
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade) // was [userId]
+
+  @@unique([userId, productId])
 }
