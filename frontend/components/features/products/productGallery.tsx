@@ -7,7 +7,7 @@ export default function ProductGallery({ product }: { product: Product }) {
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
 
   return (
-    <div className="flex flex-col gap-3 md:flex-row">
+    <div className="flex flex-col gap-4 md:flex-row">
       <div className="order-2 flex gap-2 overflow-x-auto md:order-1 md:w-20 md:flex-col">
         {product.images.map((image, index) => (
           <button

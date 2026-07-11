@@ -1,3 +1,6 @@
+import { addReviewSchema } from "@/lib/validators/product";
+import z from "zod";
+
 export interface ProductSeller {
   storeName: string;
   storeSlug: string;
@@ -40,3 +43,5 @@ export interface Product {
   category: ProductCategory;
   reviews: Review[];
 }
+
+export type addReviewInput = z.infer<typeof addReviewSchema>;
