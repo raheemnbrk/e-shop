@@ -38,12 +38,58 @@ export const addCategoryServices = async (
 
 export const getAllCategoriesServices = async () => {
   const categories = await prisma.category.findMany({
-    where: { parentId: null },
-    include: { children: true },
-    orderBy: { name: "asc" },
+    where: {
+      parentId: null,
+    },
+    include: {
+      _count: {
+        select: {
+          products: true,
+        },
+      },
+      children: {
+        include: {
+          _count: {
+            select: {
+              products: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      name: "asc",
+    },
   });
 
-  return categories;
+  return categories.map((category) => {
+    const totalProducts =
+      category._count.products +
+      category.children.reduce(
+        (total, child) => total + child._count.products,
+        0,
+      );
+
+    return {
+      id: category.id,
+      name: category.name,
+      slug: category.slug,
+      image: category.image,
+      parentId: category.parentId,
+      createdAt: category.createdAt,
+      productsCount: totalProducts,
+
+      children: category.children.map((child) => ({
+        id: child.id,
+        name: child.name,
+        slug: child.slug,
+        image: child.image,
+        parentId: category.parentId,
+        createdAt: category.createdAt,
+        productsCount: child._count.products,
+      })),
+    };
+  });
 };
 
 export const getCategoryBySlugServices = async (slug: string) => {

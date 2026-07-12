@@ -46,8 +46,8 @@ export default function ReviewList({ reviews }: { reviews: Review[] }) {
         </p>
       ) : (
         <div className="space-y-4">
-          {reviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+          {reviews.map((review , index) => (
+            <ReviewCard key={index} review={review} />
           ))}
         </div>
       )}

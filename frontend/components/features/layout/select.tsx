@@ -18,6 +18,7 @@ interface SelectDemoProps {
   defaultValue?: string;
   placeholder?: string;
   label?: string;
+  onchange?: (value: string) => void;
 }
 
 export function SelectDemo({
@@ -25,9 +26,10 @@ export function SelectDemo({
   defaultValue,
   placeholder,
   label,
+  onchange,
 }: SelectDemoProps) {
   return (
-    <Select defaultValue={defaultValue}>
+    <Select defaultValue={defaultValue} onValueChange={onchange}>
       <SelectTrigger className="h-12! w-48 rounded-lg border border-border bg-card text-text dark:border-dark-border dark:bg-dark-card dark:text-dark-text cursor-pointer">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

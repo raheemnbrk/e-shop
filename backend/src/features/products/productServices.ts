@@ -57,13 +57,11 @@ export const getAllProductsService = async (
       name: true,
       slug: true,
       price: true,
-      stock: true,
+      discount: true,
       images: true,
       available: true,
-      description: true,
-      createdAt: true,
-      seller: { select: { storeName: true, storeSlug: true, logo: true } },
-      category: { select: { name: true, slug: true, image: true } },
+      reviews: { select: { rating: true } },
+      category: { select: { name: true } },
     },
     orderBy,
   });
@@ -98,6 +96,7 @@ export const getSingleProductServices = async (slug: string) => {
       seller: { select: { storeName: true, storeSlug: true, logo: true } },
       reviews: {
         select: {
+          id: true,
           rating: true,
           comment: true,
           createdAt: true,
@@ -179,13 +178,16 @@ export const getRelatedProductsService = async (slug: string) => {
     },
     select: {
       id: true,
+      name: true,
       slug: true,
-      images: true,
       price: true,
       discount: true,
-      name: true,
+      images: true,
+      available: true,
+      reviews: { select: { rating: true } },
       category: { select: { name: true } },
     },
+    take: 5,
   });
 
   return relatedProducts;

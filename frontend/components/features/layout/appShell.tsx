@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useAuthStore } from "@/lib/store/authStore";
 import Loader from "@/components/loading/loader";

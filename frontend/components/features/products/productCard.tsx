@@ -2,6 +2,20 @@ import { Heart, ShoppingCart, Star } from "lucide-react";
 import { Product } from "@/types/productTypes";
 
 export default function ProductCard({ product }: { product: Product }) {
+  const newPrice =
+    product.discount > 0
+      ? (product.price * (1 - product.discount / 100)).toFixed(2)
+      : product.price;
+
+  const averageRating =
+    (product.reviews?.length ?? 0) > 0
+      ? Math.floor(
+          product.reviews.reduce((acc, r) => acc + r.rating, 0) /
+            product.reviews.length,
+        )
+      : 0;
+
+      console.log(product)
   return (
     <div className="group overflow-hidden rounded-xl border border-border dark:border-dark-border bg-card dark:bg-dark-card transition-shadow duration-300 hover:shadow-md hover:border-primary dark:hover:border-primary">
       <div className="relative h-44 w-full overflow-hidden bg-background dark:bg-dark-background">
@@ -29,23 +43,28 @@ export default function ProductCard({ product }: { product: Product }) {
         </h3>
 
         <div className="flex items-center gap-1">
-          <div className="flex text-amber-400">
+          <div className="flex">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="h-3 w-3 fill-current" />
+              <Star
+                key={i}
+                className={`h-3 w-3 fill-current ${i < averageRating ? "text-yellow-400" : "text-gray-300"}`}
+              />
             ))}
           </div>
           <span className="text-xs text-text-secondary dark:text-dark-text-secondary">
-            (248)
+            ({product.reviews?.length ?? 0})
           </span>
         </div>
 
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-text dark:text-dark-text">
-            ${product.price}
+            ${newPrice}
           </span>
-          <span className="text-xs text-text-secondary dark:text-dark-text-secondary line-through">
-            $349
-          </span>
+          {product.discount > 0 && (
+            <span className="text-xs text-text-secondary dark:text-dark-text-secondary line-through">
+              ${product.price}
+            </span>
+          )}
         </div>
 
         <button
