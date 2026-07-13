@@ -38,6 +38,9 @@ export const createProductService = async (
 export const getAllProductsService = async (
   search?: string,
   filter?: string,
+  category?: string,
+  minPrice?: string,
+  maxPrice?: string,
 ) => {
   const orderBy =
     filter === "lower price"
@@ -51,6 +54,13 @@ export const getAllProductsService = async (
     where: {
       available: true,
       ...(search && { name: { contains: search, mode: "insensitive" } }),
+      ...(category && { category: { slug: category } }),
+      ...((minPrice || maxPrice) && {
+        price: {
+          ...(minPrice && { gte: Number(minPrice) }),
+          ...(maxPrice && { lte: Number(maxPrice) }),
+        },
+      }),
     },
     select: {
       id: true,

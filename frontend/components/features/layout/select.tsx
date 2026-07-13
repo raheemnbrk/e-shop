@@ -45,7 +45,7 @@ export function SelectDemo({
             <SelectItem
               key={item.value}
               value={item.value}
-              className="cursor-pointer text-text dark:text-dark-text data-highlighted:bg-primary data-highlighted:text-white! capitalize"
+              className="cursor-pointer text-text dark:text-dark-text data-highlighted:bg-primary data-highlighted:text-white capitalize"
             >
               {item.label}
             </SelectItem>

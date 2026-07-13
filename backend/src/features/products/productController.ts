@@ -48,11 +48,14 @@ export const getAllProductsController = async (
   next: NextFunction,
 ) => {
   try {
-    const { search, filter } = req.query;
+    const { search, filter, category, minPrice, maxPrice } = req.query;
 
     const products = await productServices.getAllProductsService(
       search,
       filter,
+      category,
+      minPrice,
+      maxPrice,
     );
 
     return res.status(200).json({ success: true, products });

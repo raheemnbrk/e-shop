@@ -52,6 +52,7 @@ export default function Search() {
         className="focus-visible:ring-primary focus-visible:border-primary h-12 bg-card dark:bg-dark-card"
       />
       <SelectDemo
+        key={searchParams.get("filter") ?? items[0].value}
         items={items}
         defaultValue={searchParams.get("filter") ?? items[0].value}
         label="Sort by"
@@ -60,7 +61,7 @@ export default function Search() {
       {hasFilters && (
         <button
           onClick={handleClear}
-          className="flex h-12 items-center gap-2 rounded-lg border bg-card dark:bg-dark-card border-border dark:border-dark-border px-4 text-sm font-medium text-text-secondary dark:text-dark-text-secondary hover:border-primary hover:text-primary transition-colors cursor-pointer whitespace-nowrap"
+          className="flex h-12 items-center gap-2 rounded-lg border bg-card dark:bg-dark-card border-border dark:border-dark-border px-4 text-sm font-medium text-text-secondary dark:text-dark-text-secondary hover:border-red-500 hover:text-red-500 transition-colors cursor-pointer whitespace-nowrap"
         >
           <X className="h-4 w-4" />
           Clear

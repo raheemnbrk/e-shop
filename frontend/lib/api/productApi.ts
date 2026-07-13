@@ -4,8 +4,13 @@ import api from "./axios";
 export const getAllProducts = async (
   search?: string,
   filter?: string,
+  category?: string,
+  minPrice?: string,
+  maxPrice?: string,
 ): Promise<Product[]> => {
-  const res = await api.get("/product/all", {params : {search , filter}});
+  const res = await api.get("/product/all", {
+    params: { search, filter, category, minPrice, maxPrice },
+  });
   return res.data.products;
 };
 
