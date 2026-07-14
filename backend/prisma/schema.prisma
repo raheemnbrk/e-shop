@@ -28,6 +28,7 @@ model User{
   account             Account[]
   Seller              Seller?
   reviews             Review[]
+  cart                Cart?
 }
 
 enum Role{
@@ -107,16 +108,17 @@ model Product{
   images          String[]
   available       Boolean  @default(true)
 
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId     String
+  category       Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-  sellerId    String
-  seller      Seller   @relation(fields: [sellerId], references: [userId], onDelete: Cascade)
+  sellerId       String
+  seller         Seller   @relation(fields: [sellerId], references: [userId], onDelete: Cascade)
 
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt()  
 
-  reviews         Review[]    
+  reviews         Review[] 
+  cartItems       CartItem[]   
 }
 
 model Category {
@@ -145,4 +147,26 @@ model Review {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade) // was [userId]
 
   @@unique([userId, productId])
+}
+
+model Cart {
+  id        String      @id @default(uuid())
+  userId    String      @unique  
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[] 
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  quantity  Int      @default(1)
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade) 
+
+  @@unique([cartId, productId]) 
 }

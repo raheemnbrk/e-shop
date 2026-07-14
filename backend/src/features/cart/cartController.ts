@@ -1,0 +1,19 @@
+import { NextFunction, Request, Response } from "express";
+import * as cartServices from "./cartServices";
+import { addToCartSchema } from "../../shared/validations/cartValidations";
+
+export const addToCartController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).user.id;
+    const input = addToCartSchema.parse(req.body);
+
+    const { message } = await cartServices.addToCartServices(userId, input);
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};
