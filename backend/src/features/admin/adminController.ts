@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as adminServices from "./adminServices";
-import { addCategoryInput } from "../../shared/types/categoryTypes";
-import { addCategorySchema } from "../../shared/validations/categoryValidation";
+import { Role } from "../../generated/prisma";
 
 export const approveSellerController = async (
   req: Request,
@@ -35,4 +34,18 @@ export const rejectSellerController = async (
   }
 };
 
+export const getAllUsersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = (req as any).user;
+    const role = req.body as Role | undefined;
+    const users = await adminServices.getAllUsersService(id, role);
 
+    return res.status(200).json({ success: true, users });
+  } catch (err) {
+    next(err);
+  }
+};

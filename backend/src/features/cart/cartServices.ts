@@ -10,6 +10,7 @@ export const getOrCreateCart = async (userId: string) => {
         include: {
           product: {
             select: {
+              id: true,
               name: true,
               slug: true,
               price: true,

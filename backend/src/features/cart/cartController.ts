@@ -17,3 +17,17 @@ export const addToCartController = async (
     next(err);
   }
 };
+
+export const getAllCartItemsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).user.id;
+    const cart = await cartServices.getCartService(userId);
+    return res.status(200).json({ success: true, cart });
+  } catch (err) {
+    next(err);
+  }
+};

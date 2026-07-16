@@ -21,7 +21,6 @@ export const getSingleProduct = async (slug: string): Promise<Product> => {
 
 export const getRelatedProducts = async (slug: string): Promise<Product[]> => {
   const res = await api.get(`/product/related/${slug}`);
-  console.log("raw related:", res.data.relatedProducts);
   return res.data.relatedProducts;
 };
 

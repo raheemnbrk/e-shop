@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
   approveSellerController,
+  getAllUsersController,
   rejectSellerController,
 } from "./adminController";
 import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
@@ -21,5 +22,7 @@ adminRouter.patch(
   authorizeAdmin,
   rejectSellerController,
 );
+
+adminRouter.get("/users", authorizeAdmin, getAllUsersController);
 
 export default adminRouter;

@@ -71,15 +71,17 @@ export default function Navbar() {
               </span>
             </button>
 
-            <button
-              className="relative cursor-pointer text-text-secondary transition hover:text-primary dark:text-dark-text-secondary dark:hover:text-primary"
-              aria-label="Cart"
-            >
-              <ShoppingCart size={22} />
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
-                2
-              </span>
-            </button>
+            <Link href={"/cart"}>
+              <button
+                className="relative cursor-pointer text-text-secondary transition hover:text-primary dark:text-dark-text-secondary dark:hover:text-primary"
+                aria-label="Cart"
+              >
+                <ShoppingCart size={22} />
+                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
+                  2
+                </span>
+              </button>
+            </Link>
 
             {user ? (
               <DropdownMenuProfile user={user} />

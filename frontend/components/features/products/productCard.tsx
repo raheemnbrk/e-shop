@@ -1,5 +1,7 @@
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { Product } from "@/types/productTypes";
+import { useAddToCart } from "@/lib/hooks/cart/useAddToCart";
+import { CartItem } from "@/types/cartTypes";
 
 export default function ProductCard({ product }: { product: Product }) {
   const newPrice =
@@ -15,13 +17,28 @@ export default function ProductCard({ product }: { product: Product }) {
         )
       : 0;
 
-      console.log(product)
+  const cartItem: CartItem = {
+    productId: product.id,
+    image: product.images[0],
+    quantity: 1,
+    name: product.name,
+    price: product.price,
+    discount: product.discount,
+    stock: product.stock,
+    slug: product.slug,
+  };
+
+  const { addToCartHandler, isPending } = useAddToCart();
   return (
     <div className="group overflow-hidden rounded-xl border border-border dark:border-dark-border bg-card dark:bg-dark-card transition-shadow duration-300 hover:shadow-md hover:border-primary dark:hover:border-primary">
       <div className="relative h-44 w-full overflow-hidden bg-background dark:bg-dark-background">
         <button
+          type="button"
           className="absolute top-2 right-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-card dark:bg-dark-card border border-border dark:border-dark-border shadow transition-colors hover:bg-primary hover:text-white hover:border-primary text-text-secondary dark:text-dark-text-secondary"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
         >
           <Heart className="h-4 w-4" />
         </button>
@@ -68,8 +85,13 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
 
         <button
+          type="button"
           className="mt-2 flex h-9 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary text-sm font-medium text-white transition-colors hover:bg-primaryHover"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            addToCartHandler(cartItem);
+          }}
         >
           <ShoppingCart className="h-4 w-4" />
           Add to cart

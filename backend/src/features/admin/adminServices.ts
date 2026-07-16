@@ -4,6 +4,7 @@ import { ApiError } from "../../shared/utils/apiError";
 import slugify from "slugify";
 import { takenSlug } from "../../shared/utils/logic/verifySlug";
 import { uploadImage } from "../../shared/utils/uploadImage";
+import { Role } from "../../generated/prisma";
 
 export const approveSellerServices = async (userId: string) => {
   const seller = await prisma.seller.findUnique({ where: { userId } });
@@ -42,4 +43,11 @@ export const rejectSellerServices = async (userId: string) => {
   return { message: "Seller rejected successfully." };
 };
 
+export const getAllUsersService = async (id: string, role?: Role) => {
+  const users = await prisma.user.findMany({
+    where: { id: { not: id }, ...(role && { role }) },
+    orderBy: { createdAt: "desc" },
+  });
 
+  return users;
+};
