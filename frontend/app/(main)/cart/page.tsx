@@ -10,11 +10,8 @@ import CartLoading from "@/components/loading/cartLoading";
 
 export default function CartPage() {
   const {
-    // removeItem,
     // updateQuantity,
     // clearCart,
-    totalItems,
-    totalPrice,
   } = useCartStore();
 
   const { items, isLoading, isError } = useGetCart();
@@ -31,7 +28,7 @@ export default function CartPage() {
             Shopping Cart
           </h1>
           <p className="mt-1 text-sm text-text-secondary dark:text-dark-text-secondary">
-            {totalItems()} items in your cart
+            {10} items in your cart
           </p>
         </div>
         <button
@@ -49,13 +46,12 @@ export default function CartPage() {
             <CartItemCard
               key={item.productId}
               item={item}
-              //   onRemove={removeItem}
               //   onUpdateQuantity={updateQuantity}
             />
           ))}
         </div>
 
-        <CartSummary subtotal={totalPrice()} itemCount={totalItems()} />
+        <CartSummary subtotal={10} itemCount={10} />
       </div>
     </div>
   );

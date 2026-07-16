@@ -3,21 +3,21 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import type { CartItem as CartItemType } from "@/types/cartTypes";
+import { useRemoveItem } from "@/lib/hooks/cart/useRemoveItem";
 
 interface CartItemProps {
   item: CartItemType;
-  // onRemove: (productId: string) => void;
   // onUpdateQuantity: (productId: string, quantity: number) => void;
 }
 
 export default function CartItemCard({
   item,
-  // onRemove,
   // onUpdateQuantity,
 }: CartItemProps) {
   const finalPrice =
     item.discount > 0 ? item.price * (1 - item.discount / 100) : item.price;
 
+  const { removeItemHandler, isPending } = useRemoveItem();
   return (
     <div className="flex gap-4 p-4 bg-card dark:bg-dark-card border border-border dark:border-dark-border rounded-xl">
       <Link href={`/products/${item.slug}`} className="shrink-0">
@@ -36,7 +36,8 @@ export default function CartItemCard({
             </h3>
           </Link>
           <button
-            // onClick={() => onRemove(item.productId)}
+            onClick={() => removeItemHandler(item.productId)}
+            disabled={isPending}
             className="shrink-0 text-text-secondary dark:text-dark-text-secondary hover:text-red-500 transition-colors cursor-pointer"
             aria-label="Remove item"
           >

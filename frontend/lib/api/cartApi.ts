@@ -12,3 +12,10 @@ export const getAllCartItems = async (): Promise<CartResponse> => {
   const res = await api.get("/cart/all");
   return res.data.cart;
 };
+
+export const removeItemApi = async (
+  productId: string,
+): Promise<MessageResponse> => {
+  const res = await api.delete(`/cart/remove/${productId}`);
+  return res.data;
+};

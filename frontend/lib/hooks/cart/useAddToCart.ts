@@ -14,7 +14,7 @@ export const useAddToCart = () => {
     mutationFn: (input: addToCartInput) => addToCart(input),
     onSuccess: () => {
       toast.success("Item added to cart.");
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart", user?.id] });
     },
 
     onError: (err: any) => {

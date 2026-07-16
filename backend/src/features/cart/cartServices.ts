@@ -87,3 +87,14 @@ export const addToCartServices = async (
 
   return { message: "Product added to cart." };
 };
+
+export const removeItemFromCartService = async (userId: string, productId: string) => {
+  const product = await prisma.product.findUnique({ where: { id: productId } });
+  if (!product) throw new ApiError(404, "Product now found.");
+
+  const cart = await getOrCreateCart(userId);
+
+  await prisma.cartItem.delete({ where: { cartId_productId: { cartId: cart.id, productId } } });
+
+  return { message: "Items deleted successfully." };
+};
