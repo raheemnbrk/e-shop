@@ -3,6 +3,7 @@ import {
   addToCartController,
   clearCartController,
   getAllCartItemsController,
+  mergeCartController,
   removeItemFromCartController,
   updateCartController,
 } from "./cartController";
@@ -19,5 +20,6 @@ cartRouter.delete(
 );
 cartRouter.delete("/clear", authenticate, clearCartController);
 cartRouter.patch("/update", authenticate, updateCartController);
+cartRouter.post("/merge", authenticate, mergeCartController);
 
 export default cartRouter;

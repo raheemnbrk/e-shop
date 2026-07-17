@@ -31,3 +31,10 @@ export const updateCartApi = async (
   const res = await api.patch("/cart/update", input);
   return res.data;
 };
+
+export const mergeCart = async (
+  items: addToCartInput[],
+): Promise<MessageResponse> => {
+  const res = await api.post("/cart/merge",  {items} );
+  return res.data;
+};

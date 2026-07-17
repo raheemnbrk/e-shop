@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import * as cartServices from "./cartServices";
 import { addToCartSchema } from "../../shared/validations/cartValidations";
 import { ApiError } from "../../shared/utils/apiError";
+import z from "zod";
 
 export const addToCartController = async (
   req: Request,
@@ -82,6 +83,26 @@ export const updateCartController = async (
     const message = await cartServices.updateCartService(userId, input);
 
     return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const mergeCartController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).user.id;
+
+    const mergeCartSchema = z.object({
+      items: z.array(addToCartSchema),
+    });
+
+    const { items } = mergeCartSchema.parse(req.body);
+    const { message } = await cartServices.mergeCartService(userId, items);
+    res.status(200).json({ success: true, message });
   } catch (err) {
     next(err);
   }

@@ -140,3 +140,39 @@ export const updateCartService = async (
 
   return { message: "Cart updated Successfully." };
 };
+
+export const mergeCartService = async (
+  userId: string,
+  items: addToCartInput[],
+) => {
+  const cart = await getOrCreateCart(userId);
+
+  for (const item of items) {
+    const product = await prisma.product.findUnique({
+      where: { id: item.productId },
+    });
+    if (!product || !product.available) continue;
+
+    const existing = await prisma.cartItem.findUnique({
+      where: {
+        cartId_productId: { cartId: cart.id, productId: item.productId },
+      },
+    });
+    if (existing) {
+      const newQty = Math.min(existing.quantity + item.quantity, product.stock);
+      await prisma.cartItem.update({
+        where: {
+          cartId_productId: { cartId: cart.id, productId: item.productId },
+        },
+        data: { quantity: newQty },
+      });
+    } else {
+      const qty = Math.min(item.quantity, product.stock);
+      await prisma.cartItem.create({
+        data: { cartId: cart.id, productId: item.productId, quantity: qty },
+      });
+    }
+  }
+
+  return { message: "Cart merged successfully." };
+};
