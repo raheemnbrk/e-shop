@@ -92,6 +92,7 @@ export default function ProductCard({ product }: { product: Product }) {
             e.stopPropagation();
             addToCartHandler(cartItem);
           }}
+          disabled={isPending}
         >
           <ShoppingCart className="h-4 w-4" />
           Add to cart

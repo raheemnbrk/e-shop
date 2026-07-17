@@ -112,3 +112,31 @@ export const clearCartService = async (userId: string) => {
 
   return { message: "Cart Cleared successfully." };
 };
+
+export const updateCartService = async (
+  userId: string,
+  input: addToCartInput,
+) => {
+  const { productId, quantity } = input;
+
+  if (quantity < 1) throw new ApiError(400, "Quantity must be at least 1.");
+
+  const product = await prisma.product.findUnique({ where: { id: productId } });
+  if (!product) throw new ApiError(404, "Product not found.");
+  if (product.stock < quantity) throw new ApiError(400, "Not enough stock.");
+
+  const cart = await prisma.cart.findUnique({ where: { userId } });
+  if (!cart) throw new ApiError(404, "Cart not found.");
+
+  const item = await prisma.cartItem.findUnique({
+    where: { cartId_productId: { cartId: cart.id, productId } },
+  });
+  if (!item) throw new ApiError(404, "Item not found in cart.");
+
+  await prisma.cartItem.update({
+    where: { cartId_productId: { cartId: cart.id, productId } },
+    data: { quantity },
+  });
+
+  return { message: "Cart updated Successfully." };
+};

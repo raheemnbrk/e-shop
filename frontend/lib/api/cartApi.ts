@@ -24,3 +24,10 @@ export const clearCartApi = async (): Promise<MessageResponse> => {
   const res = await api.delete("/cart/clear");
   return res.data;
 };
+
+export const updateCartApi = async (
+  input: addToCartInput,
+): Promise<MessageResponse> => {
+  const res = await api.patch("/cart/update", input);
+  return res.data;
+};

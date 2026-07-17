@@ -4,6 +4,7 @@ import {
   clearCartController,
   getAllCartItemsController,
   removeItemFromCartController,
+  updateCartController,
 } from "./cartController";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
 
@@ -17,5 +18,6 @@ cartRouter.delete(
   removeItemFromCartController,
 );
 cartRouter.delete("/clear", authenticate, clearCartController);
+cartRouter.patch("/update", authenticate, updateCartController);
 
 export default cartRouter;

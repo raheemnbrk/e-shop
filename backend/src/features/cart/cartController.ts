@@ -69,3 +69,20 @@ export const clearCartController = async (
     next(err);
   }
 };
+
+export const updateCartController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).user.id as string;
+    const input = addToCartSchema.parse(req.body);
+
+    const message = await cartServices.updateCartService(userId, input);
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};

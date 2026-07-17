@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Minus, Plus, ShoppingCart, Zap, Star, Package } from "lucide-react";
 import { Product } from "@/types/productTypes";
+import { CartItem } from "@/types/cartTypes";
+import { useAddToCart } from "@/lib/hooks/cart/useAddToCart";
 
 export default function ProductInfo({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
@@ -18,6 +20,19 @@ export default function ProductInfo({ product }: { product: Product }) {
           product.reviews.length
         ).toFixed(1)
       : null;
+
+  const { addToCartHandler, isPending } = useAddToCart();
+
+  const cartItem: CartItem = {
+    productId: product.id,
+    image: product.images[0],
+    quantity,
+    name: product.name,
+    price: product.price,
+    discount: product.discount,
+    stock: product.stock,
+    slug: product.slug,
+  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -108,7 +123,8 @@ export default function ProductInfo({ product }: { product: Product }) {
 
       <div className="flex gap-3 pt-1">
         <button
-          disabled={product.stock === 0}
+          disabled={product.stock === 0 || isPending}
+          onClick={() => addToCartHandler(cartItem)}
           className="flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-white transition hover:bg-primaryHover disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ShoppingCart className="h-4 w-4" />

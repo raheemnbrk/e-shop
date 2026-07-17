@@ -1,4 +1,4 @@
-import { CartStore } from "@/types/cartTypes";
+import { addToCartInput, CartStore } from "@/types/cartTypes";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -23,12 +23,19 @@ export const useCartStore = create<CartStore>()(
           }
           return { cartItems: updatedItems };
         }),
-      removeItem(productId) {
+      removeItem: (productId: string) =>
         set((state) => ({
           cartItems: state.cartItems.filter((i) => i.productId !== productId),
-        }));
-      },
+        })),
       clearCart: () => set({ cartItems: [] }),
+      updateCart: (input: addToCartInput) =>
+        set((state) => ({
+          cartItems: state.cartItems.map((i) =>
+            i.productId === input.productId
+              ? { ...i, quantity: input.quantity }
+              : i,
+          ),
+        })),
     }),
     { name: "cart" },
   ),
