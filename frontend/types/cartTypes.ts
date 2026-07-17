@@ -16,6 +16,7 @@ export interface CartStore {
   cartItems: CartItem[];
   addItem: (item: CartItem) => void;
   removeItem: (item: string) => void;
+  clearCart: () => void;
 }
 
 export type addToCartInput = z.infer<typeof addToCartSchema>;

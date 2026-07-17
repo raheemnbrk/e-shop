@@ -1,20 +1,16 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { useCartStore } from "@/lib/store/cartStore";
 import CartItemCard from "@/components/features/cart/cartItem";
 import CartSummary from "@/components/features/cart/cartSummary";
 import EmptyCart from "@/components/features/cart/emptyCart";
 import { useGetCart } from "@/lib/hooks/cart/useCart";
 import CartLoading from "@/components/loading/cartLoading";
+import { useClearCart } from "@/lib/hooks/cart/useClearCart";
 
 export default function CartPage() {
-  const {
-    // updateQuantity,
-    // clearCart,
-  } = useCartStore();
-
   const { items, isLoading, isError } = useGetCart();
+  const { handleClearCart, isPending } = useClearCart();
 
   if (isLoading) return <CartLoading />;
 
@@ -32,7 +28,8 @@ export default function CartPage() {
           </p>
         </div>
         <button
-          //   onClick={clearCart}
+          onClick={handleClearCart}
+          disabled={isPending}
           className="flex items-center gap-2 text-sm text-red-500 hover:text-red-600 transition cursor-pointer border border-red-200 dark:border-red-900 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950"
         >
           <Trash2 className="h-4 w-4" />

@@ -88,13 +88,27 @@ export const addToCartServices = async (
   return { message: "Product added to cart." };
 };
 
-export const removeItemFromCartService = async (userId: string, productId: string) => {
+export const removeItemFromCartService = async (
+  userId: string,
+  productId: string,
+) => {
   const product = await prisma.product.findUnique({ where: { id: productId } });
   if (!product) throw new ApiError(404, "Product now found.");
 
   const cart = await getOrCreateCart(userId);
 
-  await prisma.cartItem.delete({ where: { cartId_productId: { cartId: cart.id, productId } } });
+  await prisma.cartItem.delete({
+    where: { cartId_productId: { cartId: cart.id, productId } },
+  });
 
   return { message: "Items deleted successfully." };
+};
+
+export const clearCartService = async (userId: string) => {
+  const cart = await prisma.cart.findUnique({ where: { userId } });
+  if (!cart) throw new ApiError(404, "Cart not found.");
+
+  await prisma.cart.deleteMany({ where: { id: cart.id } });
+
+  return { message: "Cart Cleared successfully." };
 };

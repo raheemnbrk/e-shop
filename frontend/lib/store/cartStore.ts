@@ -28,6 +28,7 @@ export const useCartStore = create<CartStore>()(
           cartItems: state.cartItems.filter((i) => i.productId !== productId),
         }));
       },
+      clearCart: () => set({ cartItems: [] }),
     }),
     { name: "cart" },
   ),
