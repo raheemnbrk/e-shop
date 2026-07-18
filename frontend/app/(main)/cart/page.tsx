@@ -7,10 +7,12 @@ import EmptyCart from "@/components/features/cart/emptyCart";
 import { useGetCart } from "@/lib/hooks/cart/useCart";
 import CartLoading from "@/components/loading/cartLoading";
 import { useClearCart } from "@/lib/hooks/cart/useClearCart";
+import { useCartCount } from "@/lib/hooks/cart/useCartCount";
 
 export default function CartPage() {
   const { items, isLoading, isError } = useGetCart();
   const { handleClearCart, isPending } = useClearCart();
+  const { count, price } = useCartCount();
 
   if (isLoading) return <CartLoading />;
 
@@ -24,7 +26,7 @@ export default function CartPage() {
             Shopping Cart
           </h1>
           <p className="mt-1 text-sm text-text-secondary dark:text-dark-text-secondary">
-            {10} items in your cart
+            {count} {count === 1 ? "item" : "items"} in your cart
           </p>
         </div>
         <button
@@ -40,15 +42,11 @@ export default function CartPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div className="lg:col-span-2 flex flex-col gap-3">
           {items.map((item) => (
-            <CartItemCard
-              key={item.productId}
-              item={item}
-              //   onUpdateQuantity={updateQuantity}
-            />
+            <CartItemCard key={item.productId} item={item} />
           ))}
         </div>
 
-        <CartSummary subtotal={10} itemCount={10} />
+        <CartSummary itemCount={count} subtotal={price} />
       </div>
     </div>
   );

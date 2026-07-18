@@ -8,6 +8,7 @@ import { DropdownMenuProfile } from "./dropDownNavbar";
 import { useThemeStore } from "@/lib/store/themeStore";
 import { useState } from "react";
 import MobileMenu from "./mobileMenu";
+import { useCartCount } from "@/lib/hooks/cart/useCartCount";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -22,6 +23,8 @@ export default function Navbar() {
   const { theme, toggleTheme } = useThemeStore();
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const { count } = useCartCount();
 
   return (
     <>
@@ -41,11 +44,10 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-base transition-colors ${
-                  pathName === link.href
-                    ? "font-semibold text-primary"
-                    : "text-text-secondary hover:text-primary dark:text-dark-text-secondary dark:hover:text-primary"
-                }`}
+                className={`text-base transition-colors ${pathName === link.href
+                  ? "font-semibold text-primary"
+                  : "text-text-secondary hover:text-primary dark:text-dark-text-secondary dark:hover:text-primary"
+                  }`}
               >
                 {link.name}
               </Link>
@@ -70,16 +72,15 @@ export default function Navbar() {
                 3
               </span>
             </button>
-
             <Link href={"/cart"}>
               <button
-                className="relative cursor-pointer text-text-secondary transition hover:text-primary dark:text-dark-text-secondary dark:hover:text-primary"
+                className="relative cursor-pointer text-text-secondary transition hover:text-primary dark:text-dark-text-secondary dark:hover:text-primary mt-2"
                 aria-label="Cart"
               >
                 <ShoppingCart size={22} />
-                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
-                  2
-                </span>
+                {count > 0 && (<span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
+                  {count > 99 ? "99+" : count}
+                </span>)}
               </button>
             </Link>
 

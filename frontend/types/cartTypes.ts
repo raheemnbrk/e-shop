@@ -18,6 +18,8 @@ export interface CartStore {
   removeItem: (item: string) => void;
   updateCart: (input: addToCartInput) => void;
   clearCart: () => void;
+  totalItems: () => number;
+  totalPrice: () => number;
 }
 
 export type addToCartInput = z.infer<typeof addToCartSchema>;

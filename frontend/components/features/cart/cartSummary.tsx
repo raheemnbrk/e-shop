@@ -20,7 +20,9 @@ export default function CartSummary({ subtotal, itemCount }: CartSummaryProps) {
 
       <div className="flex flex-col gap-3 text-sm">
         <div className="flex justify-between text-text-secondary dark:text-dark-text-secondary">
-          <span>Subtotal ({itemCount} items)</span>
+          <span>
+            Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"})
+          </span>
           <span className="font-medium text-text dark:text-dark-text">
             ${subtotal.toFixed(2)}
           </span>
