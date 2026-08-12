@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/lib/hooks/auth/useLogout";
 import { User } from "@/types/authTypes";
+import Link from "next/link";
 
 export function DropdownMenuProfile({ user }: { user: User }) {
   const { handleLogout } = useLogout();
@@ -27,9 +28,11 @@ export function DropdownMenuProfile({ user }: { user: User }) {
           <DropdownMenuLabel className="text-text-secondary dark:text-dark-text-secondary">
             My Account
           </DropdownMenuLabel>
-          <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text hover:text-primary">
-            Profile
-          </DropdownMenuItem>
+          <Link href={"my-profile"} >
+            <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text hover:text-primary">
+              Profile
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text hover:text-primary">
             My orders
           </DropdownMenuItem>

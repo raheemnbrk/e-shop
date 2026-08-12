@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
   applySellerSchema,
-  createProductSchema,
 } from "../../shared/validations/sellerValidations";
 import { ApiError } from "../../shared/utils/apiError";
 import * as sellerServices from "./sellerService";

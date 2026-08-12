@@ -11,6 +11,17 @@ export const getMeService = async (id: string) => {
   const user = await prisma.user.findUnique({
     where: { id },
     omit: { password: true },
+    include: {
+      Seller: {
+        select: {
+          storeName: true,
+          storeSlug: true,
+          description: true,
+          logo: true,
+          status: true,
+        },
+      },
+    },
   });
   if (!user) throw new ApiError(404, "User not found.");
 
@@ -107,7 +118,3 @@ export const deleteAddress = async (userId: string, addressId: string) => {
 
   return { message: "Address deleted successfully." };
 };
-
-
-
-

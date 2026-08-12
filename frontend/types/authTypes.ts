@@ -7,6 +7,14 @@ import {
 } from "@/lib/validators/auth.schema";
 import z from "zod";
 
+export interface SellerInfo {
+  storeName: string;
+  storeSlug: string;
+  description: string;
+  logo: string;
+  status: "Pending" | "Approved" | "Rejected";
+}
+
 export interface User {
   id: string;
   firstName: string;
@@ -17,6 +25,7 @@ export interface User {
   phoneNumber?: string | null;
   createdAt: string;
   isVerified: boolean;
+  seller?: SellerInfo | null;
 }
 
 export interface AuthStore {
