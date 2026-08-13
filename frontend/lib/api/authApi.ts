@@ -6,6 +6,7 @@ import {
   loginResponse,
   registerInput,
   resetPasswordInput,
+  updateProfileInput,
   User,
   verifyOtpInput,
 } from "@/types/authTypes";
@@ -70,5 +71,22 @@ export const changePasswordApi = async (
   input: changePasswordInput,
 ): Promise<MessageResponse> => {
   const res = await api.post("/auth/change-password", input);
+  return res.data;
+};
+
+export const updateProfileApi = async (
+  input: updateProfileInput,
+  file?: File,
+): Promise<any> => {
+  const formData = new FormData();
+
+  if (input.firstName) formData.append("firstName", input.firstName);
+  if (input.lastName) formData.append("lastName", input.lastName);
+  if (input.phoneNumber) formData.append("phoneNumber", input.phoneNumber);
+  if (file) formData.append("image", file);
+
+  const res = await api.patch("/user/update-profile", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return res.data;
 };

@@ -19,8 +19,14 @@ export function DropdownMenuProfile({ user }: { user: User }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold uppercase text-primary cursor-pointer">
-          {user?.firstName[0]}
-          {user?.lastName[0]}
+          {user && user.image ? (
+            <img src={user.image} className="h-full w-full object-cover rounded-full" alt="avatar" />
+          ) : (
+            <>
+              {user?.firstName?.[0]}
+              {user?.lastName?.[0]}
+            </>
+          )}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-2 mt-2 bg-card dark:bg-dark-card border-border dark:border-dark-border">

@@ -1,8 +1,10 @@
 "use client"
 
 import { useChangePassword } from "@/lib/hooks/auth/useChangePassword";
+import { useUpdateProfile } from "@/lib/hooks/auth/useUpdateProfile";
 import { useAuthStore } from "@/lib/store/authStore"
 import { changePasswordSchema } from "@/lib/validators/auth.schema";
+import { profile } from "console";
 import { Camera, ExternalLink, Eye, EyeOff, Lock, Store } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -19,11 +21,6 @@ export default function MyProfile() {
         { label: "Reviews left", value: "8", icon: "⭐" },
     ];
 
-
-    const [firstName, setFirstName] = useState(user?.firstName ?? "");
-    const [lastName, setLastName] = useState(user?.lastName ?? "");
-    const [phone, setPhone] = useState(user?.phoneNumber ?? "");
-
     if (!user) return null;
 
     const initials = `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
@@ -36,22 +33,34 @@ export default function MyProfile() {
         new: false,
         confirm: false,
     });
-    const [form, setForm] = useState({
+    const [passwordForm, setPasswordForm] = useState({
         currentPassword: "",
         newPassword: "",
         confirmedNewPassword: "",
     });
 
+    const [profileImage, setProfileImage] = useState<File | undefined>();
+    const [profileImagePreview, setProfileImagePreview] = useState<
+        string | undefined
+    >();
+    const [profileForm, setProfileForm] = useState({
+        firstName: user.firstName ?? "",
+        lastName: user.lastName ?? "",
+        phoneNumber: user.phoneNumber ?? ""
+    })
+
     const { changePassword, isPending } = useChangePassword()
+    const { updateProfile, isPending: isUpdatingProfile } =
+        useUpdateProfile();
 
     const toggle = (field: keyof typeof show) =>
         setShow((prev) => ({ ...prev, [field]: !prev[field] }));
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        setPasswordForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-    const handleSubmit = () => {
-        const result = changePasswordSchema.safeParse(form);
+    const handleChangePassword = () => {
+        const result = changePasswordSchema.safeParse(passwordForm);
 
         if (!result.success) {
             toast.error(result.error.issues[0].message);
@@ -63,6 +72,46 @@ export default function MyProfile() {
             newPassword: result.data.newPassword,
         });
     }
+
+    const handleProfileChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setProfileForm((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleUpdateProfile = () => {
+        updateProfile({
+            firstName: profileForm.firstName,
+            lastName: profileForm.lastName,
+            phoneNumber: profileForm.phoneNumber,
+            file: profileImage,
+        });
+    };
+
+    const handleCancelProfile = () => {
+        setProfileForm({
+            firstName: user.firstName ?? "",
+            lastName: user.lastName ?? "",
+            phoneNumber: user.phoneNumber ?? "",
+        });
+
+        setProfileImage(undefined);
+
+        if (profileImagePreview) {
+            URL.revokeObjectURL(profileImagePreview);
+        }
+        setProfileImagePreview(undefined);
+        const input = document.getElementById(
+            "profile-image"
+        ) as HTMLInputElement | null;
+
+        if (input) {
+            input.value = "";
+        }
+    };
 
     return (
         <div className="flex flex-col gap-6">
@@ -76,16 +125,44 @@ export default function MyProfile() {
             <div className="rounded-xl border border-border dark:border-dark-border bg-card dark:bg-dark-card p-6">
                 <div className="flex items-start gap-5">
                     <div className="relative shrink-0">
-                        {user.image ? (
-                            <img src={user.image} alt={user.firstName} className="h-20 w-20 rounded-full object-cover border-2 border-border dark:border-dark-border" />
+                        {profileImagePreview || user.image ? (
+                            <img
+                                src={profileImagePreview || user.image}
+                                alt={user.firstName}
+                                className="h-20 w-20 rounded-full object-cover border-2 border-border dark:border-dark-border"
+                            />
                         ) : (
                             <div className="h-20 w-20 rounded-full bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-2xl font-bold text-primary">
                                 {initials}
                             </div>
                         )}
-                        <button className="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-primary border-2 border-card dark:border-dark-card flex items-center justify-center cursor-pointer">
+                        <input
+                            id="profile-image"
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            className="hidden"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+
+                                if (!file) return;
+
+                                if (file.size > 5 * 1024 * 1024) {
+                                    toast.error("Image must be smaller than 5MB.");
+                                    return;
+                                }
+
+                                setProfileImage(file);
+                                const previewUrl = URL.createObjectURL(file);
+                                setProfileImagePreview(previewUrl);
+                            }}
+                        />
+
+                        <label
+                            htmlFor="profile-image"
+                            className="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-primary border-2 border-card dark:border-dark-card flex items-center justify-center cursor-pointer"
+                        >
                             <Camera className="h-3 w-3 text-white" />
-                        </button>
+                        </label>
                     </div>
                     <div>
                         <h2 className="text-lg font-semibold text-text dark:text-dark-text">
@@ -129,11 +206,11 @@ export default function MyProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                         <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">First name</label>
-                        <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="px-3 py-2.5 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary" />
+                        <input name="firstName" value={profileForm.firstName} onChange={handleProfileChange} className="px-3 py-2.5 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary" />
                     </div>
                     <div className="flex flex-col gap-1.5">
                         <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">Last name</label>
-                        <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="px-3 py-2.5 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary" />
+                        <input name="lastName" value={profileForm.lastName} onChange={handleProfileChange} className="px-3 py-2.5 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary" />
                     </div>
                     <div className="flex flex-col gap-1.5">
                         <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">Email address</label>
@@ -144,12 +221,25 @@ export default function MyProfile() {
                     </div>
                     <div className="flex flex-col gap-1.5">
                         <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">Phone number</label>
-                        <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+1 (555) 000-0000" className="px-3 py-2.5 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary" />
+                        <input name="phoneNumber" value={profileForm.phoneNumber} onChange={handleProfileChange} placeholder="+213656780912" className="px-3 py-2.5 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary" />
                     </div>
                 </div>
                 <div className="flex justify-end gap-2 mt-4">
-                    <button className="px-5 py-2 rounded-lg border border-border dark:border-dark-border text-sm text-text-secondary dark:text-dark-text-secondary hover:border-primary hover:text-primary transition cursor-pointer">Cancel</button>
-                    <button className="px-5 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primaryHover transition cursor-pointer">Save changes</button>
+                    <button
+                        type="button"
+                        onClick={handleCancelProfile}
+                        disabled={isUpdatingProfile}
+                        className="px-5 py-2 rounded-lg border border-border dark:border-dark-border text-sm text-text-secondary dark:text-dark-text-secondary hover:border-primary hover:text-primary transition cursor-pointer disabled:opacity-50"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleUpdateProfile}
+                        disabled={isUpdatingProfile}
+                        className="px-5 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primaryHover transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isUpdatingProfile ? "Saving..." : "Save changes"}
+                    </button>
                 </div>
             </div>
 
@@ -167,7 +257,7 @@ export default function MyProfile() {
                             <input
                                 type={show.current ? "text" : "password"}
                                 name="currentPassword"
-                                value={form.currentPassword}
+                                value={passwordForm.currentPassword}
                                 onChange={handleChange}
                                 placeholder="Enter current password"
                                 className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary"
@@ -190,7 +280,7 @@ export default function MyProfile() {
                             <input
                                 type={show.new ? "text" : "password"}
                                 name="newPassword"
-                                value={form.newPassword}
+                                value={passwordForm.newPassword}
                                 onChange={handleChange}
                                 placeholder="Enter new password"
                                 className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary"
@@ -213,7 +303,7 @@ export default function MyProfile() {
                             <input
                                 type={show.confirm ? "text" : "password"}
                                 name="confirmedNewPassword"
-                                value={form.confirmedNewPassword}
+                                value={passwordForm.confirmedNewPassword}
                                 onChange={handleChange}
                                 placeholder="Confirm new password"
                                 className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary"
@@ -231,8 +321,8 @@ export default function MyProfile() {
 
                 <div className="flex justify-end mt-4">
                     <button
-                        onClick={handleSubmit}
-                        disabled={isPending || !form.currentPassword || !form.newPassword || !form.confirmedNewPassword}
+                        onClick={handleChangePassword}
+                        disabled={isPending || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmedNewPassword}
                         className="px-5 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primaryHover transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isPending ? "Updating..." : "Update password"}

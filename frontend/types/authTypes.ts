@@ -4,6 +4,7 @@ import {
   loginSchema,
   registerSchema,
   resetPasswordSchema,
+  updateProfileSchema,
   verifyOtpSchema,
 } from "@/lib/validators/auth.schema";
 import z from "zod";
@@ -69,3 +70,5 @@ export type changePasswordInput = Omit<
   z.infer<typeof changePasswordSchema>,
   "confirmedNewPassword"
 >;
+
+export type updateProfileInput = z.infer<typeof updateProfileSchema>;
