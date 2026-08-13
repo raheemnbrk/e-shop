@@ -1,5 +1,6 @@
 import {
   authResponse,
+  changePasswordInput,
   forgetPasswordInput,
   loginInput,
   loginResponse,
@@ -62,5 +63,12 @@ export const getMe = async (): Promise<User> => {
 
 export const logout = async (): Promise<MessageResponse> => {
   const res = await api.post("/auth/logout");
+  return res.data;
+};
+
+export const changePasswordApi = async (
+  input: changePasswordInput,
+): Promise<MessageResponse> => {
+  const res = await api.post("/auth/change-password", input);
   return res.data;
 };

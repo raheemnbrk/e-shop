@@ -1,9 +1,12 @@
 "use client"
 
+import { useChangePassword } from "@/lib/hooks/auth/useChangePassword";
 import { useAuthStore } from "@/lib/store/authStore"
-import { Camera, ExternalLink, Lock, Store } from "lucide-react";
+import { changePasswordSchema } from "@/lib/validators/auth.schema";
+import { Camera, ExternalLink, Eye, EyeOff, Lock, Store } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function MyProfile() {
 
@@ -16,6 +19,7 @@ export default function MyProfile() {
         { label: "Reviews left", value: "8", icon: "⭐" },
     ];
 
+
     const [firstName, setFirstName] = useState(user?.firstName ?? "");
     const [lastName, setLastName] = useState(user?.lastName ?? "");
     const [phone, setPhone] = useState(user?.phoneNumber ?? "");
@@ -26,6 +30,39 @@ export default function MyProfile() {
     const memberSince = new Date(user.createdAt).toLocaleDateString("en-US", {
         year: "numeric", month: "long", day: "numeric",
     });
+
+    const [show, setShow] = useState({
+        current: false,
+        new: false,
+        confirm: false,
+    });
+    const [form, setForm] = useState({
+        currentPassword: "",
+        newPassword: "",
+        confirmedNewPassword: "",
+    });
+
+    const { changePassword, isPending } = useChangePassword()
+
+    const toggle = (field: keyof typeof show) =>
+        setShow((prev) => ({ ...prev, [field]: !prev[field] }));
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+    const handleSubmit = () => {
+        const result = changePasswordSchema.safeParse(form);
+
+        if (!result.success) {
+            toast.error(result.error.issues[0].message);
+            return;
+        }
+
+        changePassword({
+            currentPassword: result.data.currentPassword,
+            newPassword: result.data.newPassword,
+        });
+    }
 
     return (
         <div className="flex flex-col gap-6">
@@ -120,22 +157,86 @@ export default function MyProfile() {
                 <p className="text-xs font-bold uppercase tracking-widest text-text-secondary dark:text-dark-text-secondary mb-4 pb-3 border-b border-border dark:border-dark-border">
                     Change password
                 </p>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5 md:col-span-2">
-                        <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">Current password</label>
-                        <input type="password" placeholder="Enter current password" className="px-3 py-2.5 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary" />
+                        <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">
+                            Current password
+                        </label>
+                        <div className="relative flex items-center">
+                            <input
+                                type={show.current ? "text" : "password"}
+                                name="currentPassword"
+                                value={form.currentPassword}
+                                onChange={handleChange}
+                                placeholder="Enter current password"
+                                className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => toggle("current")}
+                                className="absolute right-3 text-text-secondary dark:text-dark-text-secondary hover:text-text dark:hover:text-dark-text cursor-pointer"
+                            >
+                                {show.current ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                        </div>
                     </div>
+
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">New password</label>
-                        <input type="password" placeholder="Enter new password" className="px-3 py-2.5 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary" />
+                        <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">
+                            New password
+                        </label>
+                        <div className="relative flex items-center">
+                            <input
+                                type={show.new ? "text" : "password"}
+                                name="newPassword"
+                                value={form.newPassword}
+                                onChange={handleChange}
+                                placeholder="Enter new password"
+                                className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => toggle("new")}
+                                className="absolute right-3 text-text-secondary dark:text-dark-text-secondary hover:text-text dark:hover:text-dark-text cursor-pointer"
+                            >
+                                {show.new ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                        </div>
                     </div>
+
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">Confirm new password</label>
-                        <input type="password" placeholder="Confirm new password" className="px-3 py-2.5 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary" />
+                        <label className="text-xs font-medium text-text-secondary dark:text-dark-text-secondary">
+                            Confirm new password
+                        </label>
+                        <div className="relative flex items-center">
+                            <input
+                                type={show.confirm ? "text" : "password"}
+                                name="confirmedNewPassword"
+                                value={form.confirmedNewPassword}
+                                onChange={handleChange}
+                                placeholder="Confirm new password"
+                                className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border dark:border-dark-border bg-background dark:bg-dark-background text-sm text-text dark:text-dark-text outline-none focus:border-primary"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => toggle("confirm")}
+                                className="absolute right-3 text-text-secondary dark:text-dark-text-secondary hover:text-text dark:hover:text-dark-text cursor-pointer"
+                            >
+                                {show.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                        </div>
                     </div>
                 </div>
+
                 <div className="flex justify-end mt-4">
-                    <button className="px-5 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primaryHover transition cursor-pointer">Update password</button>
+                    <button
+                        onClick={handleSubmit}
+                        disabled={isPending || !form.currentPassword || !form.newPassword || !form.confirmedNewPassword}
+                        className="px-5 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primaryHover transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isPending ? "Updating..." : "Update password"}
+                    </button>
                 </div>
             </div>
 

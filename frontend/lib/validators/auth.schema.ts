@@ -56,3 +56,20 @@ export const resetPasswordSchema = z
     message: "Password do not match.",
     path: ["confirmedPassword"],
   });
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Password is required"),
+    newPassword: z
+      .string()
+      .min(1, "Password is required")
+      .min(8, "Password must contains 8 characters."),
+    confirmedNewPassword: z
+      .string()
+      .min(1, "Password is required")
+      .min(8, "Password must contains 8 characters."),
+  })
+  .refine((data) => data.newPassword === data.confirmedNewPassword, {
+    message: "Password do not match.",
+    path: ["confirmedNewPassword"],
+  });

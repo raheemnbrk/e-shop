@@ -1,4 +1,5 @@
 import {
+  changePasswordSchema,
   forgetPasswordSchema,
   loginSchema,
   registerSchema,
@@ -63,3 +64,8 @@ export type resetPasswordInput = Omit<
 >;
 
 export type otpType = "register" | "reset" | "login";
+
+export type changePasswordInput = Omit<
+  z.infer<typeof changePasswordSchema>,
+  "confirmedNewPassword"
+>;
