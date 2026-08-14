@@ -7,6 +7,7 @@ import {
   deleteUserController,
   getAllAddressesController,
   getMeController,
+  setAddressAsDefaultController,
   updateAddressController,
   updateProfileController,
 } from "./userController";
@@ -25,5 +26,10 @@ userRouter.post("/add-address", authenticate, addAddressController);
 userRouter.patch("/update-address/:id", authenticate, updateAddressController);
 userRouter.delete("/delete-address/:id", authenticate, deleteAddressController);
 userRouter.delete("/delete", authenticate, deleteUserController);
+userRouter.patch(
+  "/address-default/:id",
+  authenticate,
+  setAddressAsDefaultController,
+);
 
 export default userRouter;

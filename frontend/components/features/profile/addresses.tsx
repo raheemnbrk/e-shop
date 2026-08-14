@@ -14,6 +14,7 @@ import { AddAddressDialog } from "./addAddressDialog";
 import { useDeleteAddress } from "@/lib/hooks/addresses/useDeleteAddress";
 import { ConfirmationDialog } from "../layout/confirmationButton";
 import { Address } from "@/types/addressType";
+import { useMarkAsDefault } from "@/lib/hooks/addresses/useMarkAsDefault";
 
 
 export function AddressInformation() {
@@ -25,6 +26,7 @@ export function AddressInformation() {
         useState<Address | null>(null);
 
     const { deleteAddress, isPending } = useDeleteAddress()
+    const { markAsDefault, isPending: defaultPending } = useMarkAsDefault()
 
     if (isLoading) return <AddressInformationSkeleton />
     return (
@@ -148,7 +150,8 @@ export function AddressInformation() {
                             {!address.isDefault && (
                                 <button
                                     type="button"
-                                    // onClick={() => onSetDefault(address.id)}
+                                    onClick={() => markAsDefault(address.id)}
+                                    disabled={defaultPending}
                                     className="mt-4 cursor-pointer text-sm font-medium text-primary hover:underline"
                                 >
                                     Set as default

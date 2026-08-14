@@ -127,3 +127,23 @@ export const deleteUserController = async (
     next(err);
   }
 };
+
+export const setAddressAsDefaultController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).user.id;
+    const addressId = req.params.id as string;
+
+    const { message } = await userServices.setAddressAsDefaultService(
+      userId,
+      addressId,
+    );
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};

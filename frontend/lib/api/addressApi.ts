@@ -31,3 +31,10 @@ export const updateAddressApi = async (
   const res = await api.patch(`/user/update-address/${id}`, input);
   return res.data;
 };
+
+export const setAddressAsDefaultApi = async (
+  id: string,
+): Promise<MessageResponse> => {
+  const res = await api.patch(`/user/address-default/${id}`);
+  return res.data;
+};

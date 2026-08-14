@@ -126,3 +126,26 @@ export const deleteUserService = async (userId: string) => {
 
   return { message: "Account is successfully deleted." };
 };
+
+export const setAddressAsDefaultService = async (
+  userId: string,
+  addressId: string,
+) => {
+  const address = await prisma.address.findFirst({
+    where: { id: addressId, userId },
+  });
+
+  if (!address) throw new ApiError(404, "Address not found.");
+
+  await prisma.address.updateMany({
+    where: { userId, isDefault: true },
+    data: { isDefault: false },
+  });
+
+  await prisma.address.update({
+    where: { id: addressId, userId },
+    data: { isDefault: true },
+  });
+
+  return { message: "Address marked as default." };
+};
