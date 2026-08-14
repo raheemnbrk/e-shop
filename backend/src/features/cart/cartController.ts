@@ -11,6 +11,10 @@ export const addToCartController = async (
 ) => {
   try {
     const userId = (req as any).user.id;
+    // coerce quantity to number in case client sent it as a string
+    if (req.body && typeof req.body.quantity !== "number") {
+      req.body.quantity = Number(req.body.quantity);
+    }
     const input = addToCartSchema.parse(req.body);
 
     const { message } = await cartServices.addToCartServices(userId, input);
@@ -78,6 +82,9 @@ export const updateCartController = async (
 ) => {
   try {
     const userId = (req as any).user.id as string;
+    if (req.body && typeof req.body.quantity !== "number") {
+      req.body.quantity = Number(req.body.quantity);
+    }
     const input = addToCartSchema.parse(req.body);
 
     const message = await cartServices.updateCartService(userId, input);
@@ -99,6 +106,17 @@ export const mergeCartController = async (
     const mergeCartSchema = z.object({
       items: z.array(addToCartSchema),
     });
+
+    if (req.body && Array.isArray(req.body.items)) {
+      req.body.items = req.body.items.map((it: any) => ({
+        ...it,
+        quantity: Number(it.quantity),
+      }));
+      // remove invalid items (non-numeric, zero or negative quantities)
+      req.body.items = req.body.items.filter(
+        (it: any) => Number.isFinite(it.quantity) && it.quantity >= 1,
+      );
+    }
 
     const { items } = mergeCartSchema.parse(req.body);
     const { message } = await cartServices.mergeCartService(userId, items);

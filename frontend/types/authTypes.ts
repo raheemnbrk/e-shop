@@ -14,7 +14,7 @@ export interface SellerInfo {
   storeSlug: string;
   description: string;
   logo: string;
-  status: "Pending" | "Approved" | "Rejected";
+  status: "PENDING" | "APPROVED" | "REJECTED";
 }
 
 export interface User {
@@ -27,7 +27,7 @@ export interface User {
   phoneNumber?: string | null;
   createdAt: string;
   isVerified: boolean;
-  seller?: SellerInfo | null;
+  Seller?: SellerInfo | null;
 }
 
 export interface AuthStore {

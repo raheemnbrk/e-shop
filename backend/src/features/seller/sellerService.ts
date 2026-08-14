@@ -1,10 +1,9 @@
 import prisma from "../../shared/config/prisma";
 import {
   applySellerInput,
-  createProductInput,
+  updateSellerInput,
 } from "../../shared/types/sellerTypes";
 import { ApiError } from "../../shared/utils/apiError";
-import { takenSlug } from "../../shared/utils/logic/verifySlug";
 import { uploadImage } from "../../shared/utils/uploadImage";
 import slugify from "slugify";
 
@@ -69,4 +68,46 @@ export const applySellerService = async (
   };
 };
 
+export const updateSellerServices = async (
+  sellerId: string,
+  input: updateSellerInput,
+  file?: Express.Multer.File,
+) => {
+  const seller = await prisma.seller.findUnique({
+    where: { userId: sellerId },
+  });
 
+  if (!seller) throw new ApiError(404, "Seller not found.");
+
+  const { storeName, description } = input;
+
+  let imageUrl: string | undefined;
+
+  if (file) {
+    const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+    imageUrl = await uploadImage(base64, `e-shop/sellers`);
+  }
+
+  let storeSlug: string | undefined;
+
+  if (storeName && storeName !== seller.storeName) {
+    storeSlug = slugify(storeName, { lower: true, strict: true });
+
+    const existingSlug = await prisma.seller.findFirst({
+      where: { storeSlug },
+    });
+    if (existingSlug) storeSlug = `${storeSlug}-${Date.now()}`;
+  }
+
+  await prisma.seller.update({
+    where: { userId: sellerId },
+    data: {
+      ...(storeName && { storeName }),
+      ...(description && { description }),
+      ...(storeSlug && { storeSlug }),
+      ...(imageUrl && { logo: imageUrl }),
+    },
+  });
+
+  return seller;
+};

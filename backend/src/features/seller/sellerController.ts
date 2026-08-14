@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {
   applySellerSchema,
+  updateSellerSchema,
 } from "../../shared/validations/sellerValidations";
 import { ApiError } from "../../shared/utils/apiError";
 import * as sellerServices from "./sellerService";
@@ -30,4 +31,25 @@ export const applySellerController = async (
   }
 };
 
+export const updateSellerController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const sellerId = (req as any).seller.id;
 
+    const input = updateSellerSchema.parse(req.body);
+    const file = req.file;
+
+    const seller = await sellerServices.updateSellerServices(
+      sellerId,
+      input,
+      file,
+    );
+
+    return res.status(200).json({ success: true, seller });
+  } catch (err) {
+    next(err);
+  }
+};

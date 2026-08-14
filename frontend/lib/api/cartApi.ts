@@ -35,6 +35,15 @@ export const updateCartApi = async (
 export const mergeCart = async (
   items: addToCartInput[],
 ): Promise<MessageResponse> => {
-  const res = await api.post("/cart/merge",  {items} );
+  const normalized = items.map((it) => ({
+    productId: it.productId,
+    quantity: Number(it.quantity),
+  }));
+
+  const filtered = normalized.filter(
+    (it) => Number.isFinite(it.quantity) && it.quantity >= 1,
+  );
+
+  const res = await api.post("/cart/merge", { items: filtered });
   return res.data;
 };
