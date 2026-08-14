@@ -118,3 +118,11 @@ export const deleteAddress = async (userId: string, addressId: string) => {
 
   return { message: "Address deleted successfully." };
 };
+
+export const deleteUserService = async (userId: string) => {
+  const user = await prisma.user.delete({ where: { id: userId } });
+
+  if (!user) throw new ApiError(404, "User not found.");
+
+  return { message: "Account is successfully deleted." };
+};

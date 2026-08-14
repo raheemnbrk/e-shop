@@ -4,6 +4,7 @@ import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
   addAddressController,
   deleteAddressController,
+  deleteUserController,
   getAllAddressesController,
   getMeController,
   updateAddressController,
@@ -23,6 +24,6 @@ userRouter.get("/addresses", authenticate, getAllAddressesController);
 userRouter.post("/add-address", authenticate, addAddressController);
 userRouter.patch("/update-address/:id", authenticate, updateAddressController);
 userRouter.delete("/delete-address/:id", authenticate, deleteAddressController);
-
+userRouter.delete("/delete", authenticate, deleteUserController);
 
 export default userRouter;

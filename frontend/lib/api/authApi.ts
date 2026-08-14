@@ -90,3 +90,8 @@ export const updateProfileApi = async (
   });
   return res.data;
 };
+
+export const deleteUserApi = async (): Promise<MessageResponse> => {
+  const res = await api.delete("/user/delete");
+  return res.data;
+};

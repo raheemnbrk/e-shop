@@ -112,6 +112,18 @@ export const deleteAddressController = async (
   }
 };
 
+export const deleteUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).user.id;
 
+    const { message } = await userServices.deleteUserService(userId);
 
-
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};

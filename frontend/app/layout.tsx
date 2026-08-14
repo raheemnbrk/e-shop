@@ -23,7 +23,7 @@ export default function RootLayout({ children }: Children) {
     <html lang="en">
       <body className={`${inter.className} bg-background text-foreground`}>
         <QueryProvider>
-          <Toaster position="top-right" richColors />
+          <Toaster position="top-right" richColors expand={false} />
           <ThemeInitializer />
           <AuthInitializer />
           <AppShell>{children}</AppShell>
