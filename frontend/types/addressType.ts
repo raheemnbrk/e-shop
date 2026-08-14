@@ -1,4 +1,7 @@
-import { addAddressSchema } from "@/lib/validators/addressSchema";
+import {
+  addAddressSchema,
+  updateAddressSchema,
+} from "@/lib/validators/addressSchema";
 import z from "zod";
 
 export interface Address {
@@ -13,3 +16,5 @@ export interface Address {
 }
 
 export type addAddressInput = z.infer<typeof addAddressSchema>;
+
+export type updateAddressInput = z.infer<typeof updateAddressSchema>;

@@ -1,4 +1,8 @@
-import { addAddressInput, Address } from "@/types/addressType";
+import {
+  addAddressInput,
+  Address,
+  updateAddressInput,
+} from "@/types/addressType";
 import api from "./axios";
 
 export const getAddressApi = async (): Promise<Address> => {
@@ -17,5 +21,13 @@ export const deleteAddressApi = async (
   id: string,
 ): Promise<MessageResponse> => {
   const res = await api.delete(`/user/delete-address/${id}`);
+  return res.data;
+};
+
+export const updateAddressApi = async (
+  id: string,
+  input: updateAddressInput,
+): Promise<MessageResponse> => {
+  const res = await api.patch(`/user/update-address/${id}`, input);
   return res.data;
 };

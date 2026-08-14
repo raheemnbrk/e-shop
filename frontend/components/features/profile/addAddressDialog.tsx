@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -19,12 +20,14 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { addAddressSchema } from "@/lib/validators/addressSchema";
-import { addAddressInput } from "@/types/addressType";
+import { Address, addAddressInput } from "@/types/addressType";
 import { useAddAddress } from "@/lib/hooks/addresses/useAddAddress";
+import { useUpdateAddress } from "@/lib/hooks/addresses/useUpdateAddress";
 
 interface AddAddressDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    address?: Address | null;
 }
 
 type AddAddressForm = z.input<typeof addAddressSchema>;
@@ -32,8 +35,13 @@ type AddAddressForm = z.input<typeof addAddressSchema>;
 export function AddAddressDialog({
     open,
     onOpenChange,
+    address,
 }: AddAddressDialogProps) {
-    const { addAddress, isPending } = useAddAddress();
+    const { addAddress, isPending: isAdding } = useAddAddress();
+    const { updateAddress, isPending: isUpdating } = useUpdateAddress();
+
+    const isEditing = !!address;
+    const isPending = isAdding || isUpdating;
 
     const {
         register,
@@ -57,7 +65,48 @@ export function AddAddressDialog({
 
     const isDefault = watch("isDefault");
 
+    useEffect(() => {
+        if (address) {
+            reset({
+                label: address.label ?? "",
+                street: address.street,
+                city: address.city,
+                state: address.state,
+                country: address.country,
+                zipCode: address.zipCode,
+                isDefault: address.isDefault,
+            });
+        } else {
+            reset({
+                label: "",
+                street: "",
+                city: "",
+                state: "",
+                country: "",
+                zipCode: "",
+                isDefault: false,
+            });
+        }
+    }, [address, reset]);
+
     const onSubmit = (data: AddAddressForm) => {
+        if (isEditing && address) {
+            updateAddress(
+                {
+                    id: address.id,
+                    input: data as addAddressInput,
+                },
+                {
+                    onSuccess: () => {
+                        reset();
+                        onOpenChange(false);
+                    },
+                },
+            );
+
+            return;
+        }
+
         addAddress(data as addAddressInput, {
             onSuccess: () => {
                 reset();
@@ -75,14 +124,18 @@ export function AddAddressDialog({
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-card dark:border-dark-border dark:bg-dark-card sm:max-w-lg">
+            <DialogContent
+                className="max-h-[90vh] overflow-y-auto border-border bg-card text-text sm:max-w-lg dark:border-dark-border dark:bg-dark-card dark:text-dark-text"
+            >
                 <DialogHeader>
                     <DialogTitle className="text-text dark:text-dark-text">
-                        Add new address
+                        {isEditing ? "Edit address" : "Add new address"}
                     </DialogTitle>
 
                     <DialogDescription className="text-text-secondary dark:text-dark-text-secondary">
-                        Add a delivery address to your account.
+                        {isEditing
+                            ? "Update your delivery address."
+                            : "Add a delivery address to your account."}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -104,7 +157,7 @@ export function AddAddressDialog({
                             />
 
                             {errors.label && (
-                                <p className="mt-1 text-xs text-red-500 dark:text-red-400">
+                                <p className="mt-1 text-xs text-red-500">
                                     {errors.label.message}
                                 </p>
                             )}
@@ -123,7 +176,7 @@ export function AddAddressDialog({
                             />
 
                             {errors.street && (
-                                <p className="mt-1 text-xs text-red-500 dark:text-red-400">
+                                <p className="mt-1 text-xs text-red-500">
                                     {errors.street.message}
                                 </p>
                             )}
@@ -142,7 +195,7 @@ export function AddAddressDialog({
                             />
 
                             {errors.city && (
-                                <p className="mt-1 text-xs text-red-500 dark:text-red-400">
+                                <p className="mt-1 text-xs text-red-500">
                                     {errors.city.message}
                                 </p>
                             )}
@@ -161,7 +214,7 @@ export function AddAddressDialog({
                             />
 
                             {errors.state && (
-                                <p className="mt-1 text-xs text-red-500 dark:text-red-400">
+                                <p className="mt-1 text-xs text-red-500">
                                     {errors.state.message}
                                 </p>
                             )}
@@ -180,7 +233,7 @@ export function AddAddressDialog({
                             />
 
                             {errors.country && (
-                                <p className="mt-1 text-xs text-red-500 dark:text-red-400">
+                                <p className="mt-1 text-xs text-red-500">
                                     {errors.country.message}
                                 </p>
                             )}
@@ -200,7 +253,7 @@ export function AddAddressDialog({
                             />
 
                             {errors.zipCode && (
-                                <p className="mt-1 text-xs text-red-500 dark:text-red-400">
+                                <p className="mt-1 text-xs text-red-500">
                                     {errors.zipCode.message}
                                 </p>
                             )}
@@ -216,12 +269,9 @@ export function AddAddressDialog({
                                 setValue(
                                     "isDefault",
                                     checked === true,
-                                    {
-                                        shouldValidate: true,
-                                    },
                                 )
                             }
-                            className="cursor-pointer"
+                            className="cursor-pointer border-border data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white dark:border-dark-border"
                         />
 
                         <label
@@ -238,7 +288,7 @@ export function AddAddressDialog({
                             variant="outline"
                             onClick={handleClose}
                             disabled={isPending}
-                            className="cursor-pointer border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300"
+                            className="cursor-pointer border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600 dark:border-red-500 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300"
                         >
                             Cancel
                         </Button>
@@ -246,15 +296,19 @@ export function AddAddressDialog({
                         <Button
                             type="submit"
                             disabled={isPending}
-                            className="cursor-pointer bg-primary text-white hover:bg-primaryHover"
+                            className="cursor-pointer bg-primary text-white hover:bg-primaryHover disabled:cursor-not-allowed"
                         >
                             {isPending && (
                                 <Loader2 className="h-4 w-4 animate-spin" />
                             )}
 
                             {isPending
-                                ? "Adding..."
-                                : "Add address"}
+                                ? isEditing
+                                    ? "Updating..."
+                                    : "Adding..."
+                                : isEditing
+                                    ? "Update address"
+                                    : "Add address"}
                         </Button>
                     </DialogFooter>
                 </form>

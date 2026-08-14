@@ -13,6 +13,7 @@ import { useState } from "react";
 import { AddAddressDialog } from "./addAddressDialog";
 import { useDeleteAddress } from "@/lib/hooks/addresses/useDeleteAddress";
 import { ConfirmationDialog } from "../layout/confirmationButton";
+import { Address } from "@/types/addressType";
 
 
 export function AddressInformation() {
@@ -20,6 +21,8 @@ export function AddressInformation() {
     const addressList = Array.isArray(addresses) ? addresses : addresses ? [addresses] : []
 
     const [isAddAddressOpen, setIsAddAddressOpen] = useState(false);
+    const [selectedAddress, setSelectedAddress] =
+        useState<Address | null>(null);
 
     const { deleteAddress, isPending } = useDeleteAddress()
 
@@ -113,7 +116,10 @@ export function AddressInformation() {
                                 <div className="flex shrink-0 items-center gap-1">
                                     <button
                                         type="button"
-                                        // onClick={() => onEdit(address)}
+                                        onClick={() => {
+                                            setSelectedAddress(address);
+                                            setIsAddAddressOpen(true);
+                                        }}
                                         className="cursor-pointer rounded-lg p-2 text-text-secondary transition hover:bg-background hover:text-primary dark:text-dark-text-secondary dark:hover:bg-dark-background"
                                         aria-label="Edit address"
                                     >
@@ -155,7 +161,14 @@ export function AddressInformation() {
 
             <AddAddressDialog
                 open={isAddAddressOpen}
-                onOpenChange={setIsAddAddressOpen}
+                onOpenChange={(open) => {
+                    setIsAddAddressOpen(open);
+
+                    if (!open) {
+                        setSelectedAddress(null);
+                    }
+                }}
+                address={selectedAddress}
             />
         </div>
     );

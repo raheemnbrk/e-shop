@@ -13,3 +13,17 @@ export const addAddressSchema = z.object({
     .length(5, "Zip code must contain 5 digits"),
   isDefault: z.boolean().optional().default(false),
 });
+
+export const updateAddressSchema = z.object({
+  label: z.string().optional(),
+  street: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+  zipCode: z
+    .string()
+    .regex(/^\d+$/, "Zip code must contain only digits")
+    .length(5, "Zip code must contain 5 digits")
+    .optional(),
+  isDefault: z.boolean().optional().default(false),
+});
