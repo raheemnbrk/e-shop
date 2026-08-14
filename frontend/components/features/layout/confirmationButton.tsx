@@ -21,6 +21,7 @@ interface ConfirmationDialogProps {
     cancelText?: string;
     onConfirm: () => void;
     triggerText?: string;
+    trigger?: React.ReactNode;
 }
 
 export function ConfirmationDialog({
@@ -30,17 +31,20 @@ export function ConfirmationDialog({
     cancelText = "Cancel",
     onConfirm,
     triggerText = "Delete",
+    trigger,
 }: ConfirmationDialogProps) {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" className="cursor-pointer">
-                    <Trash2Icon />
-                    {triggerText}
-                </Button>
+                {trigger ?? (
+                    <Button variant="destructive" className="cursor-pointer">
+                        <Trash2Icon />
+                        {triggerText}
+                    </Button>
+                )}
             </AlertDialogTrigger>
 
-            <AlertDialogContent size="sm">
+            <AlertDialogContent size="sm" className="bg-card text-text dark:bg-dark-card dark:text-dark-text">
                 <AlertDialogHeader>
                     <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
                         <Trash2Icon />

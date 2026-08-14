@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { AddAddressDialog } from "./addAddressDialog";
+import { useDeleteAddress } from "@/lib/hooks/addresses/useDeleteAddress";
+import { ConfirmationDialog } from "../layout/confirmationButton";
 
 
 export function AddressInformation() {
@@ -18,6 +20,8 @@ export function AddressInformation() {
     const addressList = Array.isArray(addresses) ? addresses : addresses ? [addresses] : []
 
     const [isAddAddressOpen, setIsAddAddressOpen] = useState(false);
+
+    const { deleteAddress, isPending } = useDeleteAddress()
 
     if (isLoading) return <AddressInformationSkeleton />
     return (
@@ -116,14 +120,22 @@ export function AddressInformation() {
                                         <Pencil className="h-4 w-4" />
                                     </button>
 
-                                    <button
-                                        type="button"
-                                        // onClick={() => onDelete(address.id)}
-                                        className="cursor-pointer rounded-lg p-2 text-text-secondary transition hover:bg-red-50 hover:text-red-500 dark:text-dark-text-secondary dark:hover:bg-red-950"
-                                        aria-label="Delete address"
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </button>
+                                    <ConfirmationDialog
+                                        title="Delete address?"
+                                        description="This will permanently delete this address from your account. This action cannot be undone."
+                                        actionText="Delete address"
+                                        onConfirm={() => deleteAddress(address.id)}
+                                        trigger={
+                                            <button
+                                                type="button"
+                                                disabled={isPending}
+                                                className="cursor-pointer rounded-lg p-2 text-text-secondary transition hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-dark-text-secondary dark:hover:bg-red-950"
+                                                aria-label="Delete address"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        }
+                                    />
                                 </div>
                             </div>
 
