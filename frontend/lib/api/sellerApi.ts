@@ -1,8 +1,16 @@
-import { sellerApplicationInput, updateSellerInput } from "@/types/sellerTypes";
+import { applySellerInput, updateSellerInput } from "@/types/sellerTypes";
 import api from "./axios";
 
-export const applySeller = async (input: sellerApplicationInput) => {
-  const res = await api.post("/seller/apply", input);
+export const applySellerApi = async (input: applySellerInput, file: File) => {
+  const formData = new FormData();
+
+  formData.append("storeName", input.storeName);
+  formData.append("description", input.description);
+  formData.append("logo", file);
+
+  const res = await api.post("/seller/apply", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return res.data;
 };
 
