@@ -23,7 +23,7 @@ export const addAddressSchema = z.object({
   label: z.string().optional(),
   street: z.string().min(1, "street is required."),
   city: z.string().min(1, "City is required."),
-  state: z.string().min(1, "City is required."),
+  state: z.string().min(1, "State is required."),
   country: z.string().min(1, "Country is required."),
   zipCode: z
     .string()

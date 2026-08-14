@@ -1,5 +1,6 @@
 "use client";
 
+import { AddressInformation } from "@/components/features/profile/addresses";
 import { BecomeSeller } from "@/components/features/profile/becomeSeller";
 import { ChangePassword } from "@/components/features/profile/changePassword";
 import { DangerZone } from "@/components/features/profile/dangerZone";
@@ -12,7 +13,6 @@ import { useGetMe } from "@/lib/hooks/auth/usGetMe";
 
 export default function MyProfile() {
     const { data: user, isLoading } = useGetMe();
-    console.log(user)
 
     if (isLoading) {
         return <ProfileSkeleton />;
@@ -39,6 +39,9 @@ export default function MyProfile() {
             <ProfileStats />
 
             <PersonalInformation user={user} />
+
+            <AddressInformation
+            />
 
             <ChangePassword />
 
