@@ -12,6 +12,7 @@ export function PersonalInformation({ user }: { user: User }) {
     const { updateProfile, isPending } = useUpdateProfile();
 
     const [profileImage, setProfileImage] = useState<File | undefined>();
+    const [removeImage, setRemoveImage] = useState(false);
 
     const [profileImagePreview, setProfileImagePreview] = useState<
         string | undefined
@@ -46,6 +47,7 @@ export function PersonalInformation({ user }: { user: User }) {
         }
 
         setProfileImage(file);
+        setRemoveImage(false);
 
         if (profileImagePreview) {
             URL.revokeObjectURL(profileImagePreview);
@@ -56,12 +58,32 @@ export function PersonalInformation({ user }: { user: User }) {
         setProfileImagePreview(previewUrl);
     };
 
+    const handleRemoveProfileImage = () => {
+        setProfileImage(undefined);
+        setRemoveImage(true);
+
+        if (profileImagePreview) {
+            URL.revokeObjectURL(profileImagePreview);
+        }
+
+        setProfileImagePreview(undefined);
+
+        const input = document.getElementById(
+            "profile-image"
+        ) as HTMLInputElement | null;
+
+        if (input) {
+            input.value = "";
+        }
+    };
+
     const handleUpdateProfile = () => {
         updateProfile({
             firstName: profileForm.firstName,
             lastName: profileForm.lastName,
             phoneNumber: profileForm.phoneNumber,
             file: profileImage,
+            removeImage,
         });
     };
 
@@ -73,6 +95,7 @@ export function PersonalInformation({ user }: { user: User }) {
         });
 
         setProfileImage(undefined);
+        setRemoveImage(false);
 
         if (profileImagePreview) {
             URL.revokeObjectURL(profileImagePreview);
@@ -97,9 +120,9 @@ export function PersonalInformation({ user }: { user: User }) {
 
             <div className="mb-6">
                 <div className="relative w-fit">
-                    {profileImagePreview || user.image ? (
+                    {profileImagePreview || user.image && !removeImage ? (
                         <img
-                            src={profileImagePreview || user.image}
+                            src={profileImagePreview || user.image || ""}
                             alt={user.firstName}
                             className="h-20 w-20 rounded-full object-cover border-2 border-border dark:border-dark-border"
                         />
@@ -125,6 +148,17 @@ export function PersonalInformation({ user }: { user: User }) {
                         <Camera className="h-3 w-3 text-white" />
                     </label>
                 </div>
+
+                {(user.image || profileImagePreview || removeImage) && (
+                    <button
+                        type="button"
+                        onClick={handleRemoveProfileImage}
+                        disabled={isPending}
+                        className="mt-3 text-sm font-medium text-red-500 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                        Remove photo
+                    </button>
+                )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

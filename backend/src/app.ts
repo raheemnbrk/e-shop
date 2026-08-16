@@ -11,6 +11,7 @@ import productRouter from "./features/products/productRoutes";
 import categoryRouter from "./features/category/categoryRoutes";
 import reviewRouter from "./features/review/reviewRoutes";
 import cartRouter from "./features/cart/cartRoutes";
+import orderRouter from "./features/order/orderRouter";
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use("/api/product", productRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/cart" , cartRouter)
+app.use("/api/orders" , orderRouter)
 
 app.use(errorHandler);
 

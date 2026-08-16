@@ -17,6 +17,7 @@ export const updateProfileSchema = z.object({
     )
     .length(10, "phone number must contains 10 digits.")
     .optional(),
+  removeImage: z.coerce.boolean().optional(),
 });
 
 export const addAddressSchema = z.object({

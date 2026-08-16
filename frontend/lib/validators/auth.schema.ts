@@ -91,4 +91,5 @@ export const updateProfileSchema = z.object({
     )
     .length(10, "phone number must contains 10 digits.")
     .optional(),
+  removeImage: z.boolean().optional(),
 });

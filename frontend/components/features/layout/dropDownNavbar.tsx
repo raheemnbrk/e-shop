@@ -39,6 +39,11 @@ export function DropdownMenuProfile({ user }: { user: User }) {
               Profile
             </DropdownMenuItem>
           </Link>
+          {user.role !== "CUSTOMER" && (<Link href={user.role === "ADMIN" ? "admin" : "seller"} >
+            <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text hover:text-primary capitalize">
+              {user.role.toLocaleLowerCase()}
+            </DropdownMenuItem>
+          </Link>)}
           <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text hover:text-primary">
             My orders
           </DropdownMenuItem>

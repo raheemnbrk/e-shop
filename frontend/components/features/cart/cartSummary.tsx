@@ -9,8 +9,7 @@ interface CartSummaryProps {
 }
 
 export default function CartSummary({ subtotal, itemCount }: CartSummaryProps) {
-  const shipping = subtotal > 50 ? 0 : 9.99;
-  const total = subtotal + shipping;
+  const total = subtotal;
 
   return (
     <div className="rounded-xl border border-border dark:border-dark-border bg-card dark:bg-dark-card p-5 flex flex-col gap-4 sticky top-20">
@@ -27,22 +26,6 @@ export default function CartSummary({ subtotal, itemCount }: CartSummaryProps) {
             ${subtotal.toFixed(2)}
           </span>
         </div>
-        <div className="flex justify-between text-text-secondary dark:text-dark-text-secondary">
-          <span>Shipping</span>
-          {shipping === 0 ? (
-            <span className="font-medium text-green-600">Free</span>
-          ) : (
-            <span className="font-medium text-text dark:text-dark-text">
-              ${shipping.toFixed(2)}
-            </span>
-          )}
-        </div>
-
-        {shipping > 0 && (
-          <p className="text-xs text-primary">
-            Add ${(50 - subtotal).toFixed(2)} more for free shipping
-          </p>
-        )}
 
         <div className="border-t border-border dark:border-dark-border pt-3 flex justify-between font-bold text-text dark:text-dark-text">
           <span>Total</span>
@@ -67,7 +50,7 @@ export default function CartSummary({ subtotal, itemCount }: CartSummaryProps) {
       <Link href="/checkout">
         <button className="w-full flex items-center justify-center gap-2 h-11 rounded-lg bg-primary text-white font-semibold text-sm hover:bg-primaryHover transition cursor-pointer">
           <ShoppingBag className="h-4 w-4" />
-          Place order
+          Checkout
         </button>
       </Link>
 

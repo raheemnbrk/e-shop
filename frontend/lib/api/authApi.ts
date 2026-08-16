@@ -83,6 +83,7 @@ export const updateProfileApi = async (
   if (input.firstName) formData.append("firstName", input.firstName);
   if (input.lastName) formData.append("lastName", input.lastName);
   if (input.phoneNumber) formData.append("phoneNumber", input.phoneNumber);
+  if (input.removeImage) formData.append("removeImage", "true");
   if (file) formData.append("image", file);
 
   const res = await api.patch("/user/update-profile", formData, {

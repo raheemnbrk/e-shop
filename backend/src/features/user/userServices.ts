@@ -64,11 +64,14 @@ export const updateProfileService = async (
   });
   if (!user) throw new ApiError(404, "User not found.");
 
-  const { firstName, lastName, phoneNumber } = input;
-  let imageURl: string | undefined;
+  const { firstName, lastName, phoneNumber, removeImage } = input;
+  let imageURl: string | null | undefined;
+
   if (file) {
     const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
-    imageURl = await uploadImage(base64, `e-shop/users`);
+    imageURl = await uploadImage(base64, "e-shop/users");
+  } else if (removeImage) {
+    imageURl = null;
   }
 
   user = await prisma.user.update({
@@ -77,7 +80,7 @@ export const updateProfileService = async (
       ...(firstName && { firstName }),
       ...(lastName && { lastName }),
       ...(phoneNumber && { phoneNumber }),
-      ...(imageURl && { image: imageURl }),
+      ...(imageURl !== undefined && { image: imageURl }),
     },
   });
 

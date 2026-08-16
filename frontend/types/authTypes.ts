@@ -22,7 +22,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  image: string;
+  image?: string | null;
   role: "ADMIN" | "SELLER" | "CUSTOMER";
   phoneNumber?: string | null;
   createdAt: string;
