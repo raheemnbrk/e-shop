@@ -223,7 +223,7 @@ export function PersonalInformation({ user }: { user: User }) {
                     type="button"
                     onClick={handleCancelProfile}
                     disabled={isPending}
-                    className="px-5 py-2 rounded-lg border border-red-200 dark:border-red-900 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition cursor-pointer">
+                    className="px-5 py-2 rounded-lg border border-red-200 dark:border-red-900 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition cursor-pointer" >
                     Cancel
                 </button>
 

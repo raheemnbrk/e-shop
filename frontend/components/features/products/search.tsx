@@ -49,7 +49,7 @@ export default function Search() {
         placeholder="Enter product name..."
         defaultValue={searchParams.get("search") ?? ""}
         onChange={(e) => handleSearch(e.target.value)}
-        className="focus-visible:ring-primary focus-visible:border-primary h-12 bg-card dark:bg-dark-card"
+        className="focus-visible:ring-primary focus-visible:border-primary h-10 bg-card dark:bg-dark-card"
       />
       <SelectDemo
         key={searchParams.get("filter") ?? items[0].value}
