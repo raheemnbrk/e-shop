@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as adminServices from "./adminServices";
-import { Role } from "../../generated/prisma";
+import { userQuerySchema } from "../../shared/validations/adminValidation";
 
 export const approveSellerController = async (
   req: Request,
@@ -41,10 +41,13 @@ export const getAllUsersController = async (
 ) => {
   try {
     const { id } = (req as any).user;
-    const role = req.body as Role | undefined;
-    const users = await adminServices.getAllUsersService(id, role);
+    const input = userQuerySchema.parse((req as any).query);
+    const { users, pagination } = await adminServices.getAllUsersService(
+      id,
+      input,
+    );
 
-    return res.status(200).json({ success: true, users });
+    return res.status(200).json({ success: true, users , pagination });
   } catch (err) {
     next(err);
   }

@@ -7,4 +7,12 @@ declare global {
     success: boolean;
     message: string;
   }
+  interface Pagination {
+    currentPage: number;
+    totalPages: number;
+    totalUsers: number;
+    limit: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  }
 }

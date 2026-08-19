@@ -1,10 +1,7 @@
 import prisma from "../../shared/config/prisma";
-import { addCategoryInput } from "../../shared/types/categoryTypes";
 import { ApiError } from "../../shared/utils/apiError";
-import slugify from "slugify";
-import { takenSlug } from "../../shared/utils/logic/verifySlug";
-import { uploadImage } from "../../shared/utils/uploadImage";
 import { Role } from "../../generated/prisma";
+import { userQueryInput } from "../../shared/types/adminType";
 
 export const approveSellerServices = async (userId: string) => {
   const seller = await prisma.seller.findUnique({ where: { userId } });
@@ -43,11 +40,76 @@ export const rejectSellerServices = async (userId: string) => {
   return { message: "Seller rejected successfully." };
 };
 
-export const getAllUsersService = async (id: string, role?: Role) => {
-  const users = await prisma.user.findMany({
-    where: { id: { not: id }, ...(role && { role }) },
-    orderBy: { createdAt: "desc" },
-  });
+export const getAllUsersService = async (id: string, input: userQueryInput) => {
+  const { page, search, role } = input;
+  const limit = 10;
+  const skip = (page - 1) * 10;
+  const searchTerm = search?.trim();
 
-  return users;
+  const where = {
+    id: { not: id },
+    ...(role && { role }),
+    ...(searchTerm && {
+      OR: [
+        {
+          firstName: {
+            contains: searchTerm,
+            mode: "insensitive" as const,
+          },
+        },
+        {
+          lastName: {
+            contains: searchTerm,
+            mode: "insensitive" as const,
+          },
+        },
+        ...(searchTerm.includes(" ")
+          ? [
+              {
+                AND: [
+                  {
+                    firstName: {
+                      contains: searchTerm.split(/\s+/)[0],
+                      mode: "insensitive" as const,
+                    },
+                  },
+                  {
+                    lastName: {
+                      contains: searchTerm.split(/\s+/).slice(1).join(" "),
+                      mode: "insensitive" as const,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
+      ],
+    }),
+  };
+
+  const [users, totalUsers] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      omit: { password: true },
+    }),
+
+    prisma.user.count({ where }),
+  ]);
+
+  const totalPages = Math.ceil(totalUsers / limit);
+
+  return {
+    users,
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalUsers,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
 };
