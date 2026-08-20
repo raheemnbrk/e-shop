@@ -4,6 +4,18 @@ import { TableWrapper } from "@/components/features/dashboard/tableWrapper";
 import { useGetAllSellers } from "@/lib/hooks/admin/sellers/useGetAllSellers";
 import { SellerUser } from "@/types/adminTypes";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { CheckIcon, Link, MoreHorizontalIcon, XIcon } from "lucide-react";
+import { ConfirmationDialog } from "@/components/features/layout/confirmationButton";
+import { Button } from "@/components/ui/button";
+import { useApproveSeller } from "@/lib/hooks/admin/sellers/useApproveSeller";
+import { useRejectSeller } from "@/lib/hooks/admin/sellers/useRejectSeller";
 
 const statusItems = [
     { value: "ALL", label: "All status" },
@@ -32,6 +44,9 @@ export default function AdminSellersPage() {
         params.set("page", String(newPage))
         router.push(`${pathName}?${params.toString()}`)
     }
+
+    const { handleApprove, isPending: Approving } = useApproveSeller()
+    const { handleReject, isPending: Rejecting } = useRejectSeller()
 
     const columns = [
         {
@@ -84,49 +99,78 @@ export default function AdminSellersPage() {
             render: (user: SellerUser) =>
                 new Date(user.createdAt).toLocaleDateString(),
         },
-        // {
-        //     key: "actions",
-        //     label: "Actions",
-        //     className: "text-right",
-        //     render: (user: User) => (
-        //         <DropdownMenu>
-        //             <DropdownMenuTrigger asChild>
-        //                 <Button variant="ghost" size="icon" className="size-8 cursor-pointer">
-        //                     <MoreHorizontalIcon />
-        //                     <span className="sr-only">Open menu</span>
-        //                 </Button>
-        //             </DropdownMenuTrigger>
-        //             <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card">
-        //                 <Link href={`/admin/users/${user.id}`} ><DropdownMenuItem className="cursor-pointer">View profile</DropdownMenuItem></Link>
-        //                 <DropdownMenuItem className="cursor-pointer">Change role</DropdownMenuItem>
-        //                 <DropdownMenuSeparator />
-        //                 <DropdownMenuItem
-        //                     className="cursor-pointer"
-        //                     variant="destructive"
-        //                     onSelect={(e) => e.preventDefault()}
-        //                 >
-        //                     <ConfirmationDialog
-        //                         title="Delete user?"
-        //                         description="This will permanently delete this user from your platform. This action cannot be undone."
-        //                         actionText="Delete address"
-        //                         onConfirm={() => deleteUser(user.id)}
-        //                         trigger={
-        //                             <button
-        //                                 type="button"
-        //                                 disabled={isPending}
-        //                                 aria-label="Delete user"
-        //                                 className="cursor-pointer"
-        //                             >
-        //                                 Delete User
-        //                             </button>
-        //                         }
-        //                     />
-        //                 </DropdownMenuItem>
-        //             </DropdownMenuContent>
-        //         </DropdownMenu>
-        //     ),
-        // },
+        {
+            key: "actions",
+            label: "Actions",
+            className: "text-right",
+            render: (user: SellerUser) => (
+                <div className="flex items-center justify-end gap-2">
+                    {user.Seller?.status === "PENDING" ? (
+                        <>
+                            <button
+                                onClick={() => handleApprove(user?.id)}
+                                disabled={Approving}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition-colors text-xs font-medium cursor-pointer disabled:opacity-50"
+                            >
+                                <CheckIcon className="w-3.5 h-3.5" />
+                                Approve
+                            </button>
+                            <button
+                                onClick={() => handleApprove(user?.id)}
+                                disabled={Rejecting}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors text-xs font-medium cursor-pointer disabled:opacity-50"
+                            >
+                                <XIcon className="w-3.5 h-3.5" />
+                                Reject
+                            </button>
+                        </>
+                    ) : (
+                        <DropdownMenu >
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="size-8 cursor-pointer">
+                                    <MoreHorizontalIcon />
+                                    <span className="sr-only">Open menu</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card">
+                                <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary">
+                                    View profile
+                                </DropdownMenuItem>
+                                {user.Seller?.status === "APPROVED" && (
+                                    <DropdownMenuItem
+                                        className="cursor-pointer"
+                                        variant="destructive"
+                                        onSelect={(e) => e.preventDefault()}
+                                    >
+                                        <ConfirmationDialog
+                                            title="Suspend seller?"
+                                            description="This seller will no longer be able to sell on the platform."
+                                            actionText="Suspend"
+                                            onConfirm={() => handleReject(user?.id)}
+                                            trigger={
+                                                <button type="button" className="cursor-pointer w-full text-left">
+                                                    Suspend
+                                                </button>
+                                            }
+                                        />
+                                    </DropdownMenuItem>
+                                )}
+                                {user.Seller?.status === "REJECTED" && (
+                                    <DropdownMenuItem
+                                        className="cursor-pointer text-green-700 data-highlighted:bg-green-50 data-highlighted:text-green-700"
+                                        onClick={() => handleApprove(user?.id)}
+                                    >
+                                        Re-approve
+                                    </DropdownMenuItem>
+                                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
+                </div>
+            ),
+        },
     ]
+
     return (
         <div className="flex flex-col space-y-4">
             <div>

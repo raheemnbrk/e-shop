@@ -108,8 +108,8 @@ export default function UsersPage() {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card">
-                        <Link href={`/admin/users/${user.id}`} ><DropdownMenuItem className="cursor-pointer">View profile</DropdownMenuItem></Link>
-                        <DropdownMenuItem className="cursor-pointer">Change role</DropdownMenuItem>
+                        <Link href={`/admin/users/${user.id}`} ><DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary">View profile</DropdownMenuItem></Link>
+                        <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary">Change role</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             className="cursor-pointer"
