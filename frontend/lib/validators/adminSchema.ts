@@ -11,3 +11,7 @@ export const searchQuerySchema = paginationSchema.extend({
 export const userQuerySchema = searchQuerySchema.extend({
   role: z.enum(["ADMIN", "CUSTOMER", "SELLER"]).optional(),
 });
+
+export const sellerQuerySchema = searchQuerySchema.extend({
+  status: z.enum(["PENDING" , "REJECTED" , "APPROVED"]).optional(),
+});

@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import * as adminServices from "./adminServices";
-import { userQuerySchema } from "../../shared/validations/adminValidation";
+import {
+  sellerQuerySchema,
+  userQuerySchema,
+} from "../../shared/validations/adminValidation";
 
 export const approveSellerController = async (
   req: Request,
@@ -47,7 +50,40 @@ export const getAllUsersController = async (
       input,
     );
 
-    return res.status(200).json({ success: true, users , pagination });
+    return res.status(200).json({ success: true, users, pagination });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = (req as any).params as { id: string };
+
+    const { message } = await adminServices.deleteUserService(id);
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getAllSellersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = sellerQuerySchema.parse((req as any).query);
+
+    const { sellers, pagination } =
+      await adminServices.getAllSellersService(input);
+
+    return res.status(200).json({ success: true, sellers, pagination });
   } catch (err) {
     next(err);
   }

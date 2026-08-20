@@ -119,7 +119,7 @@ export default function UsersPage() {
                             <ConfirmationDialog
                                 title="Delete user?"
                                 description="This will permanently delete this user from your platform. This action cannot be undone."
-                                actionText="Delete address"
+                                actionText="Delete user"
                                 onConfirm={() => deleteUser(user.id)}
                                 trigger={
                                     <button

@@ -1,7 +1,6 @@
 import prisma from "../../shared/config/prisma";
 import { ApiError } from "../../shared/utils/apiError";
-import { Role } from "../../generated/prisma";
-import { userQueryInput } from "../../shared/types/adminType";
+import { sellerQueryInput, userQueryInput } from "../../shared/types/adminType";
 
 export const approveSellerServices = async (userId: string) => {
   const seller = await prisma.seller.findUnique({ where: { userId } });
@@ -43,39 +42,38 @@ export const rejectSellerServices = async (userId: string) => {
 export const getAllUsersService = async (id: string, input: userQueryInput) => {
   const { page, search, role } = input;
   const limit = 10;
-  const skip = (page - 1) * 10;
-  const searchTerm = search?.trim();
+  const skip = (page - 1) * limit;
 
   const where = {
     id: { not: id },
     ...(role && { role }),
-    ...(searchTerm && {
+    ...(search && {
       OR: [
         {
           firstName: {
-            contains: searchTerm,
+            contains: search,
             mode: "insensitive" as const,
           },
         },
         {
           lastName: {
-            contains: searchTerm,
+            contains: search,
             mode: "insensitive" as const,
           },
         },
-        ...(searchTerm.includes(" ")
+        ...(search.includes(" ")
           ? [
               {
                 AND: [
                   {
                     firstName: {
-                      contains: searchTerm.split(/\s+/)[0],
+                      contains: search.split(/\s+/)[0],
                       mode: "insensitive" as const,
                     },
                   },
                   {
                     lastName: {
-                      contains: searchTerm.split(/\s+/).slice(1).join(" "),
+                      contains: search.split(/\s+/).slice(1).join(" "),
                       mode: "insensitive" as const,
                     },
                   },
@@ -107,6 +105,124 @@ export const getAllUsersService = async (id: string, input: userQueryInput) => {
       currentPage: page,
       totalPages,
       totalUsers,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
+};
+
+export const deleteUserService = async (id: string) => {
+  const user = await prisma.user.delete({ where: { id } });
+
+  if (!user) throw new ApiError(404, "User not found");
+
+  return {
+    message: "User deleted successfully.",
+  };
+};
+
+export const getAllSellersService = async (input: sellerQueryInput) => {
+  const { search, page, status } = input;
+
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  const where = {
+    ...(status && { status }),
+
+    ...(search && {
+      OR: [
+        {
+          storeName: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+        {
+          user: {
+            firstName: {
+              contains: search,
+              mode: "insensitive" as const,
+            },
+          },
+        },
+        {
+          user: {
+            lastName: {
+              contains: search,
+              mode: "insensitive" as const,
+            },
+          },
+        },
+
+        ...(search.includes(" ")
+          ? [
+              {
+                user: {
+                  AND: [
+                    {
+                      firstName: {
+                        contains: search.split(/\s+/)[0],
+                        mode: "insensitive" as const,
+                      },
+                    },
+                    {
+                      lastName: {
+                        contains: search.split(/\s+/).slice(1).join(" "),
+                        mode: "insensitive" as const,
+                      },
+                    },
+                  ],
+                },
+              },
+            ]
+          : []),
+      ],
+    }),
+  };
+
+  const [sellers, totalSellers] = await Promise.all([
+    prisma.seller.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: {
+        user: {
+          createdAt: "desc",
+        },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            image: true,
+            phoneNumber : true ,
+            createdAt: true,
+          },
+        },
+      },
+    }),
+
+    prisma.seller.count({
+      where,
+    }),
+  ]);
+
+  const totalPages = Math.ceil(totalSellers / limit);
+
+  return {
+    sellers: sellers.map(({ user, ...seller }) => ({
+      ...user,
+      Seller: seller,
+    })),
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalSellers,
       limit,
       hasNextPage: page < totalPages,
       hasPreviousPage: page > 1,

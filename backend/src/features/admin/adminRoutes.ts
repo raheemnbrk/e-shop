@@ -2,6 +2,8 @@ import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
   approveSellerController,
+  deleteUserController,
+  getAllSellersController,
   getAllUsersController,
   rejectSellerController,
 } from "./adminController";
@@ -23,6 +25,20 @@ adminRouter.patch(
   rejectSellerController,
 );
 
-adminRouter.get("/users", authorizeAdmin, getAllUsersController);
+adminRouter.get("/users", authenticate, authorizeAdmin, getAllUsersController);
+
+adminRouter.delete(
+  "/users/delete/:id",
+  authenticate,
+  authorizeAdmin,
+  deleteUserController,
+);
+
+adminRouter.get(
+  "/sellers",
+  authenticate,
+  authorizeAdmin,
+  getAllSellersController,
+);
 
 export default adminRouter;
