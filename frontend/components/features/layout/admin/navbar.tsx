@@ -21,9 +21,7 @@ export default function AdminNavbar({
     return (
         <header className="fixed left-0 right-0 top-0 z-30 h-16 border-b border-border bg-card dark:border-dark-border dark:bg-dark-card lg:left-64">
             <div className="flex h-full items-center justify-between px-4 sm:px-6">
-                {/* Left */}
                 <div className="flex items-center gap-3">
-                    {/* Mobile menu */}
                     <button
                         type="button"
                         onClick={onMenuClick}
@@ -44,9 +42,7 @@ export default function AdminNavbar({
                     </div>
                 </div>
 
-                {/* Right */}
                 <div className="flex items-center gap-2">
-                    {/* Theme */}
                     <button
                         type="button"
                         onClick={toggleTheme}

@@ -1,4 +1,4 @@
-import { rejectSeller } from "@/lib/api/adminApi";
+import { rejectSeller } from "@/lib/api/admin/sellersApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 

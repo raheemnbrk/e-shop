@@ -15,4 +15,5 @@ declare global {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
   }
+  type Role = "ADMIN" | "CUSTOMER" | "SELLER";
 }

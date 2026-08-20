@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
   approveSellerController,
+  changeRoleController,
   deleteUserController,
   getAllSellersController,
   getAllUsersController,
@@ -32,6 +33,13 @@ adminRouter.delete(
   authenticate,
   authorizeAdmin,
   deleteUserController,
+);
+
+adminRouter.patch(
+  "/users/change-role/:id",
+  authenticate,
+  authorizeAdmin,
+  changeRoleController,
 );
 
 adminRouter.get(

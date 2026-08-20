@@ -11,3 +11,16 @@ export const getAllUsers = async ({
   });
   return res.data;
 };
+
+export const deleteUserApi = async (id: string): Promise<MessageResponse> => {
+  const res = await api.delete(`/admin/users/delete/${id}`);
+  return res.data;
+};
+
+export const changeRoleApi = async (
+  id: string,
+  role: Role,
+): Promise<MessageResponse> => {
+  const res = await api.patch(`/admin/users/change-role/${id}`, { role });
+  return res.data;
+};

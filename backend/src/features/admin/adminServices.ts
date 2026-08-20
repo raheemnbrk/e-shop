@@ -1,6 +1,7 @@
 import prisma from "../../shared/config/prisma";
 import { ApiError } from "../../shared/utils/apiError";
 import { sellerQueryInput, userQueryInput } from "../../shared/types/adminType";
+import { Role } from "../../generated/prisma";
 
 export const approveSellerServices = async (userId: string) => {
   const seller = await prisma.seller.findUnique({ where: { userId } });
@@ -200,7 +201,7 @@ export const getAllSellersService = async (input: sellerQueryInput) => {
             lastName: true,
             email: true,
             image: true,
-            phoneNumber : true ,
+            phoneNumber: true,
             createdAt: true,
           },
         },
@@ -228,4 +229,22 @@ export const getAllSellersService = async (input: sellerQueryInput) => {
       hasPreviousPage: page > 1,
     },
   };
+};
+
+export const changeRoleService = async (id: string, role: Role) => {
+  if (role === "SELLER") {
+    throw new ApiError(
+      400,
+      "Seller role must be granted through the seller application flow",
+    );
+  }
+
+  const user = await prisma.user.update({
+    where: { id },
+    data: { role: role },
+  });
+
+  if (!user) throw new ApiError(404, "User not found.");
+
+  return { message: "User role is updated successfully." };
 };

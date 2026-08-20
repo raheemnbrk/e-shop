@@ -4,6 +4,8 @@ import {
   sellerQuerySchema,
   userQuerySchema,
 } from "../../shared/validations/adminValidation";
+import { ApiError } from "../../shared/utils/apiError";
+import { Role } from "../../generated/prisma";
 
 export const approveSellerController = async (
   req: Request,
@@ -84,6 +86,25 @@ export const getAllSellersController = async (
       await adminServices.getAllSellersService(input);
 
     return res.status(200).json({ success: true, sellers, pagination });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const changeRoleController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { role } = (req as any).body as { role: Role };
+    const { id } = (req as any).params as { id: string };
+    if (!id) throw new ApiError(400, "You must select a user.");
+    if (!role) throw new ApiError(400, "You must select a role");
+
+    const { message } = await adminServices.changeRoleService(id, role);
+
+    return res.status(200).json({ success: true, message });
   } catch (err) {
     next(err);
   }

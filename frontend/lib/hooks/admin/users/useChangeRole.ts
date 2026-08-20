@@ -1,12 +1,13 @@
-import { deleteUserApi } from "@/lib/api/admin/usersApi";
+import { changeRoleApi } from "@/lib/api/admin/usersApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useDeleteUser = () => {
+export const useChangeRole = () => {
   const queryClient = useQueryClient();
 
-  const { mutate: deleteUser, isPending } = useMutation({
-    mutationFn: (id: string) => deleteUserApi(id),
+  const { mutate: changeRole, isPending } = useMutation({
+    mutationFn: ({ id, role }: { id: string; role: Role }) =>
+      changeRoleApi(id, role),
 
     onSuccess: (data) => {
       toast.success(data?.message);
@@ -18,5 +19,5 @@ export const useDeleteUser = () => {
     },
   });
 
-  return { deleteUser, isPending };
+  return { changeRole, isPending };
 };

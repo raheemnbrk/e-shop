@@ -70,7 +70,6 @@ export default function AdminSidebar({
 
     return (
         <>
-            {/* Mobile overlay */}
             {isOpen && (
                 <div
                     onClick={onClose}
@@ -94,7 +93,6 @@ export default function AdminSidebar({
                     }
                 `}
             >
-                {/* Logo */}
                 <div className="flex h-16 items-center justify-between border-b border-border px-5 dark:border-dark-border">
                     <Link
                         href="/admin"
@@ -116,7 +114,6 @@ export default function AdminSidebar({
                         </div>
                     </Link>
 
-                    {/* Mobile close */}
                     <button
                         type="button"
                         onClick={onClose}
@@ -127,7 +124,6 @@ export default function AdminSidebar({
                     </button>
                 </div>
 
-                {/* Navigation */}
                 <nav className="flex-1 space-y-1 overflow-y-auto p-4">
                     <p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-widest text-text-secondary dark:text-dark-text-secondary">
                         Management
@@ -163,7 +159,6 @@ export default function AdminSidebar({
                     })}
                 </nav>
 
-                {/* Bottom */}
                 <div className="border-t border-border p-4 dark:border-dark-border">
                     <p className="text-center text-xs text-text-secondary dark:text-dark-text-secondary">
                         Admin Dashboard
