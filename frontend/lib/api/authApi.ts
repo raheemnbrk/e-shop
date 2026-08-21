@@ -77,7 +77,7 @@ export const changePasswordApi = async (
 export const updateProfileApi = async (
   input: updateProfileInput,
   file?: File,
-): Promise<any> => {
+): Promise<MessageResponse> => {
   const formData = new FormData();
 
   if (input.firstName) formData.append("firstName", input.firstName);

@@ -61,7 +61,7 @@ export default function Search() {
       {hasFilters && (
         <button
           onClick={handleClear}
-          className="flex h-12 items-center gap-2 rounded-lg border bg-card dark:bg-dark-card border-border dark:border-dark-border px-4 text-sm font-medium text-text-secondary dark:text-dark-text-secondary hover:border-red-500 hover:text-red-500 dark:hover:border-red-500 dark:hover:text-red-500 transition-colors cursor-pointer whitespace-nowrap"
+          className="flex h-10 items-center gap-2 rounded-lg border bg-card dark:bg-dark-card border-border dark:border-dark-border px-4 text-sm font-medium text-text-secondary dark:text-dark-text-secondary hover:border-red-500 hover:text-red-500 dark:hover:border-red-500 dark:hover:text-red-500 transition-colors cursor-pointer whitespace-nowrap"
         >
           <X className="h-4 w-4" />
           Clear
