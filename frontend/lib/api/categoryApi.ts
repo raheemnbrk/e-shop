@@ -42,3 +42,10 @@ export const updateCategoryApi = async (
   });
   return res.data;
 };
+
+export const deleteCategoryApi = async (
+  id: string,
+): Promise<MessageResponse> => {
+  const res = await api.delete(`/category/delete/${id}`);
+  return res.data;
+};

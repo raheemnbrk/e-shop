@@ -35,22 +35,22 @@ export function DropdownMenuProfile({ user }: { user: User }) {
             My Account
           </DropdownMenuLabel>
           <Link href={"/my-profile"} >
-            <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text hover:text-primary">
+            <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text data-highlighted:bg-primary data-highlighted:text-white">
               Profile
             </DropdownMenuItem>
           </Link>
           {user.role !== "CUSTOMER" && (<Link href={user.role === "ADMIN" ? "admin" : "seller"} >
-            <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text hover:text-primary capitalize">
+            <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text data-highlighted:bg-primary data-highlighted:text-white">
               {user.role.toLocaleLowerCase()}
             </DropdownMenuItem>
           </Link>)}
-          <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text hover:text-primary">
+          <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text data-highlighted:bg-primary data-highlighted:text-white">
             My orders
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-border dark:bg-dark-border" />
         <DropdownMenuItem
-          className="cursor-pointer text-red-600"
+          className="cursor-pointer text-red-700 data-highlighted:bg-red-300 data-highlighted:text-red-700"
           onClick={handleLogout}
         >
           Log out
