@@ -149,7 +149,7 @@ export default function SellerSidebar({
 
                 <div className="border-t border-border p-4 dark:border-dark-border">
                     <p className="text-center text-xs text-text-secondary dark:text-dark-text-secondary">
-                        Admin Dashboard
+                        Seller Dashboard
                     </p>
                 </div>
             </aside>

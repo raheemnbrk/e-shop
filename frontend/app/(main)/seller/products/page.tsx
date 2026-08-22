@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react";
 import { TableWrapper } from "@/components/features/dashboard/tableWrapper";
 import { ConfirmationDialog } from "@/components/features/layout/confirmationButton";
+import { ProductDialog } from "@/components/features/products/addProductDialog";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useGetCategories } from "@/lib/hooks/categories/useGetCategories";
@@ -12,6 +14,7 @@ import { Link, MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Products() {
+    const [dialogOpen, setDialogOpen] = useState(false)
     const searchParams = useSearchParams()
     const router = useRouter()
     const pathName = usePathname()
@@ -91,6 +94,11 @@ export default function Products() {
         {
             key: "price",
             label: "Price",
+            render: (product: Product) => (
+                <span className="font-medium">
+                    ${product.price - ((product.price * (product.discount) / 100))}
+                </span>
+            ),
         },
 
         {
@@ -132,7 +140,7 @@ export default function Products() {
             label: "Reviews",
             render: (product: Product) => (
                 <span className="font-medium">
-                    {product.reviews.length}
+                    {product.reviews?.length ?? 0}
                 </span>
             ),
         },
@@ -140,7 +148,7 @@ export default function Products() {
         {
             key: "createdAt",
             label: "Created at",
-            render: (product : Product) =>
+            render: (product: Product) =>
                 new Date(product.createdAt).toLocaleDateString(),
         },
 
@@ -217,9 +225,7 @@ export default function Products() {
                     </p>
                 </div>
                 <button
-                    // onClick={() => {
-
-                    // }}
+                    onClick={() => setDialogOpen(true)}
                     className="flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primaryHover"
                 >
                     <PlusIcon className="h-4 w-4" />
@@ -256,6 +262,11 @@ export default function Products() {
                         label: "SortBy",
                     },
                 ]}
+            />
+
+            <ProductDialog
+                open={dialogOpen}
+                onOpenChange={setDialogOpen}
             />
         </div>
     )

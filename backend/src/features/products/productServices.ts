@@ -264,6 +264,9 @@ export const getSellerProductsService = async (
       include: {
         category: true,
         seller: true,
+        reviews: {
+          select: { id: true },
+        },
       },
     }),
     prisma.product.count({

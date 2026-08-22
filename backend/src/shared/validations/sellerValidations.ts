@@ -25,6 +25,7 @@ export const createProductSchema = z.object({
     .int({ error: "Stock must be a whole number." })
     .positive("Stock must be greater than 0."),
   categoryId: z.string().min(1, "Category is required."),
+  available: z.coerce.boolean(),
 });
 
 export const updateProductSchema = z.object({
@@ -46,6 +47,8 @@ export const updateProductSchema = z.object({
     .positive("Stock must be greater than 0.")
     .optional(),
   categoryId: z.string().optional(),
+  discount: z.coerce.number().min(0).max(90).optional(),
+  available: z.coerce.boolean().optional(),
 });
 
 export const updateSellerSchema = z.object({
@@ -58,4 +61,3 @@ export const updateSellerSchema = z.object({
     .min(10, "Description must contains at least 10 characters.")
     .optional(),
 });
-

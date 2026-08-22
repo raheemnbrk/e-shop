@@ -239,7 +239,7 @@ export function SellerInformation({
 
             {!isEditing && Seller.status === "APPROVED" && (
                 <div className="mt-4 flex gap-2">
-                    <Link href="/seller/dashboard">
+                    <Link href="/seller">
                         <button
                             type="button"
                             className="flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white transition hover:bg-primaryHover"
@@ -250,7 +250,7 @@ export function SellerInformation({
                     </Link>
 
                     <Link
-                        href={`/sellers/${Seller.storeSlug}`}
+                        href={`/sellers/store`}
                         target="_blank"
                     >
                         <button
