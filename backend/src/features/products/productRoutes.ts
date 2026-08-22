@@ -5,6 +5,7 @@ import {
   deleteProductController,
   getAllProductsController,
   getRelatedProductsController,
+  getSellerProductsController,
   getSingleProductController,
   toggleAvailabilityController,
   updateProductController,
@@ -47,6 +48,13 @@ productRouter.patch(
 );
 
 productRouter.get("/related/:slug", getRelatedProductsController);
+
+productRouter.get(
+  "/seller-products",
+  authenticate,
+  authorizeSeller,
+  getSellerProductsController,
+);
 
 productRouter.get("/:slug", getSingleProductController);
 

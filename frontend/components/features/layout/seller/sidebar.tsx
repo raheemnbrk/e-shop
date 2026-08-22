@@ -35,22 +35,22 @@ export default function SellerSidebar({
             label: "Dashboard",
         },
         {
-            link: "/admin/users",
+            link: "/seller/users",
             icon: <Users className="h-5 w-5" />,
             label: "Users",
         },
         {
-            link: "/admin/products",
+            link: "/seller/products",
             icon: <Package className="h-5 w-5" />,
             label: "Products",
         },
         {
-            link: "/admin/orders",
+            link: "/seller/orders",
             icon: <ShoppingBag className="h-5 w-5" />,
             label: "Orders",
         },
         {
-            link: "/admin/store",
+            link: "/seller/store",
             icon: <Store className="h-5 w-5" />,
             label: "Store",
         },
@@ -119,8 +119,8 @@ export default function SellerSidebar({
 
                     {list.map((item) => {
                         const isActive =
-                            item.link === "/admin"
-                                ? pathname === "/admin"
+                            item.link === "/seller"
+                                ? pathname === "/seller"
                                 : pathname.startsWith(item.link);
 
                         return (

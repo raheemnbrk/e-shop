@@ -1,6 +1,14 @@
 import { TableFilters } from "./tableFilter"
 import { DataTable, Column } from "./table"
 
+type TableSelect = {
+    items: { value: string; label: string }[];
+    label?: string;
+    defaultValue?: string;
+    onChange?: (value: string) => void;
+    param: string;
+};
+
 type TableWrapperProps<T extends { id: string }> = {
     columns: Column<T>[]
     data: T[]
@@ -13,8 +21,7 @@ type TableWrapperProps<T extends { id: string }> = {
     }
     onPageChange?: (page: number) => void
     searchPlaceholder?: string
-    selectItems?: { value: string; label: string }[]
-    selectLabel?: string
+    selects?: TableSelect[]
 }
 
 export function TableWrapper<T extends { id: string }>({
@@ -24,15 +31,13 @@ export function TableWrapper<T extends { id: string }>({
     pagination,
     onPageChange,
     searchPlaceholder,
-    selectItems,
-    selectLabel,
+    selects
 }: TableWrapperProps<T>) {
     return (
         <div className="border border-border dark:border-dark-border rounded-xl overflow-hidden p-3 flex flex-col gap-6">
             <TableFilters
                 searchPlaceholder={searchPlaceholder}
-                selectItems={selectItems}
-                selectLabel={selectLabel}
+                selects={selects}
             />
             <DataTable
                 columns={columns}

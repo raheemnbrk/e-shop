@@ -58,3 +58,4 @@ export const updateSellerSchema = z.object({
     .min(10, "Description must contains at least 10 characters.")
     .optional(),
 });
+

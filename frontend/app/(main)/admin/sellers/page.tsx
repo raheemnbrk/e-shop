@@ -8,10 +8,9 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { CheckIcon, Link, MoreHorizontalIcon, XIcon } from "lucide-react";
+import { CheckIcon, MoreHorizontalIcon, XIcon } from "lucide-react";
 import { ConfirmationDialog } from "@/components/features/layout/confirmationButton";
 import { Button } from "@/components/ui/button";
 import { useApproveSeller } from "@/lib/hooks/admin/sellers/useApproveSeller";
@@ -31,7 +30,7 @@ export default function AdminSellersPage() {
 
     const page = Number(searchParams.get("page") ?? 1)
     const search = searchParams.get("search") ?? ""
-    const statusParams = searchParams.get("filter")
+    const statusParams = searchParams.get("status")
     const status = ["PENDING", "APPROVED", "REJECTED"].includes(statusParams ?? "")
         ? (statusParams as "PENDING" | "APPROVED" | "REJECTED")
         : undefined
@@ -187,8 +186,7 @@ export default function AdminSellersPage() {
                 columns={columns}
                 onPageChange={handlePageChange}
                 searchPlaceholder="Search by seller name or store name..."
-                selectItems={statusItems}
-                selectLabel="All status"
+                selects={[{ param: "status", items: statusItems, label: "status" }]}
             />
         </div>
     );

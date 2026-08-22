@@ -13,5 +13,12 @@ export const userQuerySchema = searchQuerySchema.extend({
 });
 
 export const sellerQuerySchema = searchQuerySchema.extend({
-  status: z.enum(["PENDING" , "REJECTED" , "APPROVED"]).optional(),
+  status: z.enum(["PENDING", "REJECTED", "APPROVED"]).optional(),
+});
+
+export const productQuerySchema = searchQuerySchema.extend({
+  category: z.string().optional(),
+  stock: z.enum(["all", "in", "low", "out"]).optional(),
+  status: z.enum(["all", "available", "not available"]).optional(),
+  sortBy: z.enum(["all", "newest", "oldest", "high", "low", "top"]).optional(),
 });

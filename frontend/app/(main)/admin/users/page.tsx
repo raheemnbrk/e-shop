@@ -9,9 +9,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useGetAllUsers } from "@/lib/hooks/admin/users/useGetAllUsers"
@@ -36,7 +33,7 @@ export default function UsersPage() {
     const page = Number(searchParams.get("page") ?? 1)
     const search = searchParams.get("search") ?? ""
 
-    const roleParam = searchParams.get("filter")
+    const roleParam = searchParams.get("role")
 
     const role = ["ADMIN", "CUSTOMER", "SELLER"].includes(
         roleParam ?? ""
@@ -247,8 +244,13 @@ export default function UsersPage() {
                 pagination={data?.pagination}
                 onPageChange={handlePageChange}
                 searchPlaceholder="Search by user name"
-                selectItems={roleItems}
-                selectLabel="All roles"
+                selects={[
+                    {
+                        param: "role",
+                        items: roleItems,
+                        label: "Role",
+                    },
+                ]}
             />
         </div>
     )

@@ -1,5 +1,6 @@
 import { applySellerInput, updateSellerInput } from "@/types/sellerTypes";
 import api from "./axios";
+import { allProductsResponse, productQueryInput } from "@/types/adminTypes";
 
 export const applySellerApi = async (input: applySellerInput, file: File) => {
   const formData = new FormData();
@@ -29,5 +30,12 @@ export const updateSellerApi = async (
     headers: { "Content-Type": "multipart/form-data" },
   });
 
+  return res.data;
+};
+
+export const getSellerProductsApi = async (
+  input: productQueryInput,
+): Promise<allProductsResponse> => {
+  const res = await api.get("/product/seller-products", { params: input });
   return res.data;
 };

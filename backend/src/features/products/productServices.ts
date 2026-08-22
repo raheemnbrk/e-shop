@@ -1,4 +1,6 @@
+import { Prisma } from "../../generated/prisma";
 import prisma from "../../shared/config/prisma";
+import { productQueryInput } from "../../shared/types/adminType";
 import {
   createProductInput,
   updateProductInput,
@@ -201,4 +203,85 @@ export const getRelatedProductsService = async (slug: string) => {
   });
 
   return relatedProducts;
+};
+
+export const getSellerProductsService = async (
+  id: string,
+  input: productQueryInput,
+) => {
+  const { page, category, search, sortBy, status, stock } = input;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  let categoryId: string | undefined;
+
+  if (category && category !== "all") {
+    const categoryData = await prisma.category.findUnique({
+      where: { slug: category },
+      select: { id: true },
+    });
+
+    if (!categoryData) throw new ApiError(404, "Category not found.");
+    categoryId = categoryData.id;
+  }
+
+  const where: Prisma.ProductWhereInput = {
+    sellerId: id,
+    ...(search && {
+      OR: [
+        { name: { contains: search, mode: "insensitive" as const } },
+        { description: { contains: search, mode: "insensitive" as const } },
+      ],
+    }),
+    ...(category && category !== "all" && { categoryId }),
+    ...(status && status !== "all" && { available: status === "available" }),
+    ...(stock === "in" && { stock: { gt: 0 } }),
+    ...(stock === "low" && { stock: { gt: 0, lte: 10 } }),
+    ...(stock === "out" && { stock: 0 }),
+  };
+
+  let orderBy: Prisma.ProductOrderByWithRelationInput = {
+    createdAt: "desc",
+  };
+
+  orderBy =
+    sortBy === "newest"
+      ? { createdAt: "desc" }
+      : sortBy === "oldest"
+        ? { createdAt: "asc" }
+        : sortBy === "high"
+          ? { price: "desc" }
+          : sortBy === "low"
+            ? { price: "asc" }
+            : {};
+
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      orderBy,
+      skip,
+      take: limit,
+      include: {
+        category: true,
+        seller: true,
+      },
+    }),
+    prisma.product.count({
+      where,
+    }),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  return {
+    products,
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalItems: total,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
 };

@@ -10,6 +10,7 @@ import {
   updateProductInput,
 } from "../../shared/types/sellerTypes";
 import { productQuery } from "../../shared/types/productTypes";
+import { productQuerySchema } from "../../shared/validations/adminValidation";
 
 export const createProductController = async (
   req: Request<{}, {}, createProductInput>,
@@ -163,6 +164,25 @@ export const getRelatedProductsController = async (
       await productServices.getRelatedProductsService(slug);
 
     return res.status(200).json({ success: true, relatedProducts });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getSellerProductsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = (req as any).user;
+
+    const input = productQuerySchema.parse((req as any).query);
+
+    const { products, pagination } =
+      await productServices.getSellerProductsService(id, input);
+
+    return res.status(200).json({ success: true, products, pagination });
   } catch (err) {
     next(err);
   }
