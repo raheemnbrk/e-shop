@@ -204,3 +204,19 @@ export const getAdminProductsController = async (
     next(err);
   }
 };
+
+export const adminDeleteProductController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = (req as any).params as { id: string };
+
+    const { message } = await productServices.adminDeleteProductService(id);
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};

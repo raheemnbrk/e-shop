@@ -107,9 +107,4 @@ export const toggleProductAvailabilityApi = async (
   return res.data;
 };
 
-export const getAdminProductsApi = async (
-  input: productQueryInput,
-): Promise<allProductsResponse> => {
-  const res = await api.get("/product/admin-products", { params: input });
-  return res.data;
-};
+

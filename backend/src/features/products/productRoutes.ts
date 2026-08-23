@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authorizeSeller } from "../../shared/middlewares/auth/authorizeSeller";
 import {
+  adminDeleteProductController,
   createProductController,
   deleteProductController,
   getAdminProductsController,
@@ -63,6 +64,13 @@ productRouter.get(
   authenticate,
   authorizeAdmin,
   getAdminProductsController,
+);
+
+productRouter.delete(
+  "/admin-delete/:id",
+  authenticate,
+  authorizeAdmin,
+  adminDeleteProductController,
 );
 
 productRouter.get("/:slug", getSingleProductController);

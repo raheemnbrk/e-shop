@@ -1,4 +1,4 @@
-import { getAdminProductsApi } from "@/lib/api/sellerApi";
+import { getAdminProductsApi } from "@/lib/api/admin/productsApi";
 import { productQueryInput } from "@/types/adminTypes";
 import { useQuery } from "@tanstack/react-query";
 

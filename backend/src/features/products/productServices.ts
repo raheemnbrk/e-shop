@@ -377,3 +377,16 @@ export const getAdminProductsService = async (input: productQueryInput) => {
     },
   };
 };
+
+export const adminDeleteProductService = async (id: string) => {
+  const product = await prisma.product.findUnique({
+    where: { id },
+    select: { id: true },
+  });
+
+  if (!product) throw new ApiError(404, "Product not found.");
+
+  await prisma.product.delete({ where: { id } });
+
+  return { message: "Product deleted successfully." };
+};
