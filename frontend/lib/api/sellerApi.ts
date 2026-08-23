@@ -92,3 +92,16 @@ export const updateProductApi = async (
 
   return res.data;
 };
+
+export const deleteProductApi = async (
+  id: string,
+): Promise<MessageResponse> => {
+  const res = await api.delete(`/product/delete/${id}`);
+  return res.data;
+};
+
+export const toggleProductAvailabilityApi =
+  async (id : string): Promise<MessageResponse> => {
+    const res = await api.patch(`/product/toggle-availability/${id}`);
+    return res.data;
+  };

@@ -17,7 +17,9 @@ export const useCreateProduct = () => {
 
     onSuccess: (data) => {
       toast.success(data?.message);
-      queryClient.invalidateQueries({ queryKey: ["seller-products"] });
+      queryClient.invalidateQueries({
+        queryKey: ["seller-products"],
+      });
     },
 
     onError: (err: any) => {

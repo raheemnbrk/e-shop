@@ -10,8 +10,11 @@ import { useGetCategories } from "@/lib/hooks/categories/useGetCategories";
 import { useGetALlProducts } from "@/lib/hooks/seller/useGetAllProducts";
 import { Category } from "@/types/categoryTypes";
 import { Product } from "@/types/productTypes";
-import { Link, MoreHorizontalIcon, PlusIcon } from "lucide-react";
+import { MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useToggleProductAvailability } from "@/lib/hooks/seller/useToggleProduct";
+import { useDeleteProduct } from "@/lib/hooks/seller/useDeleteProduct";
+import Link from "next/link";
 
 export default function Products() {
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -59,6 +62,11 @@ export default function Products() {
         router.push(`${pathName}?${params.toString()}`)
     }
 
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+
+    const { toggleProductAvailability, toggling } = useToggleProductAvailability()
+    const { deleteProduct, deleting } = useDeleteProduct()
+
     const columns = [
         {
             key: "image",
@@ -104,6 +112,11 @@ export default function Products() {
         {
             key: "discount",
             label: "Discount",
+            render: (product: Product) => (
+                <span className="font-medium">
+                    {product.discount}%
+                </span>
+            ),
         },
 
         {
@@ -152,65 +165,73 @@ export default function Products() {
                 new Date(product.createdAt).toLocaleDateString(),
         },
 
-        // {
-        //     key: "actions",
-        //     label: "Actions",
-        //     className: "text-right",
+        {
+            key: "actions",
+            label: "Actions",
+            className: "text-right",
 
-        //     render: (product : Product) => (
-        //         <DropdownMenu>
-        //             <DropdownMenuTrigger asChild>
-        //                 <Button
-        //                     variant="ghost"
-        //                     size="icon"
-        //                     className="size-8 cursor-pointer"
-        //                 >
-        //                     <MoreHorizontalIcon />
-        //                     <span className="sr-only">
-        //                         Open menu
-        //                     </span>
-        //                 </Button>
-        //             </DropdownMenuTrigger>
+            render: (product: Product) => (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="size-8 cursor-pointer">
+                            <MoreHorizontalIcon />
+                            <span className="sr-only">Open menu</span>
+                        </Button>
+                    </DropdownMenuTrigger>
 
-        //             <DropdownMenuContent
-        //                 align="end"
-        //                 className="bg-card dark:bg-dark-card"
-        //             >
-        //                 <Link href={`/admin/users/${product.id}`}>
-        //                     <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary">
-        //                         View product
-        //                     </DropdownMenuItem>
-        //                 </Link>
+                    <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card w-40">
+                        <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white">
+                            <Link href={`/products/${product.slug}`} >View product</Link>
+                        </DropdownMenuItem>
 
+                        <DropdownMenuItem
+                            className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
+                            onSelect={(e) => e.preventDefault()}
+                            onClick={() => {
+                                setSelectedProduct(product)
+                                setDialogOpen(true)
+                            }}
+                        >
+                            Edit product
+                        </DropdownMenuItem>
 
-        //                 <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                            className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
+                            onSelect={(e) => e.preventDefault()}
+                            onClick={() => toggleProductAvailability(product.id)}
+                            disabled={toggling}
+                        >
+                            {product.available ? "Mark as unavailable" : "Mark as available"}
+                        </DropdownMenuItem>
 
-        //                 <DropdownMenuItem
-        //                     className="cursor-pointer"
-        //                     variant="destructive"
-        //                     onSelect={(e) => e.preventDefault()}
-        //                 >
-        //                     <ConfirmationDialog
-        //                         title="Delete user?"
-        //                         description="This will permanently delete this user from your platform. This action cannot be undone."
-        //                         actionText="Delete user"
-        //                         onConfirm={}
-        //                         trigger={
-        //                             <button
-        //                                 type="button"
-        //                                 // disabled={isPending}
-        //                                 aria-label="Delete user"
-        //                                 className="cursor-pointer"
-        //                             >
-        //                                 Delete User
-        //                             </button>
-        //                         }
-        //                     />
-        //                 </DropdownMenuItem>
-        //             </DropdownMenuContent>
-        //         </DropdownMenu >
-        //     ),
-        // },
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem
+                            className="cursor-pointer"
+                            variant="destructive"
+                            onSelect={(e) => e.preventDefault()}
+                        >
+                            <ConfirmationDialog
+                                title="Delete product?"
+                                description="This will permanently delete this product from your store. This action cannot be undone."
+                                actionText="Delete product"
+                                onConfirm={() => deleteProduct(product.id)}
+                                trigger={
+                                    <button
+                                        type="button"
+                                        disabled={deleting}
+                                        aria-label="Delete product"
+                                        className="w-full cursor-pointer text-left"
+                                    >
+                                        Delete product
+                                    </button>
+                                }
+                            />
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ),
+        },
     ]
 
     return (
@@ -267,6 +288,7 @@ export default function Products() {
             <ProductDialog
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
+                product={selectedProduct}
             />
         </div>
     )
