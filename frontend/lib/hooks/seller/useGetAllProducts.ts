@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGetALlProducts = (input: productQueryInput) => {
   return useQuery({
-    queryKey: ["seller-products", input],
+    queryKey: ["products", input],
     queryFn: () => getSellerProductsApi(input),
   });
 };

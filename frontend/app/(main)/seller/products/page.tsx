@@ -41,7 +41,6 @@ export default function Products() {
 
     const { data, isLoading } = useGetALlProducts({ page, search, category, status, stock, sortBy })
     const { data: categories } = useGetCategories()
-    console.log(data?.products)
 
     const statusItems = [{ value: "all", label: "All status" }, { value: "available", label: "Available" }, { value: "not available", label: "Not available" }]
     const categoryItems = [
@@ -138,16 +137,7 @@ export default function Products() {
                 </span>
             ),
         },
-        {
-            key: "store",
-            label: "Store",
-            render: (product: Product) => (
-                <div className="flex items-center gap-3" >
-                    <img className="w-6 h-6 rounded-full" src={product?.seller?.logo} alt={product?.seller?.storeSlug} />
-                    <span>{product?.seller?.storeName}</span>
-                </div>
-            ),
-        },
+
         {
             key: "reviews",
             label: "Reviews",

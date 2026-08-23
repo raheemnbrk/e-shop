@@ -21,4 +21,5 @@ export const productQuerySchema = searchQuerySchema.extend({
   stock: z.enum(["all", "in", "low", "out"]).optional(),
   status: z.enum(["all", "available", "not available"]).optional(),
   sortBy: z.enum(["all", "newest", "oldest", "high", "low", "top"]).optional(),
+  searchBy : z.enum(["product"  , "seller"]).optional()
 });

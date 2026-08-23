@@ -10,7 +10,7 @@ export const useDeleteProduct = () => {
 
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["seller-products"],
+        queryKey: ["products"],
       });
       toast.success(data?.message);
     },

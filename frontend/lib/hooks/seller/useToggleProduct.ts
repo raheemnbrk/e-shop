@@ -12,7 +12,7 @@ export const useToggleProductAvailability = () => {
       onSuccess: (data) => {
         toast.success(data?.message);
         queryClient.invalidateQueries({
-          queryKey: ["seller-products"],
+          queryKey: ["products"],
         });
       },
 

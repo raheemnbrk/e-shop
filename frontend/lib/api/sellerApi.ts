@@ -100,8 +100,16 @@ export const deleteProductApi = async (
   return res.data;
 };
 
-export const toggleProductAvailabilityApi =
-  async (id : string): Promise<MessageResponse> => {
-    const res = await api.patch(`/product/toggle-availability/${id}`);
-    return res.data;
-  };
+export const toggleProductAvailabilityApi = async (
+  id: string,
+): Promise<MessageResponse> => {
+  const res = await api.patch(`/product/toggle-availability/${id}`);
+  return res.data;
+};
+
+export const getAdminProductsApi = async (
+  input: productQueryInput,
+): Promise<allProductsResponse> => {
+  const res = await api.get("/product/admin-products", { params: input });
+  return res.data;
+};

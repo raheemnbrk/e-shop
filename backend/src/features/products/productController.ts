@@ -187,3 +187,20 @@ export const getSellerProductsController = async (
     next(err);
   }
 };
+
+export const getAdminProductsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = productQuerySchema.parse((req as any).query);
+
+    const { pagination, products } =
+      await productServices.getAdminProductsService(input);
+
+    return res.json({ success: true, products, pagination });
+  } catch (err) {
+    next(err);
+  }
+};

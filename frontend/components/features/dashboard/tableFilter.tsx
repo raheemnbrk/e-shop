@@ -81,7 +81,7 @@ export function TableFilters({
         value: string
     ) => {
         updateParams({
-            [param]: value === "ALL" ? null : value,
+            [param]: value === "ALL" || value === "all" ? null : value,
         });
     };
 
@@ -96,7 +96,7 @@ export function TableFilters({
                 placeholder={searchPlaceholder}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="h-10 min-w-48 bg-card focus-visible:ring-primary focus-visible:border-primary"
+                className="focus-visible:ring-primary focus-visible:border-primary h-10 bg-card dark:bg-dark-card min-w-48"
             />
 
             {selects.map((select) => {

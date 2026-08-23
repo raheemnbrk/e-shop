@@ -3,6 +3,7 @@ import { authorizeSeller } from "../../shared/middlewares/auth/authorizeSeller";
 import {
   createProductController,
   deleteProductController,
+  getAdminProductsController,
   getAllProductsController,
   getRelatedProductsController,
   getSellerProductsController,
@@ -12,6 +13,7 @@ import {
 } from "./productController";
 import { upload } from "../../shared/config/multer";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
+import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
 
 const productRouter = Router();
 
@@ -54,6 +56,13 @@ productRouter.get(
   authenticate,
   authorizeSeller,
   getSellerProductsController,
+);
+
+productRouter.get(
+  "/admin-products",
+  authenticate,
+  authorizeAdmin,
+  getAdminProductsController,
 );
 
 productRouter.get("/:slug", getSingleProductController);
