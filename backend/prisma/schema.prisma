@@ -215,17 +215,19 @@ model OrderItem {
 }
 
 model Coupon {
-  id              String    @id @default(uuid())
-  code            String    @unique
-  discountPercent Int
+  id              String       @id @default(uuid())
+  code            String       @unique
+  type            CouponType   @default(PERCENTAGE)
+  discount        Float
   maxUses         Int       @default(1)
   usedCount       Int       @default(0)
   expiresAt       DateTime?
   isActive        Boolean   @default(true)
   createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt 
 
   orders Order[]
-}
+} 
 
 enum OrderStatus {
   Pending
@@ -243,4 +245,9 @@ enum DeliveryMethod {
 enum PaymentMethod {
   CASH
   ONLINE
+}
+
+enum CouponType{
+  PERCENTAGE
+  FIXED
 }
