@@ -1,4 +1,8 @@
-import { couponQuerySchema } from "@/lib/validators/couponSchema";
+import {
+  couponQuerySchema,
+  createCouponSchema,
+  updateCouponSchema,
+} from "@/lib/validators/couponSchema";
 import z from "zod";
 
 export interface Coupon {
@@ -20,3 +24,7 @@ export interface allCouponsResponse {
 }
 
 export type couponQueryInput = z.infer<typeof couponQuerySchema>;
+
+export type createCouponInput = z.infer<typeof createCouponSchema>;
+
+export type updateCouponInput = z.infer<typeof updateCouponSchema>;

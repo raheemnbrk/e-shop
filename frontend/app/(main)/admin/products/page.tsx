@@ -41,7 +41,7 @@ export default function AdminProductsPage() {
 
   const searchByItems = [{ value: "all", label: "Product" }, { value: "seller", label: "Seller" }]
   const categoryItems = [
-    { value: "all", label: "All" },
+    { value: "all", label: "All Categories" },
     ...(categories?.map((category: Category) => ({
       value: category.slug,
       label: category.name,

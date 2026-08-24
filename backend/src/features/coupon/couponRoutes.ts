@@ -18,7 +18,7 @@ couponRouter.post(
 );
 
 couponRouter.patch(
-  "/update:id",
+  "/update/:id",
   authenticate,
   authorizeAdmin,
   updateCouponController,

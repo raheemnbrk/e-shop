@@ -33,7 +33,7 @@ export const updateCouponController = async (
   try {
     const { id } = (req as any).params as { id: string };
 
-    const input = updateCouponSchema.parse((req as any).query);
+    const input = updateCouponSchema.parse((req as any).body);
 
     const { message } = await couponServices.updateCouponService(id, input);
 

@@ -1,9 +1,15 @@
 "use client"
 
 import { TableWrapper } from "@/components/features/dashboard/tableWrapper";
+import CouponDialog from "@/components/features/layout/admin/addCouponDialog";
+import { ConfirmationDialog } from "@/components/features/layout/confirmationButton";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useGetAllCoupons } from "@/lib/hooks/admin/coupons/useGetAllCoupons";
 import { Coupon } from "@/types/couponTypes";
+import { MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 export default function AdminCouponsPage() {
     const searchParams = useSearchParams()
@@ -40,6 +46,9 @@ export default function AdminCouponsPage() {
     const typeItems = [{ value: "all", label: "Type" }, { value: "PERCENTAGE", label: "Percentage" }, { value: "FIXED", label: "Fixed" }]
     const sortByItems = [{ value: "all", label: "Newest" }, { value: "oldest", label: "Oldest" }, { value: "high discount", label: "Higher Discount" }, { value: "low discount", label: "lower discount" }]
 
+    const [dialogOpen, setDialogOpen] = useState(false)
+    const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null)
+
     const columns = [
         {
             key: "code",
@@ -55,7 +64,7 @@ export default function AdminCouponsPage() {
             label: "Discount",
             render: (coupon: Coupon) => (
                 <span className="font-medium">
-                    {coupon?.type === "FIXED" ? `$` : "%"}{coupon?.discount}
+                    {coupon?.type === "FIXED" ? `$${coupon.discount}` : `${coupon.discount}%`}
                 </span>
             ),
         },
@@ -99,90 +108,109 @@ export default function AdminCouponsPage() {
         {
             key: "createdAt",
             label: "Created At",
+            render: (coupon: Coupon) =>
+                new Date(coupon.createdAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                }),
         },
 
         {
             key: "expiresAt",
-            label: "ExpiresAt"
-        }
+            label: "Expires At",
+            render: (coupon: Coupon) =>
+                new Date(coupon.expiresAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                }),
+        },
+        {
+            key: "actions",
+            label: "Actions",
+            className: "text-right",
 
+            render: (coupon: Coupon) => (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="size-8 cursor-pointer">
+                            <MoreHorizontalIcon />
+                            <span className="sr-only">Open menu</span>
+                        </Button>
+                    </DropdownMenuTrigger>
 
-        // {
-        //     key: "actions",
-        //     label: "Actions",
-        //     className: "text-right",
+                    <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card w-40">
 
-        //     render: (product: Product) => (
-        //         <DropdownMenu>
-        //             <DropdownMenuTrigger asChild>
-        //                 <Button variant="ghost" size="icon" className="size-8 cursor-pointer">
-        //                     <MoreHorizontalIcon />
-        //                     <span className="sr-only">Open menu</span>
-        //                 </Button>
-        //             </DropdownMenuTrigger>
+                        <DropdownMenuItem
+                            className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
+                            onSelect={(e) => e.preventDefault()}
+                            onClick={() => {
+                                setSelectedCoupon(coupon)
+                                setDialogOpen(true)
+                            }}
+                        >
+                            Edit product
+                        </DropdownMenuItem>
 
-        //             <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card w-40">
-        //                 <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white">
-        //                     <Link href={`/products/${product.slug}`} >View product</Link>
-        //                 </DropdownMenuItem>
+                        {/* <DropdownMenuItem
+                            className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
+                            onSelect={(e) => e.preventDefault()}
+                            onClick={() => toggleProductAvailability(product.id)}
+                            disabled={toggling}
+                        >
+                            {product.available ? "Mark as unavailable" : "Mark as available"}
+                        </DropdownMenuItem> */}
 
-        //                 <DropdownMenuItem
-        //                     className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
-        //                     onSelect={(e) => e.preventDefault()}
-        //                     onClick={() => {
-        //                         setSelectedProduct(product)
-        //                         setDialogOpen(true)
-        //                     }}
-        //                 >
-        //                     Edit product
-        //                 </DropdownMenuItem>
+                        <DropdownMenuSeparator />
 
-        //                 <DropdownMenuItem
-        //                     className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
-        //                     onSelect={(e) => e.preventDefault()}
-        //                     onClick={() => toggleProductAvailability(product.id)}
-        //                     disabled={toggling}
-        //                 >
-        //                     {product.available ? "Mark as unavailable" : "Mark as available"}
-        //                 </DropdownMenuItem>
-
-        //                 <DropdownMenuSeparator />
-
-        //                 <DropdownMenuItem
-        //                     className="cursor-pointer"
-        //                     variant="destructive"
-        //                     onSelect={(e) => e.preventDefault()}
-        //                 >
-        //                     <ConfirmationDialog
-        //                         title="Delete product?"
-        //                         description="This will permanently delete this product from your store. This action cannot be undone."
-        //                         actionText="Delete product"
-        //                         onConfirm={() => deleteProduct(product.id)}
-        //                         trigger={
-        //                             <button
-        //                                 type="button"
-        //                                 disabled={deleting}
-        //                                 aria-label="Delete product"
-        //                                 className="w-full cursor-pointer text-left"
-        //                             >
-        //                                 Delete product
-        //                             </button>
-        //                         }
-        //                     />
-        //                 </DropdownMenuItem>
-        //             </DropdownMenuContent>
-        //         </DropdownMenu>
-        //     ),
-        // },
+                        {/* <DropdownMenuItem
+                            className="cursor-pointer"
+                            variant="destructive"
+                            onSelect={(e) => e.preventDefault()}
+                        >
+                            <ConfirmationDialog
+                                title="Delete product?"
+                                description="This will permanently delete this product from your store. This action cannot be undone."
+                                actionText="Delete product"
+                                onConfirm={() => deleteProduct(product.id)}
+                                trigger={
+                                    <button
+                                        type="button"
+                                        disabled={deleting}
+                                        aria-label="Delete product"
+                                        className="w-full cursor-pointer text-left"
+                                    >
+                                        Delete product
+                                    </button>
+                                }
+                            />
+                        </DropdownMenuItem> */}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ),
+        },
     ]
 
     return (
         <div className="flex flex-col space-y-5" >
-            <div>
-                <h1 className="text-2xl font-bold text-text dark:text-dark-text">Coupons</h1>
-                <p className="mt-2 text-text-secondary dark:text-dark-text-secondary">
-                    Manage all coupons across the platform
-                </p>
+            <div className="flex items-center justify-between" >
+                <div>
+                    <h1 className="text-2xl font-bold text-text dark:text-dark-text">Coupons</h1>
+                    <p className="mt-2 text-text-secondary dark:text-dark-text-secondary">
+                        Manage all coupons across the platform
+                    </p>
+                </div>
+                <button
+                    onClick={() => {
+                        setSelectedCoupon(null)
+                        setDialogOpen(true)
+                    }}
+                    className="flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primaryHover"
+                >
+                    <PlusIcon className="h-4 w-4" />
+                    Add Coupon
+                </button>
             </div>
 
             <TableWrapper
@@ -209,6 +237,11 @@ export default function AdminCouponsPage() {
                         label: "SortBy",
                     },
                 ]}
+            />
+            <CouponDialog
+                open={dialogOpen}
+                onOpenChange={setDialogOpen}
+                coupon={selectedCoupon}
             />
         </div>
     );
