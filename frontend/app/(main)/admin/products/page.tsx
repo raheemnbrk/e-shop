@@ -36,7 +36,6 @@ export default function AdminProductsPage() {
     : undefined
 
   const { data, isLoading } = useGetAllProducts({ page, search, category, sortBy, searchBy, stock })
-  console.log(data?.products)
 
   const { data: categories } = useGetCategories()
 

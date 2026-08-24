@@ -65,27 +65,21 @@ export const getALlCouponsService = async (input: couponQueryInput) => {
   const skip = (page - 1) * limit;
 
   const where: Prisma.CouponWhereInput = {
-    ...(search && { name: { contains: search, mode: "insensitive" as const } }),
+    ...(search && { code: { contains: search, mode: "insensitive" as const } }),
     ...(status && status === "active" && { isActive: true }),
     ...(status && status === "inactive" && { isActive: false }),
     ...(type && type === "FIXED" && { type: "FIXED" }),
     ...(type && type === "PERCENTAGE" && { type: "PERCENTAGE" }),
   };
 
-  let orderBy: Prisma.CouponOrderByWithRelationInput = {
-    createdAt: "desc",
-  };
-
-  orderBy =
-    sortBy === "newest"
-      ? { createdAt: "desc" }
-      : sortBy === "oldest"
-        ? { createdAt: "asc" }
-        : sortBy === "high discount"
-          ? { discount: "desc" }
-          : sortBy === "low discount"
-            ? { discount: "asc" }
-            : {};
+  const orderBy: Prisma.CouponOrderByWithRelationInput =
+    sortBy === "oldest"
+      ? { createdAt: "asc" }
+      : sortBy === "high discount"
+        ? { discount: "desc" }
+        : sortBy === "low discount"
+          ? { discount: "asc" }
+          : { createdAt: "desc" };
 
   const [coupons, total] = await Promise.all([
     prisma.coupon.findMany({ where, orderBy, skip, take: limit }),

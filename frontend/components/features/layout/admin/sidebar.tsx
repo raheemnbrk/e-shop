@@ -62,9 +62,9 @@ export default function AdminSidebar({
             label: "Sellers",
         },
         {
-            link: "/admin/settings",
+            link: "/admin/coupons",
             icon: <Settings className="h-5 w-5" />,
-            label: "Settings",
+            label: "Coupons",
         },
     ];
 
