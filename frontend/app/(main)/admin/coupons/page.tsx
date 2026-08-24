@@ -5,7 +5,9 @@ import CouponDialog from "@/components/features/layout/admin/addCouponDialog";
 import { ConfirmationDialog } from "@/components/features/layout/confirmationButton";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useDeleteCoupon } from "@/lib/hooks/admin/coupons/useDeleteCouponApi";
 import { useGetAllCoupons } from "@/lib/hooks/admin/coupons/useGetAllCoupons";
+import { useToggleCoupon } from "@/lib/hooks/admin/coupons/useToggleCouponApi";
 import { Coupon } from "@/types/couponTypes";
 import { MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -48,6 +50,9 @@ export default function AdminCouponsPage() {
 
     const [dialogOpen, setDialogOpen] = useState(false)
     const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null)
+
+    const { toggleCoupon, toggling } = useToggleCoupon()
+    const { deleteCoupon, deleting } = useDeleteCoupon()
 
     const columns = [
         {
@@ -150,42 +155,42 @@ export default function AdminCouponsPage() {
                                 setDialogOpen(true)
                             }}
                         >
-                            Edit product
+                            Edit coupon
                         </DropdownMenuItem>
 
-                        {/* <DropdownMenuItem
+                        <DropdownMenuItem
                             className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
                             onSelect={(e) => e.preventDefault()}
-                            onClick={() => toggleProductAvailability(product.id)}
+                            onClick={() => toggleCoupon(coupon.id)}
                             disabled={toggling}
                         >
-                            {product.available ? "Mark as unavailable" : "Mark as available"}
-                        </DropdownMenuItem> */}
+                            {coupon.isActive ? "Mark as not active" : "Mark as active"}
+                        </DropdownMenuItem>
 
                         <DropdownMenuSeparator />
 
-                        {/* <DropdownMenuItem
+                        <DropdownMenuItem
                             className="cursor-pointer"
                             variant="destructive"
                             onSelect={(e) => e.preventDefault()}
                         >
                             <ConfirmationDialog
-                                title="Delete product?"
-                                description="This will permanently delete this product from your store. This action cannot be undone."
-                                actionText="Delete product"
-                                onConfirm={() => deleteProduct(product.id)}
+                                title="Delete coupon?"
+                                description="This will permanently delete this coupon from your store. This action cannot be undone."
+                                actionText="Delete coupon"
+                                onConfirm={() => deleteCoupon(coupon.id)}
                                 trigger={
                                     <button
                                         type="button"
                                         disabled={deleting}
-                                        aria-label="Delete product"
+                                        aria-label="Delete coupon"
                                         className="w-full cursor-pointer text-left"
                                     >
-                                        Delete product
+                                        Delete coupon
                                     </button>
                                 }
                             />
-                        </DropdownMenuItem> */}
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             ),

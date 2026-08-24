@@ -100,3 +100,13 @@ export const getALlCouponsService = async (input: couponQueryInput) => {
     },
   };
 };
+
+export const deleteCouponService = async (id: string) => {
+  const coupon = await prisma.coupon.findUnique({ where: { id } });
+
+  if (!coupon) throw new ApiError(404, "Coupon not found.");
+
+  await prisma.coupon.delete({ where: { id } });
+
+  return { message: "Coupon is deleted successfully." };
+};

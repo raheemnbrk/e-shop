@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
 import {
   createCouponController,
+  deleteCouponController,
   getAllCouponsController,
   toggleCouponController,
   updateCouponController,
@@ -32,5 +33,7 @@ couponRouter.patch(
 );
 
 couponRouter.get("/all", authenticate, authorizeAdmin, getAllCouponsController);
+
+couponRouter.delete("/delete/:id" , authenticate , authorizeAdmin , deleteCouponController)
 
 export default couponRouter;

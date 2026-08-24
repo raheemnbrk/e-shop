@@ -71,3 +71,19 @@ export const getAllCouponsController = async (
     next(err);
   }
 };
+
+export const deleteCouponController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = (req as any).params as { id: string };
+
+    const { message } = await couponServices.deleteCouponService(id);
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};
