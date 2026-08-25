@@ -31,7 +31,7 @@ export default function AdminProductsPage() {
   const stock = ["in", "out", "low", "all"].includes(stockParams)
     ? (stockParams as "in" | "out" | "low" | "all")
     : undefined
-  const sortBy = ["high", "low", "newest", "oldest", "top"].includes(sortByParams)
+  const sortBy = ["high", "low", "oldest", "top"].includes(sortByParams)
     ? (sortByParams as "low" | "all" | "high" | "newest" | "oldest" | "top")
     : undefined
 
@@ -48,7 +48,7 @@ export default function AdminProductsPage() {
     })) ?? []),
   ];
   const stockItems = [{ value: "all", label: "Stock" }, { value: "in", label: "In stock" }, { value: "out", label: "Out of stock" }, { value: "low", label: "Low stock" }]
-  const sortByItems = [{ value: "all", label: "Sort By" }, { value: "high", label: "Higher price" }, { value: "low", label: "Lower price" }, { value: "newest", label: "Newest" }, { value: "oldest", label: "oldest" }, { value: "top selling", label: "Top selling" }]
+  const sortByItems = [{ value: "all", label: "Sort By" }, { value: "high", label: "Higher price" }, { value: "low", label: "Lower price" }, { value: "oldest", label: "oldest" }, { value: "top selling", label: "Top selling" }]
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -95,11 +95,20 @@ export default function AdminProductsPage() {
     {
       key: "price",
       label: "Price",
-      render: (product: Product) => (
-        <span className="font-medium">
-          ${product.price - ((product.price * (product.discount) / 100))}
-        </span>
-      ),
+      render: (product: Product) => {
+        const price = Number(product.price ?? 0);
+        const discount = Number(product.discount ?? 0);
+
+        const finalPrice = discount > 0
+          ? parseFloat((price * (1 - discount / 100)).toFixed(2))  
+          : price;
+
+        return (
+          <span className="font-medium">
+            ${finalPrice.toFixed(2)}
+          </span>
+        );
+      },
     },
 
     {
@@ -179,9 +188,9 @@ export default function AdminProductsPage() {
 
             <DropdownMenuItem
               className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
-              
+
             >
-             <Link href={`/sellers/${product.seller.storeSlug}`} >View seller</Link>
+              <Link href={`/sellers/${product.seller.storeSlug}`} >View seller</Link>
             </DropdownMenuItem>
 
 
@@ -231,7 +240,7 @@ export default function AdminProductsPage() {
         onPageChange={handlePageChange}
         searchPlaceholder="Search by product name"
         selects={[
-           {
+          {
             param: "searchBy",
             items: searchByItems,
             label: "SearchBy",

@@ -49,7 +49,7 @@ export function DatePickerInput({
                 {label}
             </label>
 
-            <InputGroup className="rounded-md border-border focus-within:border-primary focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-0 dark:border-dark-border">
+            <InputGroup className="rounded-md border-border focus-within:border-primary focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-0 dark:border-dark-border mt-1">
                 <InputGroupInput
                     value={inputValue}
                     placeholder={placeholder}

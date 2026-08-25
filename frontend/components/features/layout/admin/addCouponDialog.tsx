@@ -254,7 +254,6 @@ export default function CouponDialog({
                         )}
                     </div>
 
-                    {/* Maximum Uses */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-text dark:text-dark-text">
                             Maximum Uses
@@ -267,7 +266,7 @@ export default function CouponDialog({
                                 valueAsNumber: true,
                             })}
                             placeholder="Enter maximum uses"
-                            className="border-border bg-background text-text placeholder:text-text-secondary focus-visible:border-primary focus-visible:ring-primary dark:border-dark-border dark:bg-dark-background dark:text-dark-text dark:placeholder:text-dark-text-secondary"
+                            className="border-border bg-background pr-12 text-text placeholder:text-text-secondary focus-visible:border-primary focus-visible:ring-primary dark:border-dark-border dark:bg-dark-background dark:text-dark-text dark:placeholder:text-dark-text-secondary [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                         />
 
                         {errors.maxUses && (

@@ -1,15 +1,20 @@
 "use client";
 
-import { ShoppingBag, Tag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import type { CartItem } from "@/types/cartTypes";
 
 interface CartSummaryProps {
-  subtotal: number;
-  itemCount: number;
+  cartItems: CartItem[];
 }
 
-export default function CartSummary({ subtotal, itemCount }: CartSummaryProps) {
-  const total = subtotal;
+export default function CartSummary({ cartItems }: CartSummaryProps) {
+  const total = cartItems.reduce((sum, item) => {
+    const price =
+      Number(item.price) * (1 - Number(item.discount) / 100);
+
+    return sum + price * item.quantity;
+  }, 0);
 
   return (
     <div className="rounded-xl border border-border dark:border-dark-border bg-card dark:bg-dark-card p-5 flex flex-col gap-4 sticky top-20">
@@ -18,33 +23,30 @@ export default function CartSummary({ subtotal, itemCount }: CartSummaryProps) {
       </h2>
 
       <div className="flex flex-col gap-3 text-sm">
-        <div className="flex justify-between text-text-secondary dark:text-dark-text-secondary">
-          <span>
-            Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"})
-          </span>
-          <span className="font-medium text-text dark:text-dark-text">
-            ${subtotal.toFixed(2)}
-          </span>
-        </div>
+        {cartItems.map((item) => {
+          const finalPrice =
+            Number(item.price) * (1 - Number(item.discount) / 100);
+
+          return (
+            <div
+              key={item.productId}
+              className="flex items-center justify-between gap-3"
+            >
+              <span className="text-text-secondary dark:text-dark-text-secondary truncate">
+                {item.name} × {item.quantity}
+              </span>
+
+              <span className="font-medium text-text dark:text-dark-text shrink-0">
+                ${(finalPrice * item.quantity).toFixed(2)}
+              </span>
+            </div>
+          );
+        })}
 
         <div className="border-t border-border dark:border-dark-border pt-3 flex justify-between font-bold text-text dark:text-dark-text">
           <span>Total</span>
           <span>${total.toFixed(2)}</span>
         </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <div className="flex flex-1 items-center gap-2 rounded-lg border border-border dark:border-dark-border px-3 py-2">
-          <Tag className="h-4 w-4 text-text-secondary dark:text-dark-text-secondary shrink-0" />
-          <input
-            type="text"
-            placeholder="Coupon code"
-            className="bg-transparent text-sm outline-none w-full text-text dark:text-dark-text placeholder:text-text-secondary dark:placeholder:text-dark-text-secondary"
-          />
-        </div>
-        <button className="px-3 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primaryHover transition cursor-pointer">
-          Apply
-        </button>
       </div>
 
       <Link href="/checkout">

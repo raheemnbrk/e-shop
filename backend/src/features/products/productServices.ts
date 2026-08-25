@@ -240,20 +240,14 @@ export const getSellerProductsService = async (
     ...(stock === "out" && { stock: 0 }),
   };
 
-  let orderBy: Prisma.ProductOrderByWithRelationInput = {
-    createdAt: "desc",
-  };
-
-  orderBy =
-    sortBy === "newest"
-      ? { createdAt: "desc" }
-      : sortBy === "oldest"
-        ? { createdAt: "asc" }
-        : sortBy === "high"
-          ? { price: "desc" }
-          : sortBy === "low"
-            ? { price: "asc" }
-            : {};
+  const orderBy: Prisma.ProductOrderByWithRelationInput =
+    sortBy === "oldest"
+      ? { createdAt: "asc" }
+      : sortBy === "high"
+        ? { price: "desc" }
+        : sortBy === "low"
+          ? { price: "asc" }
+          : { createdAt: "desc" };
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({
@@ -329,20 +323,14 @@ export const getAdminProductsService = async (input: productQueryInput) => {
     ...(stock === "out" && { stock: 0 }),
   };
 
-  let orderBy: Prisma.ProductOrderByWithRelationInput = {
-    createdAt: "desc",
-  };
-
-  orderBy =
-    sortBy === "newest"
-      ? { createdAt: "desc" }
-      : sortBy === "oldest"
-        ? { createdAt: "asc" }
-        : sortBy === "high"
-          ? { price: "desc" }
-          : sortBy === "low"
-            ? { price: "asc" }
-            : {};
+  const orderBy: Prisma.ProductOrderByWithRelationInput =
+    sortBy === "oldest"
+      ? { createdAt: "asc" }
+      : sortBy === "high"
+        ? { price: "desc" }
+        : sortBy === "low"
+          ? { price: "asc" }
+          : { createdAt: "desc" };
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({

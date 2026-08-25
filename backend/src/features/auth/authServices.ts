@@ -29,7 +29,10 @@ import {
   verifyResetOtp,
   verifyResetToken,
 } from "../../shared/utils/otp";
-import { sendOtpEmail } from "../../shared/utils/email";
+import {
+  sendOtpEmail,
+  sendPasswordResetOtpEmail,
+} from "../../shared/utils/emails/emailActions";
 
 export const registerService = async (input: registerInput) => {
   const { firstName, lastName, email, password } = input;
@@ -227,7 +230,7 @@ export const forgotPasswordService = async (input: forgotPasswordInput) => {
 
   const otp = generateOTP();
   await saveResetOtp(email, otp);
-  await sendOtpEmail(email, otp);
+  await sendPasswordResetOtpEmail(email, otp);
 
   return { message: "Password reset code sent to your email" };
 };

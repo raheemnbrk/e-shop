@@ -210,8 +210,12 @@ model OrderItem {
   orderId String
   order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
+  productName     String
+  productSlug     String
+  productImage    String
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id] , onDelete : setNull)
 }
 
 model Coupon {
