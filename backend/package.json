@@ -31,6 +31,7 @@
     "rate-limit-redis": "^5.0.0",
     "resend": "^6.16.0",
     "slugify": "^1.6.9",
+    "stripe": "^22.5.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -43,6 +44,7 @@
     "@types/node": "^26.0.1",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.17",
+    "@types/stripe": "^8.0.416",
     "nodemon": "^3.1.14",
     "prisma": "^7.8.0",
     "ts-node": "^10.9.2",

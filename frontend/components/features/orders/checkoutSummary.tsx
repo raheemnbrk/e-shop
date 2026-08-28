@@ -1,36 +1,33 @@
 "use client";
 
 import { Banknote, CreditCard, ShieldCheck, Tag } from "lucide-react";
-import { usePlaceOrder } from "@/lib/hooks/orders/usePlaceOrder";
-import { toast } from "sonner";
-import { placeOrderSchema } from "@/lib/validators/order.schema";
-import { useState } from "react";
 import type { CartItem } from "@/types/cartTypes";
 
 interface Props {
     cartItems: CartItem[];
     selectedAddress: string;
-    deliveryMethod: string;
+    deliveryMethod: "STANDARD" | "EXPRESS";
     note?: string;
     couponCode: string;
     onCouponChange: (code: string) => void;
     shippingCost: number;
+    isPending: boolean;
+    onPlaceOrder: () => void;
+    paymentMethod: "CASH" | "ONLINE";
+    onPaymentMethodChange: (method: "CASH" | "ONLINE") => void;
 }
 
 export default function CheckoutSummary({
     cartItems,
     selectedAddress,
-    deliveryMethod,
-    note,
     couponCode,
     onCouponChange,
     shippingCost,
+    isPending,
+    onPlaceOrder,
+    paymentMethod,
+    onPaymentMethodChange,
 }: Props) {
-    const { placeOrder, isPending } = usePlaceOrder();
-
-    const [paymentMethod, setPaymentMethod] =
-        useState<"CASH" | "ONLINE">("CASH");
-
     const subtotal = cartItems.reduce((sum, item) => {
         const finalPrice =
             Number(item.price) *
@@ -45,29 +42,6 @@ export default function CheckoutSummary({
     );
 
     const total = subtotal + shippingCost;
-
-    const handleSubmit = () => {
-        if (cartItems.length === 0) {
-            toast.error("Your cart is empty.");
-            return;
-        }
-
-        const result = placeOrderSchema.safeParse({
-            addressId: selectedAddress,
-            deliveryMethod,
-            paymentMethod,
-            note,
-            couponCode: couponCode || undefined,
-        });
-
-        if (!result.success) {
-            const firstError = result.error.issues[0];
-            toast.error(firstError.message);
-            return;
-        }
-
-        placeOrder(result.data);
-    };
 
     return (
         <div className="rounded-xl border border-border dark:border-dark-border bg-card dark:bg-dark-card p-5 flex flex-col gap-4">
@@ -162,19 +136,22 @@ export default function CheckoutSummary({
                     />
                 </div>
 
-                <button className="px-3 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primaryHover transition cursor-pointer">
+                <button
+                    type="button"
+                    className="px-3 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primaryHover transition cursor-pointer"
+                >
                     Apply
                 </button>
             </div>
 
             <div className="flex flex-col gap-2">
                 <button
-                    onClick={() => setPaymentMethod("CASH")}
-                    className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition ${
-                        paymentMethod === "CASH"
+                    type="button"
+                    onClick={() => onPaymentMethodChange("CASH")}
+                    className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition ${paymentMethod === "CASH"
                             ? "border-primary bg-blue-50 dark:bg-blue-950"
                             : "border-border dark:border-dark-border"
-                    }`}
+                        }`}
                 >
                     <Banknote className="h-5 w-5" />
 
@@ -190,12 +167,12 @@ export default function CheckoutSummary({
                 </button>
 
                 <button
-                    onClick={() => setPaymentMethod("ONLINE")}
-                    className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition ${
-                        paymentMethod === "ONLINE"
+                    type="button"
+                    onClick={() => onPaymentMethodChange("ONLINE")}
+                    className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition ${paymentMethod === "ONLINE"
                             ? "border-primary bg-blue-50 dark:bg-blue-950"
                             : "border-border dark:border-dark-border"
-                    }`}
+                        }`}
                 >
                     <CreditCard className="h-5 w-5" />
 
@@ -205,14 +182,14 @@ export default function CheckoutSummary({
                         </p>
 
                         <p className="text-xs text-text-secondary dark:text-dark-text-secondary">
-                            Coming soon
+                            Pay securely with card
                         </p>
                     </div>
                 </button>
             </div>
 
             <button
-                onClick={handleSubmit}
+                onClick={onPlaceOrder}
                 disabled={
                     isPending ||
                     !selectedAddress ||

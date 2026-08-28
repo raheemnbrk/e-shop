@@ -92,6 +92,7 @@ model Seller {
   status      SellerStatus @default(PENDING)
 
   products Product[]
+  orderItems OrderItem[]
 }
 
 enum SellerStatus {
@@ -179,11 +180,18 @@ model Order {
   id             String         @id @default(uuid())
   orderNumber    String         @unique
   status         OrderStatus    @default(Pending)
+
   subtotal       Float
   shippingCost   Float          @default(0)
   total          Float
+  discount       Float          @default(0)
+
   deliveryMethod DeliveryMethod @default(STANDARD)
   paymentMethod  PaymentMethod  @default(CASH)
+  paymentStatus  PaymentStatus  @default(UNPAID)  
+  
+  stripeSessionId       String?
+  
   note           String?
 
   userId String
@@ -215,7 +223,10 @@ model OrderItem {
   productImage    String
 
   productId String?
-  product   Product? @relation(fields: [productId], references: [id] , onDelete : setNull)
+  product   Product? @relation(fields: [productId], references: [id] , onDelete : SetNull)
+
+  sellerId  String
+  seller    Seller  @relation(fields : [sellerId] , references : [userId]  , onDelete : Restrict)  
 }
 
 model Coupon {
@@ -235,10 +246,16 @@ model Coupon {
 
 enum OrderStatus {
   Pending
+  confirmed
   Processing
   Shipped
   Delivered
   Cancelled
+}
+
+enum PaymentStatus{
+  PAID
+  UNPAID
 }
 
 enum DeliveryMethod {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetAddresses } from "@/lib/hooks/addresses/useGetAddresses";
-import { MapPin, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { AddAddressDialog } from "../profile/addAddressDialog";
 import { Address } from "@/types/addressType";
@@ -33,7 +33,7 @@ export default function CheckoutAddress({ selectedAddress, onSelectAddress }: Pr
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {normalizedAddresses.map((address : Address) => (
+                        {normalizedAddresses.map((address: Address) => (
                             <button
                                 key={address.id}
                                 onClick={() => onSelectAddress(address.id)}
@@ -42,7 +42,6 @@ export default function CheckoutAddress({ selectedAddress, onSelectAddress }: Pr
                                     : "border-border dark:border-dark-border hover:border-primary/50"
                                     }`}
                             >
-                                {/* Radio */}
                                 <span className={`absolute top-3 right-3 h-4 w-4 rounded-full border-2 flex items-center justify-center ${selectedAddress === address.id
                                     ? "border-primary bg-primary"
                                     : "border-border dark:border-dark-border"
@@ -67,8 +66,6 @@ export default function CheckoutAddress({ selectedAddress, onSelectAddress }: Pr
                                 </p>
                             </button>
                         ))}
-
-                        {/* Add new address */}
                         <button
                             type="button"
                             className="flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border dark:border-dark-border p-3.5 text-sm text-text-secondary dark:text-dark-text-secondary hover:border-primary hover:text-primary transition-colors cursor-pointer min-h-25"

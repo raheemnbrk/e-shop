@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export const usePlaceOrder =() => {
+export const usePlaceOrder = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -12,9 +12,16 @@ export const usePlaceOrder =() => {
     mutationFn: (input: placeOrderInput) => placeOrderApi(input),
 
     onSuccess: (data) => {
-      toast.success(data?.message ?? "Order placed successfully.");
-      router.push(`/orders/${data?.orderId}`);
       queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+
+      if (data.paymentMethod === "ONLINE" && data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+        return;
+      }
+
+      toast.success(data.message ?? "Order placed successfully.");
+      router.push(`/orders/${data.orderId}`);
     },
 
     onError: (err: any) => {
