@@ -1,7 +1,9 @@
-import { session } from "passport";
 import prisma from "../../shared/config/prisma";
 import stripe from "../../shared/config/stripe";
-import { placeOrderInput } from "../../shared/types/orderTypes";
+import {
+  orderQueryInput,
+  placeOrderInput,
+} from "../../shared/types/orderTypes";
 import { ApiError } from "../../shared/utils/apiError";
 import { sendOrderConfirmationEmail } from "../../shared/utils/emails/emailActions";
 import { generateOrderNumber } from "../../shared/utils/generateOrderNumber";
@@ -212,4 +214,87 @@ export const placeOrderService = async (
     orderId: order.id,
     checkoutUrl: session.url,
   };
+};
+
+export const getMyOrdersService = async (
+  userId: string,
+  input: orderQueryInput,
+) => {
+  const limit = 10;
+  const { page, status } = input;
+  const skip = (page - 1) * limit;
+  const where = {
+    userId,
+    ...(status ? { status } : {}),
+  };
+
+  const [orders, statusCounts, totalOrders, total] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      include: { items: true },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+
+    prisma.order.groupBy({
+      by: ["status"],
+      where: { userId },
+      _count: {
+        _all: true,
+      },
+    }),
+
+    prisma.order.count({
+      where: { userId },
+    }),
+
+    prisma.order.count({
+      where,
+    }),
+  ]);
+
+  const formattedStatusCounts = statusCounts.map((s) => ({
+    status: s.status,
+    count: s._count._all,
+  }));
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  return {
+    orders,
+    statusCounts: formattedStatusCounts,
+    totalOrders , 
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalItems: total,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
+};
+
+export const getMySingleOrderService = async (
+  orderNumber: string,
+  userId: string,
+) => {
+  const order = await prisma.order.findFirst({
+    where: { orderNumber, userId },
+    include: {
+      items: {
+        include: {
+          product: true,
+          seller: true,
+        },
+      },
+      address: true,
+      coupon: true,
+    },
+  });
+
+  if (!order) throw new ApiError(404, "Order not found.");
+
+  return order;
 };

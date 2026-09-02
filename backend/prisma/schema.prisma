@@ -179,7 +179,7 @@ model CartItem {
 model Order {
   id             String         @id @default(uuid())
   orderNumber    String         @unique
-  status         OrderStatus    @default(Pending)
+  status         OrderStatus    @default(PENDING)
 
   subtotal       Float
   shippingCost   Float          @default(0)
@@ -245,12 +245,12 @@ model Coupon {
 } 
 
 enum OrderStatus {
-  Pending
-  confirmed
-  Processing
-  Shipped
-  Delivered
-  Cancelled
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }
 
 enum PaymentStatus{

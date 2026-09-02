@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { placeOrderInput } from "../../shared/types/orderTypes";
-import { placeOrderSchema } from "../../shared/validations/orderValidation";
+import {
+  ordersQuerySchema,
+  placeOrderSchema,
+} from "../../shared/validations/orderValidation";
 import * as orderServices from "./orderServices";
 import Stripe from "stripe";
 import stripe from "../../shared/config/stripe";
@@ -25,10 +28,7 @@ export const placeOrderController = async (
   }
 };
 
-export const stripeWebhookController = async (
-  req: Request,
-  res: Response,
-) => {
+export const stripeWebhookController = async (req: Request, res: Response) => {
   const signature = req.headers["stripe-signature"];
 
   if (!signature) {
@@ -46,10 +46,7 @@ export const stripeWebhookController = async (
       process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch (error) {
-    console.error(
-      "Stripe webhook signature verification failed:",
-      error,
-    );
+    console.error("Stripe webhook signature verification failed:", error);
 
     return res.status(400).json({
       message: "Invalid Stripe signature.",
@@ -57,18 +54,13 @@ export const stripeWebhookController = async (
   }
 
   try {
-  
-
     if (event.type === "checkout.session.completed") {
-      const session =
-        event.data.object as Stripe.Checkout.Session;
+      const session = event.data.object as Stripe.Checkout.Session;
 
       const orderId = session.metadata?.orderId;
 
       if (!orderId) {
-        console.error(
-          "No orderId in Stripe session metadata.",
-        );
+        console.error("No orderId in Stripe session metadata.");
 
         return res.status(400).json({
           message: "Order ID missing.",
@@ -86,9 +78,7 @@ export const stripeWebhookController = async (
       });
 
       if (!order) {
-        console.error(
-          `Order ${orderId} not found.`,
-        );
+        console.error(`Order ${orderId} not found.`);
 
         return res.status(404).json({
           message: "Order not found.",
@@ -119,7 +109,7 @@ export const stripeWebhookController = async (
         data: {
           paymentStatus: "PAID",
 
-          status: "confirmed",
+          status: "CONFIRMED",
 
           ...(paymentIntentId && {
             paymentIntentId,
@@ -145,8 +135,7 @@ export const stripeWebhookController = async (
     }
 
     if (event.type === "checkout.session.expired") {
-      const session =
-        event.data.object as Stripe.Checkout.Session;
+      const session = event.data.object as Stripe.Checkout.Session;
 
       const orderId = session.metadata?.orderId;
 
@@ -171,7 +160,6 @@ export const stripeWebhookController = async (
         });
       }
 
-
       if (order.paymentStatus === "PAID") {
         return res.status(200).json({
           received: true,
@@ -184,7 +172,7 @@ export const stripeWebhookController = async (
             id: order.id,
           },
           data: {
-            status: "Cancelled",
+            status: "CANCELLED",
           },
         });
 
@@ -215,13 +203,52 @@ export const stripeWebhookController = async (
       received: true,
     });
   } catch (error) {
-    console.error(
-      "Stripe webhook processing error:",
-      error,
-    );
+    console.error("Stripe webhook processing error:", error);
 
     return res.status(500).json({
       message: "Webhook processing failed.",
     });
+  }
+};
+
+export const getMyOrdersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).user.id as string;
+
+    const input = ordersQuerySchema.parse((req as any).query);
+
+    const { orders, statusCounts, totalOrders, pagination } =
+      await orderServices.getMyOrdersService(userId, input);
+
+    return res
+      .status(200)
+      .json({ success: true, orders, statusCounts, totalOrders, pagination });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getMySingleOrderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { orderNumber } = (req as any).params as { orderNumber: string };
+
+    const userId = (req as any).user.id as string;
+
+    const order = await orderServices.getMySingleOrderService(
+      orderNumber,
+      userId,
+    );
+
+    return res.status(200).json({ success: true, order });
+  } catch (err) {
+    next(err);
   }
 };

@@ -44,9 +44,11 @@ export function DropdownMenuProfile({ user }: { user: User }) {
               {user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()}
             </DropdownMenuItem>
           </Link>)}
-          <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text data-highlighted:bg-primary data-highlighted:text-white">
-            My orders
-          </DropdownMenuItem>
+          <Link href={"/my-orders"} >
+            <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text data-highlighted:bg-primary data-highlighted:text-white">
+              My orders
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-border dark:bg-dark-border" />
         <DropdownMenuItem
