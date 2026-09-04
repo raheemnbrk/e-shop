@@ -3,6 +3,7 @@
 import { ArrowLeft, Download, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { Order } from "@/types/orderTypes";
+import { useCancelOrder } from "@/lib/hooks/orders/useCancelOrder";
 
 interface OrderHeaderProps {
     order: Order;
@@ -14,6 +15,8 @@ export default function OrderHeader({ order }: OrderHeaderProps) {
     const canCancel =
         order.status === "PENDING" ||
         order.status === "CONFIRMED";
+
+    const { cancelOrder, cancelling } = useCancelOrder()
 
     return (
         <div className="rounded-xl border border-border bg-card p-5 dark:border-dark-border dark:bg-dark-card">
@@ -74,7 +77,8 @@ export default function OrderHeader({ order }: OrderHeaderProps) {
 
                     <button
                         type="button"
-                        disabled={!canCancel}
+                        disabled={!canCancel || cancelling || order.status === "CANCELLED"}
+                        onClick={() => cancelOrder(order.id)}
                         className="flex items-center gap-2 rounded-lg border border-red-500/40 px-4 py-2.5 text-sm font-medium text-red-500 transition hover:bg-red-500/10 disabled:cursor-not-allowed cursor-pointer disabled:opacity-50 disabled:hover:bg-transparent"
                     >
                         <X className="h-4 w-4" />

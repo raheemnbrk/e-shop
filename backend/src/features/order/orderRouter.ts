@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
+  adminCancelOrderController,
+  cancelOrderController,
   getAdminOrdersController,
   getMyOrdersController,
   getMySingleOrderController,
@@ -19,6 +21,15 @@ orderRouter.get(
   authenticate,
   authorizeAdmin,
   getAdminOrdersController,
+);
+
+orderRouter.patch("/cancel/:id", authenticate, cancelOrderController);
+
+orderRouter.patch(
+  "/admin/cancel/:id",
+  authenticate,
+  authorizeAdmin,
+  adminCancelOrderController,
 );
 
 orderRouter.get("/:orderNumber", authenticate, getMySingleOrderController);

@@ -262,9 +262,41 @@ export const getAdminOrdersController = async (
     const input = (req as any).query;
 
     const { orders, pagination } =
-      await orderServices.getAdminOrdersServices(input);
+      await orderServices.getAdminOrdersService(input);
 
     return res.status(200).json({ success: true, orders, pagination });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const cancelOrderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).user.id as string;
+    const { id } = (req as any).params as { id: string };
+
+    const { message } = await orderServices.cancelOrderService(id, userId);
+
+    return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};
+export const adminCancelOrderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = (req as any).params as { id: string };
+
+    const { message } = await orderServices.adminCancelOrderService(id);
+
+    return res.status(200).json({ success: true, message });
   } catch (err) {
     next(err);
   }

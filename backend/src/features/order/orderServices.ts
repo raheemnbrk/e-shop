@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma";
+import { OrderStatus, Prisma } from "../../generated/prisma";
 import prisma from "../../shared/config/prisma";
 import stripe from "../../shared/config/stripe";
 import {
@@ -301,7 +301,7 @@ export const getMySingleOrderService = async (
   return order;
 };
 
-export const getAdminOrdersServices = async (input: allOrdersQueryInput) => {
+export const getAdminOrdersService = async (input: allOrdersQueryInput) => {
   const {
     page,
     from,
@@ -408,4 +408,24 @@ export const getAdminOrdersServices = async (input: allOrdersQueryInput) => {
       hasPreviousPage: page > 1,
     },
   };
+};
+
+export const cancelOrderService = async (id: string, userId: string) => {
+  const order = await prisma.order.update({
+    where: { id, userId },
+    data: { status: "CANCELLED" },
+  });
+  if (!order) throw new ApiError(404, "Order not found.");
+
+  return { message: "Order cancelled successfully." };
+};
+
+export const adminCancelOrderService = async (id: string) => {
+  const order = await prisma.order.update({
+    where: { id },
+    data: { status: "CANCELLED" },
+  });
+  if (!order) throw new ApiError(404, "Order not found.");
+
+  return { message: "Order cancelled successfully." };
 };

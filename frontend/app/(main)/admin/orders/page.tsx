@@ -2,8 +2,14 @@
 
 import { DateFilters } from "@/components/features/dashboard/dateFilter";
 import { TableWrapper } from "@/components/features/dashboard/tableWrapper";
+import { ConfirmationDialog } from "@/components/features/layout/confirmationButton";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useCancelOrder } from "@/lib/hooks/admin/orders/useCancelOrder";
 import { useGetAllOrders } from "@/lib/hooks/admin/orders/useGetAllOrders";
 import { Order } from "@/types/orderTypes";
+import { MoreHorizontalIcon } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function AdminOrdersPage() {
@@ -75,6 +81,8 @@ export default function AdminOrdersPage() {
         );
     };
 
+    const { cancelOrder, cancelling } = useCancelOrder()
+
     const columns = [
         {
             key: "orderNumber",
@@ -104,16 +112,6 @@ export default function AdminOrdersPage() {
                 )
             },
         },
-
-        // {
-        //     key: "name",
-        //     label: "Name",
-        //     render: (product: Order) => (
-        //         <span className="font-medium">
-        //             {product?.name}
-        //         </span>
-        //     ),
-        // },
         {
             key: "status",
             label: "Status",
@@ -137,7 +135,7 @@ export default function AdminOrdersPage() {
             label: "Discount",
             render: (order: Order) => (
                 <span className="font-medium">
-                    {order.discount}%
+                    ${order.discount}
                 </span>
             ),
         },
@@ -191,61 +189,53 @@ export default function AdminOrdersPage() {
                 new Date(product.createdAt).toLocaleDateString(),
         },
 
-        // {
-        //     key: "actions",
-        //     label: "Actions",
-        //     className: "text-right",
+        {
+            key: "actions",
+            label: "Actions",
+            className: "text-right",
 
-        //     render: (product: Product) => (
-        //         <DropdownMenu>
-        //             <DropdownMenuTrigger asChild>
-        //                 <Button variant="ghost" size="icon" className="size-8 cursor-pointer">
-        //                     <MoreHorizontalIcon />
-        //                     <span className="sr-only">Open menu</span>
-        //                 </Button>
-        //             </DropdownMenuTrigger>
+            render: (order: Order) => (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="size-8 cursor-pointer">
+                            <MoreHorizontalIcon />
+                            <span className="sr-only">Open menu</span>
+                        </Button>
+                    </DropdownMenuTrigger>
 
-        //             <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card w-40">
-        //                 <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white">
-        //                     <Link href={`/products/${product.slug}`} >View product</Link>
-        //                 </DropdownMenuItem>
+                    <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card w-40">
+                        <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white">
+                            <Link href={`${order.orderNumber}`} >View Order</Link>
+                        </DropdownMenuItem>
 
-        //                 <DropdownMenuItem
-        //                     className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
+                        <DropdownMenuSeparator />
 
-        //                 >
-        //                     <Link href={`/sellers/${product.seller.storeSlug}`} >View seller</Link>
-        //                 </DropdownMenuItem>
-
-
-        //                 <DropdownMenuSeparator />
-
-        //                 <DropdownMenuItem
-        //                     className="cursor-pointer"
-        //                     variant="destructive"
-        //                     onSelect={(e) => e.preventDefault()}
-        //                 >
-        //                     <ConfirmationDialog
-        //                         title="Delete product?"
-        //                         description="This will permanently delete this product from your store. This action cannot be undone."
-        //                         actionText="Delete product"
-        //                         onConfirm={() => deleteProduct(product.id)}
-        //                         trigger={
-        //                             <button
-        //                                 type="button"
-        //                                 disabled={deleting}
-        //                                 aria-label="Delete product"
-        //                                 className="w-full cursor-pointer text-left"
-        //                             >
-        //                                 Delete product
-        //                             </button>
-        //                         }
-        //                     />
-        //                 </DropdownMenuItem>
-        //             </DropdownMenuContent>
-        //         </DropdownMenu>
-        //     ),
-        // },
+                        <DropdownMenuItem
+                            className="cursor-pointer"
+                            variant="destructive"
+                            onSelect={(e) => e.preventDefault()}
+                        >
+                            <ConfirmationDialog
+                                title="Cancel order?"
+                                description="This action will permanently cancel the order. Once cancelled, it cannot be recovered."
+                                actionText="Cancel order"
+                                onConfirm={() => cancelOrder(order.id)}
+                                trigger={
+                                    <button
+                                        type="button"
+                                        disabled={cancelling || order.status === "CANCELLED"}
+                                        aria-label="Cancel order"
+                                        className="w-full cursor-pointer text-left"
+                                    >
+                                        Cancel order
+                                    </button>
+                                }
+                            />
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ),
+        },
     ]
 
     return (

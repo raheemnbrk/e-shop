@@ -29,3 +29,7 @@ export const getSingleOrderApi = async (
   return res.data;
 };
 
+export const cancelOrderApi = async (id: string): Promise<MessageResponse> => {
+  const res = await api.patch(`/orders/cancel/${id}`);
+  return res.data;
+};

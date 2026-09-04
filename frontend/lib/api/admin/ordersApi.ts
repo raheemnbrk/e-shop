@@ -7,3 +7,8 @@ export const getAdminOrdersApi = async (
   const res = await api.get("/orders/admin/all", { params: input });
   return res.data;
 };
+
+export const cancelOrderApi = async (id: string): Promise<MessageResponse> => {
+  const res = await api.patch(`/orders/admin/cancel/${id}`);
+  return res.data;
+};

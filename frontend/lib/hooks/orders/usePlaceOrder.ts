@@ -21,7 +21,7 @@ export const usePlaceOrder = () => {
       }
 
       toast.success(data.message ?? "Order placed successfully.");
-      router.push(`/orders/${data.orderId}`);
+      router.push(`/my-orders/${data.orderId}`);
     },
 
     onError: (err: any) => {
