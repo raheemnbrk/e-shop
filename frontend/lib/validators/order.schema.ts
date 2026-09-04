@@ -21,3 +21,21 @@ export const myOrdersQuerySchema = searchQuerySchema.extend({
     ])
     .optional(),
 });
+
+export const allOrdersQuerySchema = searchQuerySchema.extend({
+  status: z
+    .enum([
+      "PENDING",
+      "PROCESSING",
+      "DELIVERED",
+      "CANCELLED",
+      "SHIPPED",
+      "CONFIRMED",
+    ])
+    .optional(),
+  paymentStatus: z.enum(["PAID", "UNPAID"]).optional(),
+  paymentMethod: z.enum(["cash", "online"]).optional(),
+  sortBy: z.enum(["oldest", "highest", "lowest"]).optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
+});

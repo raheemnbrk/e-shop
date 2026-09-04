@@ -1,4 +1,5 @@
 import {
+  allOrdersQuerySchema,
   myOrdersQuerySchema,
   placeOrderSchema,
 } from "@/lib/validators/order.schema";
@@ -78,3 +79,5 @@ export interface singleOrderResponse {
   order: Order;
   success: boolean;
 }
+
+export type allOrderQueryInput = z.infer<typeof allOrdersQuerySchema>;

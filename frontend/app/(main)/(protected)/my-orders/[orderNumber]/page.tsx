@@ -21,7 +21,7 @@ export default function Order() {
     const order = data?.order
 
     if (isLoading) return <OrderDetailsSkeleton />
-
+    if (!order) return <div className="rounded-xl border border-border bg-card p-5 text-sm text-text-secondary dark:border-dark-border dark:bg-dark-card dark:text-dark-text-secondary">Order not found</div>
 
     return (
         <div className="space-y-6">

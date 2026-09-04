@@ -39,7 +39,7 @@ export function DropdownMenuProfile({ user }: { user: User }) {
               Profile
             </DropdownMenuItem>
           </Link>
-          {user.role !== "CUSTOMER" && (<Link href={user.role === "ADMIN" ? "admin" : "seller"} >
+          {user.role !== "CUSTOMER" && (<Link href={user.role === "ADMIN" ? "/admin" : "/seller"} >
             <DropdownMenuItem className="cursor-pointer text-text dark:text-dark-text data-highlighted:bg-primary data-highlighted:text-white">
               {user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()}
             </DropdownMenuItem>

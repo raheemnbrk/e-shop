@@ -1,6 +1,8 @@
+import { Prisma } from "../../generated/prisma";
 import prisma from "../../shared/config/prisma";
 import stripe from "../../shared/config/stripe";
 import {
+  allOrdersQueryInput,
   orderQueryInput,
   placeOrderInput,
 } from "../../shared/types/orderTypes";
@@ -264,7 +266,7 @@ export const getMyOrdersService = async (
   return {
     orders,
     statusCounts: formattedStatusCounts,
-    totalOrders , 
+    totalOrders,
     pagination: {
       currentPage: page,
       totalPages,
@@ -297,4 +299,113 @@ export const getMySingleOrderService = async (
   if (!order) throw new ApiError(404, "Order not found.");
 
   return order;
+};
+
+export const getAdminOrdersServices = async (input: allOrdersQueryInput) => {
+  const {
+    page,
+    from,
+    to,
+    paymentMethod,
+    paymentStatus,
+    search,
+    status,
+    sortBy,
+  } = input;
+
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  const fromDate = from ? new Date(`${from}T00:00:00`) : undefined;
+  const toDate = to ? new Date(`${to}T23:59:59.999`) : undefined;
+
+  const where: Prisma.OrderWhereInput = {
+    ...(search
+      ? {
+          OR: [
+            {
+              orderNumber: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              user: {
+                firstName: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              user: {
+                lastName: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+          ],
+        }
+      : {}),
+
+    ...(status ? { status } : {}),
+
+    ...(paymentMethod
+      ? {
+          paymentMethod: paymentMethod.toUpperCase() as "CASH" | "ONLINE",
+        }
+      : {}),
+
+    ...(paymentStatus ? { paymentStatus } : {}),
+
+    ...(fromDate || toDate
+      ? {
+          createdAt: {
+            ...(fromDate ? { gte: fromDate } : {}),
+            ...(toDate ? { lte: toDate } : {}),
+          },
+        }
+      : {}),
+  };
+
+  const orderBy: Prisma.OrderOrderByWithRelationInput =
+    sortBy === "highest"
+      ? { total: "desc" }
+      : sortBy === "lowest"
+        ? { total: "asc" }
+        : sortBy === "oldest"
+          ? { createdAt: "asc" }
+          : { createdAt: "desc" };
+
+  const [orders, total] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      orderBy,
+      skip,
+      take: limit,
+      include: {
+        user: true,
+        items: true,
+      },
+    }),
+
+    prisma.order.count({
+      where,
+    }),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  return {
+    orders,
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalItems: total,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
 };

@@ -252,3 +252,20 @@ export const getMySingleOrderController = async (
     next(err);
   }
 };
+
+export const getAdminOrdersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = (req as any).query;
+
+    const { orders, pagination } =
+      await orderServices.getAdminOrdersServices(input);
+
+    return res.status(200).json({ success: true, orders, pagination });
+  } catch (err) {
+    next(err);
+  }
+};

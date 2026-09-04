@@ -15,7 +15,7 @@ export interface SelectItemType {
 
 interface SelectDemoProps {
   items: SelectItemType[];
-  defaultValue?: string;
+  value?: string;
   placeholder?: string;
   label?: string;
   onchange?: (value: string) => void;
@@ -23,29 +23,30 @@ interface SelectDemoProps {
 
 export function SelectDemo({
   items,
-  defaultValue,
+  value,
   placeholder,
   label,
   onchange,
 }: SelectDemoProps) {
   return (
-    <Select defaultValue={defaultValue} onValueChange={onchange}>
-      <SelectTrigger className="h-10! w-48 rounded-lg border border-border bg-card text-text dark:border-dark-border dark:bg-dark-card dark:text-dark-text cursor-pointer">
+    <Select value={value} onValueChange={onchange}>
+      <SelectTrigger className="h-10! w-48 cursor-pointer rounded-lg border border-border bg-card text-text dark:border-dark-border dark:bg-dark-card dark:text-dark-text">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
 
-      <SelectContent className="rounded-lg border-border bg-card dark:border-dark-border dark:bg-dark-card capitalize">
+      <SelectContent className="rounded-lg border-border bg-card capitalize dark:border-dark-border dark:bg-dark-card">
         <SelectGroup>
           {label && (
             <SelectLabel className="text-text-secondary dark:text-dark-text-secondary">
               {label}
             </SelectLabel>
           )}
+
           {items.map((item) => (
             <SelectItem
               key={item.value}
               value={item.value}
-              className="cursor-pointer text-text dark:text-dark-text data-highlighted:bg-primary data-highlighted:text-white capitalize"
+              className="cursor-pointer capitalize text-text data-highlighted:bg-primary data-highlighted:text-white dark:text-dark-text"
             >
               {item.label}
             </SelectItem>

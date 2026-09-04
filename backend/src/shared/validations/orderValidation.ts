@@ -17,3 +17,12 @@ export const placeOrderSchema = z.object({
 export const ordersQuerySchema = searchQuerySchema.extend({
   status: z.enum(OrderStatus).optional(),
 });
+
+export const allOrdersQuerySchema = searchQuerySchema.extend({
+  status: z.nativeEnum(OrderStatus).optional(),
+  paymentStatus: z.enum(["PAID", "UNPAID"]).optional(),
+  paymentMethod: z.nativeEnum(PaymentMethod).optional(),
+  sortBy :z.enum(["oldest" , "highest" , "lowest"]).optional() , 
+  from: z.string().optional(),
+  to: z.string().optional(),
+});

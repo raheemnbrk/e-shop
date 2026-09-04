@@ -1,11 +1,21 @@
 "use client"
 
 import * as React from "react"
+
 import { CalendarIcon } from "lucide-react"
 
 import { Calendar } from "@/components/ui/calendar"
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupButton,
+    InputGroupInput,
+} from "@/components/ui/input-group"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 
 type DatePickerInputProps = {
     label?: string
@@ -49,14 +59,31 @@ export function DatePickerInput({
                 {label}
             </label>
 
-            <InputGroup className="rounded-md border-border focus-within:border-primary focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-0 dark:border-dark-border mt-1">
+            <InputGroup
+                className="
+                    mt-1
+                    rounded-md
+                    border
+                    border-border
+                    bg-background
+                    focus-within:border-primary
+                    focus-within:ring-2
+                    focus-within:ring-primary
+                    focus-within:ring-offset-0
+                    dark:border-dark-border
+                    dark:bg-dark-background
+                "
+            >
                 <InputGroupInput
                     value={inputValue}
                     placeholder={placeholder}
                     onChange={(e) => {
                         const value = e.target.value
+
                         setInputValue(value)
+
                         const parsedDate = new Date(value)
+
                         if (isValidDate(parsedDate)) {
                             onChange?.(parsedDate)
                             setMonth(parsedDate)
@@ -68,10 +95,26 @@ export function DatePickerInput({
                             setOpen(true)
                         }
                     }}
-                    className="rounded-l-md border-0 bg-background px-3 py-2 text-text placeholder:text-text-secondary focus-visible:outline-none focus-visible:ring-0 dark:bg-dark-background dark:text-dark-text dark:placeholder:text-dark-text-secondary"
+                    className="
+                        rounded-l-md
+                        border-0
+                        bg-transparent
+                        px-3
+                        py-2
+                        text-text
+                        placeholder:text-text-secondary
+                        focus-visible:outline-none
+                        focus-visible:ring-0
+                        dark:bg-transparent
+                        dark:text-dark-text
+                        dark:placeholder:text-dark-text-secondary
+                    "
                 />
 
-                <InputGroupAddon align="inline-end" className="rounded-r-md">
+                <InputGroupAddon
+                    align="inline-end"
+                    className="rounded-r-md border-0"
+                >
                     <Popover open={open} onOpenChange={setOpen}>
                         <PopoverTrigger asChild>
                             <InputGroupButton
@@ -79,9 +122,22 @@ export function DatePickerInput({
                                 variant="ghost"
                                 size="icon-xs"
                                 aria-label="Select date"
-                                className="cursor-pointer rounded-r-md border-0 bg-background px-3 py-2 hover:bg-background focus-visible:outline-none focus-visible:ring-0 dark:bg-dark-background dark:hover:bg-dark-background"
+                                className="
+                                    cursor-pointer
+                                    rounded-r-md
+                                    border-0
+                                    bg-transparent
+                                    px-3
+                                    py-2
+                                    hover:bg-background
+                                    focus-visible:outline-none
+                                    focus-visible:ring-0
+                                    dark:bg-transparent
+                                    dark:hover:bg-dark-background
+                                "
                             >
                                 <CalendarIcon className="h-4 w-4 text-text-secondary dark:text-dark-text-secondary" />
+
                                 <span className="sr-only">
                                     Select date
                                 </span>
@@ -106,8 +162,10 @@ export function DatePickerInput({
                                 }}
                                 className="rounded-md"
                                 modifiersClassNames={{
-                                    selected: "bg-primary text-white hover:bg-primary hover:text-white focus:bg-primary focus:text-white",
-                                    today: "bg-primary/10 text-primary font-semibold",
+                                    selected:
+                                        "bg-primary text-white hover:bg-primary hover:text-white focus:bg-primary focus:text-white",
+                                    today:
+                                        "bg-primary/10 text-primary font-semibold",
                                 }}
                             />
                         </PopoverContent>
