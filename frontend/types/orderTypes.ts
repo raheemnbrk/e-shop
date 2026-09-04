@@ -53,7 +53,7 @@ export interface Order {
   stripeSessionId: string | null;
   note: string | null;
   user: User[];
-  address: Address[];
+  address: Address;
   coupon: Coupon[];
   items: orderItem[];
   createdAt: string;
@@ -73,3 +73,8 @@ export interface ordersResponse {
 }
 
 export type myOrdersQueryInput = z.infer<typeof myOrdersQuerySchema>;
+
+export interface singleOrderResponse {
+  order: Order;
+  success: boolean;
+}

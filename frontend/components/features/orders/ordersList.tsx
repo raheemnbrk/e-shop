@@ -242,7 +242,7 @@ export default function OrdersList() {
                                     type="button"
                                     onClick={() =>
                                         router.push(
-                                            `/orders/${order.orderNumber}`,
+                                            `/my-orders/${order.orderNumber}`,
                                         )
                                     }
                                     className="cursor-pointer rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primaryHover"
