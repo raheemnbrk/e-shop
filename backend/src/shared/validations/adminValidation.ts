@@ -24,3 +24,7 @@ export const productQuerySchema = searchQuerySchema.extend({
   sortBy: z.enum(["all", "newest", "oldest", "high", "low", "top"]).optional(),
   searchBy: z.enum(["product", "seller"]).optional(),
 });
+
+export const dashboardPeriodSchema = z.object({
+  period: z.enum(["7d", "30d", "12m"]).default("30d"),
+});

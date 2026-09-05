@@ -3,9 +3,12 @@
 import RecentOrders from "@/components/features/dashboard/admin/recentOrder";
 import StatsCards from "@/components/features/dashboard/dashboardCards";
 import { LowStockProducts } from "@/components/features/dashboard/lowStockProducts";
+import OrdersStatusChart from "@/components/features/dashboard/orderByStatusCount";
+import SalesOverview from "@/components/features/dashboard/salesOverview";
 import TopCustomers from "@/components/features/dashboard/topCustomers";
 import { TopSellingProducts } from "@/components/features/dashboard/topSellingProducts";
 import { useGetDashBoardStats } from "@/lib/hooks/admin/stats/useGetDAshboardStats";
+import { DashboardPeriod } from "@/types/adminTypes";
 
 export default function AdminDashboardPage() {
     const { data, isLoading } = useGetDashBoardStats()
@@ -27,6 +30,11 @@ export default function AdminDashboardPage() {
             </div>
 
             <StatsCards items={stats} isLoading={isLoading} />
+
+            <div className="flex flex-col md:flex-row gap-6" >
+                <SalesOverview />
+                <OrdersStatusChart ordersByStatus={data?.ordersByStatus ?? []} isLoading={isLoading} />
+            </div>
             <div className="flex flex-col md:flex-row gap-6" >
                 <TopSellingProducts
                     products={(data?.topSellingProducts ?? []) as unknown as React.ComponentProps<typeof TopSellingProducts>["products"]}

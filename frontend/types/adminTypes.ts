@@ -6,7 +6,7 @@ import {
 import z from "zod";
 import { SellerInfo, User } from "./authTypes";
 import { Product } from "./productTypes";
-import { Order } from "./orderTypes";
+import { Order, ordersStatusCount } from "./orderTypes";
 
 export type userQueryInput = z.infer<typeof userQuerySchema>;
 
@@ -53,6 +53,21 @@ export interface TopCustomer {
   orders: number;
 }
 
+export type DashboardPeriod = "7d" | "30d" | "12m";
+
+export interface SalesChartItem {
+  date: string;
+  sales: number;
+  orders: number;
+}
+
+export interface SalesChart {
+  period: DashboardPeriod;
+  totalSales: number;
+  totalOrders: number;
+  data: SalesChartItem[];
+}
+
 export interface dashboardStatsResponse {
   success: boolean;
   stats: {
@@ -65,4 +80,9 @@ export interface dashboardStatsResponse {
   lowStockProducts: Product[];
   topSellingProducts: TopSellingProduct[];
   topCustomers: TopCustomer[];
+  ordersByStatus: ordersStatusCount[];
+}
+export interface dashboardSalesStatsResponse {
+  success: boolean;
+  salesChart: SalesChart;
 }

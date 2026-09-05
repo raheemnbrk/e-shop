@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
-import { adminDashboardStatsController } from "./admin/statsController";
+import {
+  adminDashboardSalesController,
+  adminDashboardStatsController,
+} from "./admin/statsController";
 
 const statsRouter = Router();
 
@@ -10,6 +13,12 @@ statsRouter.get(
   authenticate,
   authorizeAdmin,
   adminDashboardStatsController,
+);
+statsRouter.get(
+  "/dashboard/sales",
+  authenticate,
+  authorizeAdmin,
+  adminDashboardSalesController,
 );
 
 export default statsRouter;
