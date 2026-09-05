@@ -63,12 +63,12 @@ export default function AdminOrdersPage() {
     }
 
     const statusColors = {
-        PENDING: "bg-yellow-100 text-yellow-800",
-        PROCESSING: "bg-blue-100 text-blue-800",
-        DELIVERED: "bg-green-100 text-green-800",
-        CANCELLED: "bg-red-100 text-red-800",
-        SHIPPED: "bg-purple-100 text-purple-800",
-        CONFIRMED: "bg-teal-100 text-teal-800",
+        PENDING: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+        CONFIRMED: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+        PROCESSING: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+        SHIPPED: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
+        DELIVERED: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+        CANCELLED: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
     } as const;
 
     const StatusBadge = ({ status }: { status: keyof typeof statusColors }) => {
@@ -92,21 +92,24 @@ export default function AdminOrdersPage() {
             key: "user",
             label: "User",
             render: (order: Order) => {
-                const user = Array.isArray(order.user) ? order.user[0] : order.user
-
                 return (
                     <div className="flex items-center gap-2">
-                        {user?.image ? (<img
-                            className="w-6 h-6 rounded-full"
-                            src={user.image}
-                            alt={user?.firstName ?? "User"}
-                        />) : (<div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-200 text-sm font-semibold text-primary border border-primary/10">
-                            {user.firstName?.[0]?.toUpperCase()}
-                            {user.lastName?.[0]?.toUpperCase()}
-                        </div>)}
-                        <div className="flex gap-1" >
-                            <span>{user?.firstName ?? "Unknown user"}</span>
-                            <span>{user?.lastName ?? "Unknown user"}</span>
+                        {order?.user?.image ? (
+                            <img
+                                className="h-7 w-7 rounded-full object-cover"
+                                src={order.user.image}
+                                alt={`${order.user.firstName} ${order.user.lastName}`}
+                            />
+                        ) : (
+                            <div className="flex h-7 w-7 items-center justify-center rounded-full border border-primary/10 bg-blue-200 text-xs font-semibold text-primary">
+                                {order?.user?.firstName?.charAt(0).toUpperCase()}
+                                {order?.user?.lastName?.charAt(0).toUpperCase()}
+                            </div>
+                        )}
+
+                        <div className="flex gap-1">
+                            <span>{order?.user?.firstName ?? "Unknown"}</span>
+                            <span>{order?.user?.lastName ?? ""}</span>
                         </div>
                     </div>
                 )

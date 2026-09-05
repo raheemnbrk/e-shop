@@ -1,4 +1,22 @@
+"use client"
+
+import RecentOrders from "@/components/features/dashboard/admin/recentOrder";
+import StatsCards from "@/components/features/dashboard/dashboardCards";
+import { LowStockProducts } from "@/components/features/dashboard/lowStockProducts";
+import TopCustomers from "@/components/features/dashboard/topCustomers";
+import { TopSellingProducts } from "@/components/features/dashboard/topSellingProducts";
+import { useGetDashBoardStats } from "@/lib/hooks/admin/stats/useGetDAshboardStats";
+
 export default function AdminDashboardPage() {
+    const { data, isLoading } = useGetDashBoardStats()
+
+    const stats = [
+        { label: "Total Orders", value: data?.stats.totalOrders ?? 0 },
+        { label: "Total Products", value: data?.stats.totalProducts ?? 0 },
+        { label: "Total Customers", value: data?.stats.totalCustomers ?? 0 },
+        { label: "Total Sellers", value: data?.stats.totalSellers ?? 0 },
+    ];
+
     return (
         <div className="space-y-6">
             <div>
@@ -8,21 +26,20 @@ export default function AdminDashboardPage() {
                 </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                {[
-                    { label: "Total Users", value: "0" },
-                    { label: "Total Products", value: "0" },
-                    { label: "Orders", value: "0" },
-                    { label: "Revenue", value: "$0" },
-                ].map((item) => (
-                    <div
-                        key={item.label}
-                        className="rounded-xl border border-border bg-card p-5 shadow-sm dark:border-dark-border dark:bg-dark-card"
-                    >
-                        <p className="text-sm text-text-secondary dark:text-dark-text-secondary">{item.label}</p>
-                        <p className="mt-3 text-3xl font-bold text-text dark:text-dark-text">{item.value}</p>
-                    </div>
-                ))}
+            <StatsCards items={stats} isLoading={isLoading} />
+            <div className="flex flex-col md:flex-row gap-6" >
+                <TopSellingProducts
+                    products={(data?.topSellingProducts ?? []) as unknown as React.ComponentProps<typeof TopSellingProducts>["products"]}
+                    isLoading={isLoading}
+                />
+                <TopCustomers customers={data?.topCustomers ?? []} isLoading={isLoading} />
+            </div>
+            <RecentOrders
+                orders={(data?.recentOrders ?? []) as unknown as React.ComponentProps<typeof RecentOrders>["orders"]}
+                isLoading={isLoading}
+            />
+            <div>
+                <LowStockProducts products={data?.lowStockProducts ?? []} isLoading={isLoading} />
             </div>
         </div>
     );

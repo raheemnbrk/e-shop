@@ -14,6 +14,7 @@ import cartRouter from "./features/cart/cartRoutes";
 import orderRouter from "./features/order/orderRouter";
 import couponRouter from "./features/coupon/couponRoutes";
 import { stripeWebhookController } from "./features/order/orderController";
+import statsRouter from "./features/stats/statsRoutes";
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use("/api/review", reviewRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/coupon", couponRouter);
+app.use("/api/stats", statsRouter);
 
 app.use(errorHandler);
 

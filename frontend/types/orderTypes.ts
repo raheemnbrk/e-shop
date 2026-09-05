@@ -53,9 +53,9 @@ export interface Order {
   paymentStatus: "PAID" | "UNPAID";
   stripeSessionId: string | null;
   note: string | null;
-  user: User[];
+  user: User;
   address: Address;
-  coupon: Coupon[];
+  coupon: Coupon;
   items: orderItem[];
   createdAt: string;
 }
