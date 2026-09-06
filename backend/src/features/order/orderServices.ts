@@ -387,6 +387,7 @@ export const getAdminOrdersService = async (input: allOrdersQueryInput) => {
       include: {
         user: true,
         items: true,
+        coupon: true,
       },
     }),
 
@@ -428,4 +429,122 @@ export const adminCancelOrderService = async (id: string) => {
   if (!order) throw new ApiError(404, "Order not found.");
 
   return { message: "Order cancelled successfully." };
+};
+
+export const getSellerOrdersService = async (
+  sellerId: string,
+  input: allOrdersQueryInput,
+) => {
+  const {
+    page,
+    from,
+    paymentMethod,
+    paymentStatus,
+    search,
+    sortBy,
+    status,
+    to,
+  } = input;
+
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  const fromDate = from ? new Date(`${from}T00:00:00`) : undefined;
+  const toDate = to ? new Date(`${to}T23:59:59.999`) : undefined;
+
+  const sellerOrderItems = await prisma.orderItem.findMany({
+    where: { sellerId },
+    select: { orderId: true },
+    distinct: ["orderId"],
+  });
+
+  const orderIds = sellerOrderItems.map((item) => item.orderId);
+
+  const where: Prisma.OrderWhereInput = {
+    id: { in: orderIds },
+    ...(search
+      ? {
+          OR: [
+            {
+              orderNumber: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              user: {
+                firstName: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              user: {
+                lastName: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+          ],
+        }
+      : {}),
+
+    ...(status ? { status } : {}),
+
+    ...(paymentMethod
+      ? {
+          paymentMethod: paymentMethod.toUpperCase() as "CASH" | "ONLINE",
+        }
+      : {}),
+
+    ...(paymentStatus ? { paymentStatus } : {}),
+
+    ...(fromDate || toDate
+      ? {
+          createdAt: {
+            ...(fromDate ? { gte: fromDate } : {}),
+            ...(toDate ? { lte: toDate } : {}),
+          },
+        }
+      : {}),
+  };
+
+  const orderBy: Prisma.OrderOrderByWithRelationInput =
+    sortBy === "highest"
+      ? { total: "desc" }
+      : sortBy === "lowest"
+        ? { total: "asc" }
+        : sortBy === "oldest"
+          ? { createdAt: "asc" }
+          : { createdAt: "desc" };
+
+  const [orders, total] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      skip,
+      take: limit,
+      include: {
+        items: { where: { sellerId } },
+        user: true,
+        coupon: true,
+      },
+      orderBy,
+    }),
+    prisma.order.count({ where }),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  return {
+    orders,
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalItems: total,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
 };

@@ -51,6 +51,7 @@ export interface Order {
   deliveryMethod: "STANDARD" | "EXPRESS";
   paymentMethod: "ONLINE" | "CASH";
   paymentStatus: "PAID" | "UNPAID";
+  couponId: string;
   stripeSessionId: string | null;
   note: string | null;
   user: User;

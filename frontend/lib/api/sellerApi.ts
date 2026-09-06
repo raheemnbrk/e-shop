@@ -6,6 +6,7 @@ import {
 } from "@/types/sellerTypes";
 import api from "./axios";
 import { allProductsResponse, productQueryInput } from "@/types/adminTypes";
+import { allOrderQueryInput, ordersResponse } from "@/types/orderTypes";
 
 export const applySellerApi = async (input: applySellerInput, file: File) => {
   const formData = new FormData();
@@ -107,4 +108,9 @@ export const toggleProductAvailabilityApi = async (
   return res.data;
 };
 
-
+export const getSellerOrdersApi = async (
+  input: allOrderQueryInput,
+): Promise<ordersResponse> => {
+  const res = await api.get("/orders/seller/all", { params: input });
+  return res.data;
+};

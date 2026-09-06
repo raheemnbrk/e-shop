@@ -6,9 +6,11 @@ import {
   getAdminOrdersController,
   getMyOrdersController,
   getMySingleOrderController,
+  getSellerOrdersController,
   placeOrderController,
 } from "./orderController";
 import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
+import { authorizeSeller } from "../../shared/middlewares/auth/authorizeSeller";
 
 const orderRouter = Router();
 
@@ -30,6 +32,13 @@ orderRouter.patch(
   authenticate,
   authorizeAdmin,
   adminCancelOrderController,
+);
+
+orderRouter.get(
+  "/seller/all",
+  authenticate,
+  authorizeSeller,
+  getSellerOrdersController,
 );
 
 orderRouter.get("/:orderNumber", authenticate, getMySingleOrderController);

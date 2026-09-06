@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { placeOrderInput } from "../../shared/types/orderTypes";
 import {
+  allOrdersQuerySchema,
   ordersQuerySchema,
   placeOrderSchema,
 } from "../../shared/validations/orderValidation";
@@ -297,6 +298,26 @@ export const adminCancelOrderController = async (
     const { message } = await orderServices.adminCancelOrderService(id);
 
     return res.status(200).json({ success: true, message });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getSellerOrdersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const sellerId = (req as any).seller.id;
+    const input = allOrdersQuerySchema.parse((req as any).query);
+
+    const { orders, pagination } = await orderServices.getSellerOrdersService(
+      sellerId,
+      input,
+    );
+
+    return res.status(200).json({ success: true, orders, pagination });
   } catch (err) {
     next(err);
   }

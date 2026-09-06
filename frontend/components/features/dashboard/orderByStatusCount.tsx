@@ -104,7 +104,7 @@ export default function OrdersStatusChart({
 
     if (isLoading) {
         return (
-            <div className="rounded-xl border border-border bg-card p-4 shadow-sm dark:border-dark-border dark:bg-dark-card">
+            <div className="rounded-xl border border-border bg-card p-4 shadow-sm dark:border-dark-border dark:bg-dark-card w-full md:w-1/2">
                 <div className="animate-pulse">
                     <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
                     <div className="h-60 w-full bg-gray-200 dark:bg-gray-700 rounded" />
