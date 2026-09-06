@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
   applySellerController,
+  getSellerCustomersController,
   updateSellerController,
 } from "./sellerController";
 import { upload } from "../../shared/config/multer";
@@ -28,6 +29,13 @@ sellerRouter.patch(
   authorizeSeller,
   upload.single("logo"),
   updateSellerController,
+);
+
+sellerRouter.get(
+  "/customers",
+  authenticate,
+  authorizeSeller,
+  getSellerCustomersController,
 );
 
 export default sellerRouter;

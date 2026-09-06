@@ -1,4 +1,5 @@
 import z from "zod";
+import { searchQuerySchema } from "./adminValidation";
 
 export const applySellerSchema = z.object({
   storeName: z
@@ -60,4 +61,11 @@ export const updateSellerSchema = z.object({
     .string()
     .min(10, "Description must contains at least 10 characters.")
     .optional(),
+});
+
+export const sellerCustomersQuerySchema = searchQuerySchema.extend({
+  customerType: z.enum(["all", "new", "returning"]).default("all"),
+  sortBy: z
+    .enum(["newest", "highest_spending", "most_orders", "latest_order"])
+    .default("newest"),
 });

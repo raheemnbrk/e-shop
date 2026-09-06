@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {
   applySellerSchema,
+  sellerCustomersQuerySchema,
   updateSellerSchema,
 } from "../../shared/validations/sellerValidations";
 import { ApiError } from "../../shared/utils/apiError";
@@ -49,6 +50,24 @@ export const updateSellerController = async (
     );
 
     return res.status(200).json({ success: true, seller });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getSellerCustomersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const sellerId = (req as any).seller.id;
+    const input = sellerCustomersQuerySchema.parse((req as any).query);
+
+    const { customers, pagination } =
+      await sellerServices.getSellerCustomersServices(sellerId, input);
+
+    return res.json({ success: true, customers, pagination });
   } catch (err) {
     next(err);
   }

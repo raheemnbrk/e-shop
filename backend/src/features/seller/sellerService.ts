@@ -1,6 +1,8 @@
+import { Prisma } from "../../generated/prisma";
 import prisma from "../../shared/config/prisma";
 import {
   applySellerInput,
+  sellerCustomersQueryInput,
   updateSellerInput,
 } from "../../shared/types/sellerTypes";
 import { ApiError } from "../../shared/utils/apiError";
@@ -112,4 +114,164 @@ export const updateSellerServices = async (
   return seller;
 };
 
+export const getSellerCustomersServices = async (
+  sellerId: string,
+  input: sellerCustomersQueryInput,
+)=> {
+  const { customerType, page, sortBy, search } = input;
 
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  const where: Prisma.OrderWhereInput = {
+    status: {
+      not: "CANCELLED",
+    },
+    items: {
+      some: {
+        product: {
+          sellerId,
+        },
+      },
+    },
+    user: search
+      ? {
+          OR: [
+            {
+              firstName: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              lastName: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              email: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          ],
+        }
+      : undefined,
+  };
+
+  const orders = await prisma.order.findMany({
+    where,
+    select: {
+      userId: true,
+      createdAt: true,
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          image: true,
+        },
+      },
+      items: {
+        where: {
+          product: {
+            sellerId,
+          },
+        },
+        select: {
+          quantity: true,
+          price: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  const customersMap = new Map<
+    string,
+    {
+      userId: string;
+      firstName: string | null;
+      lastName: string | null;
+      email: string;
+      image: string | null;
+      orders: number;
+      totalSpent: number;
+      lastOrder: Date;
+    }
+  >();
+
+  for (const order of orders) {
+    const totalSpent = order.items.reduce(
+      (sum, item) => sum + Number(item.price) * item.quantity,
+      0,
+    );
+
+    const existingCustomer = customersMap.get(order.userId);
+
+    if (existingCustomer) {
+      existingCustomer.orders += 1;
+      existingCustomer.totalSpent += totalSpent;
+
+      if (order.createdAt > existingCustomer.lastOrder) {
+        existingCustomer.lastOrder = order.createdAt;
+      }
+    } else {
+      customersMap.set(order.userId, {
+        userId: order.user.id,
+        firstName: order.user.firstName,
+        lastName: order.user.lastName,
+        email: order.user.email,
+        image: order.user.image,
+        orders: 1,
+        totalSpent,
+        lastOrder: order.createdAt,
+      });
+    }
+  }
+
+  let customers = Array.from(customersMap.values());
+
+  if (customerType === "new") {
+    customers = customers.filter((customer) => customer.orders === 1);
+  }
+
+  if (customerType === "returning") {
+    customers = customers.filter((customer) => customer.orders > 1);
+  }
+
+  customers.sort((a, b) => {
+    switch (sortBy) {
+      case "highest_spending":
+        return b.totalSpent - a.totalSpent;
+
+      case "most_orders":
+        return b.orders - a.orders;
+
+      case "latest_order":
+        return b.lastOrder.getTime() - a.lastOrder.getTime();
+
+      case "newest":
+      default:
+        return b.lastOrder.getTime() - a.lastOrder.getTime();
+    }
+  });
+
+  const total = customers.length;
+
+  const paginatedCustomers = customers.slice(skip, skip + limit);
+
+  return {
+    customers: paginatedCustomers,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};

@@ -6,14 +6,13 @@ import { ConfirmationDialog } from "@/components/features/layout/confirmationBut
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useCancelOrder } from "@/lib/hooks/admin/orders/useCancelOrder";
-import { useGetAllOrders } from "@/lib/hooks/admin/orders/useGetAllOrders";
 import { useGetSellerOrders } from "@/lib/hooks/seller/useGetSellerOrder";
 import { Order } from "@/types/orderTypes";
 import { MoreHorizontalIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function AdminOrdersPage() {
+export default function SellerOrdersPage() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const pathName = usePathname()
@@ -50,7 +49,6 @@ export default function AdminOrdersPage() {
 
     const { data, isLoading } = useGetSellerOrders({ status, page, from, to, paymentMethod, paymentStatus, search, sortBy })
 
-    console.log(data?.orders)
     const statusItems = [{ value: "all", label: "Status" }, { value: "PENDING", label: "pending" }, { value: "PROCESSING", label: "Processing" }, { value: "CONFIRMED", label: "Confirmed" }, { value: "SHIPPED", label: "Shipped" }, { value: "DELIVERED", label: "Delivered" }, { value: "CANCELLED", label: "Cancelled" }]
     const paymentMethodItems = [{ value: "all", label: "Payment method" }, { value: "cash", label: "Cash" }, { value: "online", label: "Online" }]
     const paymentStatusItems = [{ value: "all", label: "Payment status" }, { value: "PAID", label: "Paid" }, { value: "UNPAID", label: "Unpaid" }]

@@ -35,9 +35,9 @@ export default function SellerSidebar({
             label: "Dashboard",
         },
         {
-            link: "/seller/users",
+            link: "/seller/customers",
             icon: <Users className="h-5 w-5" />,
-            label: "Users",
+            label: "Customers",
         },
         {
             link: "/seller/products",
@@ -48,11 +48,6 @@ export default function SellerSidebar({
             link: "/seller/orders",
             icon: <ShoppingBag className="h-5 w-5" />,
             label: "Orders",
-        },
-        {
-            link: "/seller/store",
-            icon: <Store className="h-5 w-5" />,
-            label: "Store",
         },
     ];
 

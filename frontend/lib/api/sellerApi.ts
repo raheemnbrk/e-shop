@@ -1,6 +1,8 @@
 import {
   applySellerInput,
   createProductInput,
+  sellerCustomersQueryInput,
+  SellerCustomersResponse,
   updateProductInput,
   updateSellerInput,
 } from "@/types/sellerTypes";
@@ -112,5 +114,12 @@ export const getSellerOrdersApi = async (
   input: allOrderQueryInput,
 ): Promise<ordersResponse> => {
   const res = await api.get("/orders/seller/all", { params: input });
+  return res.data;
+};
+
+export const getSellerCustomersApi = async (
+  input: sellerCustomersQueryInput,
+): Promise<SellerCustomersResponse> => {
+  const res = await api.get("/seller/customers", { params: input });
   return res.data;
 };

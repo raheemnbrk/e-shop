@@ -1,4 +1,5 @@
 import z from "zod";
+import { searchQuerySchema } from "./adminSchema";
 
 export const sellerApplicationSchema = z.object({
   storeName: z
@@ -64,4 +65,11 @@ export const updateProductSchema = z.object({
     .max(90, "Discount must not be above 90%")
     .optional(),
   available: z.coerce.boolean().optional(),
+});
+
+export const sellerCustomersQuerySchema = searchQuerySchema.extend({
+  customerType: z.enum(["all", "new", "returning"]).default("all"),
+  sortBy: z
+    .enum(["newest", "highest_spending", "most_orders", "latest_order"])
+    .default("newest"),
 });

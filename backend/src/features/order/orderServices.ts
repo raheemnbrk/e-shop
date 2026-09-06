@@ -548,3 +548,10 @@ export const getSellerOrdersService = async (
     },
   };
 };
+
+// export const sellerCancelOrderService = async (
+//   sellerId: string,
+//   id: string,
+// ) => {
+//   const order = prisma.order.update({where : {}})
+// };
