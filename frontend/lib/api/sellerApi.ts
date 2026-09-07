@@ -3,11 +3,12 @@ import {
   createProductInput,
   sellerCustomersQueryInput,
   SellerCustomersResponse,
+  sellerDashboardStatsResponse,
   updateProductInput,
   updateSellerInput,
 } from "@/types/sellerTypes";
 import api from "./axios";
-import { allProductsResponse, productQueryInput } from "@/types/adminTypes";
+import { allProductsResponse, DashboardPeriod, dashboardSalesStatsResponse, productQueryInput } from "@/types/adminTypes";
 import { allOrderQueryInput, ordersResponse } from "@/types/orderTypes";
 
 export const applySellerApi = async (input: applySellerInput, file: File) => {
@@ -121,5 +122,18 @@ export const getSellerCustomersApi = async (
   input: sellerCustomersQueryInput,
 ): Promise<SellerCustomersResponse> => {
   const res = await api.get("/seller/customers", { params: input });
+  return res.data;
+};
+
+export const getSellerDashboardStats =
+  async (): Promise<sellerDashboardStatsResponse> => {
+    const res = await api.get("stats/seller");
+    return res.data;
+  };
+
+export const getSellerSalesStats = async (
+  period: DashboardPeriod,
+): Promise<dashboardSalesStatsResponse> => {
+  const res = await api.get("/stats/seller/sales", { params: { period } });
   return res.data;
 };

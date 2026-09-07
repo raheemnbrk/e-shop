@@ -46,10 +46,11 @@ function formatPrice(price: number) {
 
 interface recentOrdersProps {
     orders: Order[];
-    isLoading: boolean
+    isLoading: boolean ;
+    link : string
 }
 
-export default function RecentOrders({ orders, isLoading }: recentOrdersProps) {
+export default function RecentOrders({ orders, isLoading , link }: recentOrdersProps) {
     const router = useRouter();
 
     if (isLoading) return <RecentOrdersSkeleton />
@@ -163,7 +164,7 @@ export default function RecentOrders({ orders, isLoading }: recentOrdersProps) {
                                         type="button"
                                         onClick={() =>
                                             router.push(
-                                                `/admin/orders/${order.orderNumber}`
+                                                `/${link}/orders/${order.orderNumber}`
                                             )
                                         }
                                         className="cursor-pointer rounded-md p-2 text-text-secondary transition hover:bg-muted hover:text-text dark:text-dark-text-secondary dark:hover:bg-dark-muted dark:hover:text-dark-text"

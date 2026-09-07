@@ -1,6 +1,6 @@
 "use client"
 
-import RecentOrders from "@/components/features/dashboard/admin/recentOrder";
+import RecentOrders from "@/components/features/dashboard/recentOrders";
 import StatsCards from "@/components/features/dashboard/dashboardCards";
 import { LowStockProducts } from "@/components/features/dashboard/lowStockProducts";
 import OrdersStatusChart from "@/components/features/dashboard/orderByStatusCount";
@@ -45,6 +45,7 @@ export default function AdminDashboardPage() {
             <RecentOrders
                 orders={(data?.recentOrders ?? []) as unknown as React.ComponentProps<typeof RecentOrders>["orders"]}
                 isLoading={isLoading}
+                link={"admin"}
             />
             <div>
                 <LowStockProducts products={data?.lowStockProducts ?? []} isLoading={isLoading} />

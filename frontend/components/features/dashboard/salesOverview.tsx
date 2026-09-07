@@ -14,6 +14,8 @@ import SalesOverviewSkeleton from "@/components/loading/dashboard/salesOverviewS
 import { SelectDemo } from "../layout/select";
 import { useState } from "react";
 import { useGetDashBoardStats } from "@/lib/hooks/admin/stats/useGetSalesStats";
+import { useAuthStore } from "@/lib/store/authStore";
+import { useGetSellerSalesStats } from "@/lib/hooks/seller/useGetSellerSalesChart";
 
 const periodItems = [
     {
@@ -38,8 +40,9 @@ const formatYAxis = (value: number) => {
 };
 
 export default function SalesOverview() {
+    const { user } = useAuthStore()
     const [period, setPeriod] = useState<DashboardPeriod>("30d")
-    const { data, isLoading } = useGetDashBoardStats(period)
+    const { data, isLoading } = user?.role === "ADMIN" ? useGetDashBoardStats(period) : useGetSellerSalesStats(period)
 
     if (isLoading) {
         return <SalesOverviewSkeleton />;
