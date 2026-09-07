@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, Menu, Moon, ShoppingBag, ShoppingCart, Sun } from "lucide-react";
+import {  Menu, Moon, ShoppingBag, ShoppingCart, Sun } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
 import { DropdownMenuProfile } from "./dropDownNavbar";
@@ -63,15 +63,6 @@ export default function Navbar() {
               {theme === "dark" ? <Sun size={22} /> : <Moon size={22} />}
             </button>
 
-            <button
-              className="relative cursor-pointer text-text-secondary transition hover:text-primary dark:text-dark-text-secondary dark:hover:text-primary"
-              aria-label="Notifications"
-            >
-              <Bell size={22} />
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-white">
-                3
-              </span>
-            </button>
             <Link href={"/cart"}>
               <button
                 className="relative cursor-pointer text-text-secondary transition hover:text-primary dark:text-dark-text-secondary dark:hover:text-primary mt-2"
