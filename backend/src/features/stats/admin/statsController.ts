@@ -8,8 +8,6 @@ export const adminDashboardStatsController = async (
   next: NextFunction,
 ) => {
   try {
-    const period = dashboardPeriodSchema.parse((req as any).query);
-
     const {
       stats,
       recentOrders,
@@ -17,7 +15,7 @@ export const adminDashboardStatsController = async (
       topSellingProducts,
       topCustomers,
       ordersByStatus,
-    } = await adminStatsServices.adminDashboardStatsServices(period);
+    } = await adminStatsServices.adminDashboardStatsServices();
 
     return res.status(200).json({
       success: true,

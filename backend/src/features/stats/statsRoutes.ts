@@ -5,6 +5,8 @@ import {
   adminDashboardSalesController,
   adminDashboardStatsController,
 } from "./admin/statsController";
+import { authorizeSeller } from "../../shared/middlewares/auth/authorizeSeller";
+import { getSellerDashboardStatsController } from "./seller/sellerStatsController";
 
 const statsRouter = Router();
 
@@ -19,6 +21,13 @@ statsRouter.get(
   authenticate,
   authorizeAdmin,
   adminDashboardSalesController,
+);
+
+statsRouter.get(
+  "/seller",
+  authenticate,
+  authorizeSeller,
+  getSellerDashboardStatsController,
 );
 
 export default statsRouter;

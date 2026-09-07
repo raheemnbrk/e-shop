@@ -39,6 +39,7 @@ export const adminDashboardSalesServices = async (
       status: {
         not: "CANCELLED",
       },
+      paymentStatus: "PAID",
     },
     select: {
       createdAt: true,
@@ -120,9 +121,7 @@ export const adminDashboardSalesServices = async (
   };
 };
 
-export const adminDashboardStatsServices = async (
-  period: dashboardPeriodInput,
-) => {
+export const adminDashboardStatsServices = async () => {
   const [
     totalOrders,
     totalProducts,
@@ -175,6 +174,11 @@ export const adminDashboardStatsServices = async (
 
     prisma.orderItem.groupBy({
       by: ["productId", "productName", "productImage", "productSlug"],
+      where: {
+        order: {
+          paymentStatus: "PAID",
+        },
+      },
       _sum: {
         quantity: true,
       },
@@ -192,6 +196,7 @@ export const adminDashboardStatsServices = async (
         status: {
           not: "CANCELLED",
         },
+        paymentStatus: "PAID",
       },
       _sum: {
         total: true,
