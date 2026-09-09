@@ -1,4 +1,4 @@
-import { addToCartSchema } from "@/lib/validators/product";
+import { addToCartSchema } from "@/lib/validators/product.schema";
 import z from "zod";
 
 export interface CartItem {

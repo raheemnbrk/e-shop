@@ -1,7 +1,6 @@
-// products/page.tsx
 "use client";
 
-import { Suspense } from "react";
+import { useEffect, useRef, Suspense } from "react";
 import ProductCard from "@/components/features/products/productCard";
 import { useGetAllProducts } from "@/lib/hooks/products/useGetAllProducts";
 import Link from "next/link";
@@ -30,30 +29,56 @@ function NoFoundProduct() {
 
 function ProductsContent() {
   const searchParams = useSearchParams();
+
   const search = searchParams.get("search") ?? undefined;
-  const filter = searchParams.get("filter") ?? undefined;
+  const sortByParam = searchParams.get("sortBy");
+  const sortBy = ["newest", "highest", "lowest", "discount"].includes(sortByParam ?? "")
+    ? (sortByParam as "newest" | "highest" | "lowest" | "discount")
+    : undefined;
   const category = searchParams.get("category") ?? undefined;
-  const minPrice = searchParams.get("minPrice") ?? undefined;
-  const maxPrice = searchParams.get("maxPrice") ?? undefined;
+  const minPrice = searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : undefined;
+  const maxPrice = searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined;
 
   const {
-    data: products,
+    data,
     isLoading,
     isError,
-  } = useGetAllProducts(search, filter, category, minPrice, maxPrice);
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetAllProducts({ search, sortBy, category, minPrice, maxPrice });
+
+  const observerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    if (observerRef.current) observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const products = data?.pages.flatMap((page) => page.products) ?? [];
 
   if (isLoading) return <CardsLoading />;
-  if (isError || !products || products.length === 0) return <NoFoundProduct />;
+  if (isError) return <NoFoundProduct />;
+  if (products.length === 0) return <NoFoundProduct />;
 
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm text-text-secondary dark:text-dark-text-secondary">
         Showing{" "}
         <span className="font-semibold text-text dark:text-dark-text">
-          {products.length}
+          {data?.pages[0].pagination.totalItems}
         </span>{" "}
         products
       </p>
+
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
         {products.map((product) => (
           <Link key={product.id} href={`/products/${product.slug}`}>
@@ -61,6 +86,16 @@ function ProductsContent() {
           </Link>
         ))}
       </div>
+
+      <div ref={observerRef} className="h-10" />
+
+      {isFetchingNextPage && <CardsLoading />}
+
+      {!hasNextPage && products.length > 0 && (
+        <p className="text-center text-sm text-text-secondary dark:text-dark-text-secondary py-4">
+          You've seen all products
+        </p>
+      )}
     </div>
   );
 }

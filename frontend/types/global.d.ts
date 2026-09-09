@@ -10,7 +10,6 @@ declare global {
   interface Pagination {
     currentPage: number;
     totalPages: number;
-    totalUsers: number;
     limit: number;
     hasNextPage: boolean;
     hasPreviousPage: boolean;

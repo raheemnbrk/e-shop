@@ -31,19 +31,23 @@ export default function VerifyOtpPage() {
     useVerifyOtp(type);
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-8">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center px-8 bg-background dark:bg-dark-background">
+      <Card className="w-full max-w-md bg-card dark:bg-dark-card border-border dark:border-dark-border">
         <CardHeader>
-          <CardTitle>Verify your email</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-text dark:text-dark-text">
+            Verify your email
+          </CardTitle>
+          <CardDescription className="text-text-secondary dark:text-dark-text-secondary">
             Enter the verification code we sent to:{" "}
-            <span className="font-medium text-text">{email}</span>
+            <span className="font-medium text-text dark:text-dark-text">
+              {email}
+            </span>
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[12.5px] font-medium text-text">
+            <span className="text-[12.5px] font-medium text-text dark:text-dark-text">
               Verification code
             </span>
 
@@ -52,7 +56,7 @@ export default function VerifyOtpPage() {
               size="sm"
               onClick={handleResend}
               disabled={isResending}
-              className="cursor-pointer"
+              className="cursor-pointer border-border dark:border-dark-border text-text dark:text-dark-text hover:bg-background dark:hover:bg-dark-background"
             >
               <RefreshCwIcon className={isResending ? "animate-spin" : ""} />
               {isResending ? "Sending..." : "Resend Code"}
@@ -60,15 +64,15 @@ export default function VerifyOtpPage() {
           </div>
 
           <InputOTP maxLength={6} value={otp} onChange={setOtp}>
-            <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
+            <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl *:data-[slot=input-otp-slot]:bg-background *:data-[slot=input-otp-slot]:dark:bg-dark-background *:data-[slot=input-otp-slot]:border-border *:data-[slot=input-otp-slot]:dark:border-dark-border *:data-[slot=input-otp-slot]:text-text *:data-[slot=input-otp-slot]:dark:text-dark-text">
               <InputOTPSlot index={0} />
               <InputOTPSlot index={1} />
               <InputOTPSlot index={2} />
             </InputOTPGroup>
 
-            <InputOTPSeparator className="mx-2" />
+            <InputOTPSeparator className="mx-2 text-text-secondary dark:text-dark-text-secondary" />
 
-            <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
+            <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl *:data-[slot=input-otp-slot]:bg-background *:data-[slot=input-otp-slot]:dark:bg-dark-background *:data-[slot=input-otp-slot]:border-border *:data-[slot=input-otp-slot]:dark:border-dark-border *:data-[slot=input-otp-slot]:text-text *:data-[slot=input-otp-slot]:dark:text-dark-text">
               <InputOTPSlot index={3} />
               <InputOTPSlot index={4} />
               <InputOTPSlot index={5} />
@@ -78,14 +82,14 @@ export default function VerifyOtpPage() {
 
         <CardFooter className="flex flex-col gap-3">
           <Button
-            className="w-full cursor-pointer"
+            className="w-full cursor-pointer bg-primary hover:bg-primaryHover text-white"
             onClick={() => submitOtp(otp)}
             disabled={isPending || otp.length < 6}
           >
             {isPending ? "Verifying..." : "Verify email"}
           </Button>
 
-          <p className="text-center text-[12px] text-text-secondary">
+          <p className="text-center text-[12px] text-text-secondary dark:text-dark-text-secondary">
             Already have an account?{" "}
             <a
               href="/login"

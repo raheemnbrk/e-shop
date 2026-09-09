@@ -7,7 +7,7 @@ export default function GoogleAuthButton() {
   return (
     <button
       onClick={handleGoogleLogin}
-      className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 border border-border rounded-lg text-[13.5px] font-medium text-text hover:bg-background cursor-pointer transition-colors mb-5"
+      className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 border border-border dark:border-dark-border rounded-lg text-[13.5px] font-medium text-text dark:text-dark-text hover:bg-background dark:hover:bg-dark-background hover:border-primary dark:hover:border-primary cursor-pointer transition-colors mb-5"
     >
       <GoogleIcon />
       Continue with Google

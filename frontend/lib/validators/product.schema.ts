@@ -1,4 +1,5 @@
 import z from "zod";
+import { searchQuerySchema } from "./adminSchema";
 
 export const addReviewSchema = z.object({
   rating: z
@@ -14,4 +15,11 @@ export const addToCartSchema = z.object({
     .number({ error: "Quantity must be a number." })
     .positive({ error: "Quantity must be positive" })
     .min(1, "Quantity must at least equals to 1."),
+});
+
+export const productQuerySchema = searchQuerySchema.extend({
+  category: z.string().optional(),
+  sortBy: z.enum(["newest", "highest", "lowest", "discount"]).optional(),
+  minPrice: z.coerce.number().optional(),
+  maxPrice: z.coerce.number().optional(),
 });

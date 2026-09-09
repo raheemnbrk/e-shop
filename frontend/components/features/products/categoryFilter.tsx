@@ -111,7 +111,7 @@ export default function CategoryFilter() {
                       {category.name}
                     </p>
                     <p className="text-[11px] text-text-secondary dark:text-dark-text-secondary">
-                      {category.productsCount ?? 0} products
+                      {category.productCount ?? 0} products
                     </p>
                   </div>
                 </div>
@@ -140,7 +140,7 @@ export default function CategoryFilter() {
                             : "bg-border dark:bg-dark-border text-text-secondary dark:text-dark-text-secondary"
                         }`}
                       >
-                        {child.productsCount ?? 0}
+                        {child.productCount ?? 0}
                       </span>
                     </button>
                   ))}

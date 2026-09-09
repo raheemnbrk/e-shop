@@ -1,4 +1,7 @@
-import { addReviewSchema } from "@/lib/validators/product";
+import {
+  addReviewSchema,
+  productQuerySchema,
+} from "@/lib/validators/product.schema";
 import z from "zod";
 
 export interface ProductSeller {
@@ -45,3 +48,12 @@ export interface Product {
 }
 
 export type addReviewInput = z.infer<typeof addReviewSchema>;
+
+export type productQueryInput = z.infer<typeof productQuerySchema>;
+
+export interface allProductsResponse {
+  products: Product[];
+  pagination: Pagination & {
+    totalItems: number;
+  };
+}

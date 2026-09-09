@@ -17,6 +17,10 @@ export default function ProductCard({ product }: { product: Product }) {
         )
       : 0;
 
+  const isNew = product.createdAt
+    ? Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000
+    : false;
+
   const cartItem: CartItem = {
     productId: product.id,
     image: product.images[0],
@@ -29,9 +33,23 @@ export default function ProductCard({ product }: { product: Product }) {
   };
 
   const { addToCartHandler, isPending } = useAddToCart();
+
   return (
     <div className="group overflow-hidden rounded-xl border border-border dark:border-dark-border bg-card dark:bg-dark-card transition-shadow duration-300 hover:shadow-md hover:border-primary dark:hover:border-primary">
       <div className="relative h-44 w-full overflow-hidden bg-background dark:bg-dark-background">
+        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+          {product.discount > 0 && (
+            <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-red-500 text-white rounded">
+              -{product.discount}%
+            </span>
+          )}
+          {isNew && (
+            <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-emerald-500 text-white rounded">
+              New
+            </span>
+          )}
+        </div>
+
         <button
           type="button"
           className="absolute top-2 right-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-card dark:bg-dark-card border border-border dark:border-dark-border shadow transition-colors hover:bg-primary hover:text-white hover:border-primary text-text-secondary dark:text-dark-text-secondary"

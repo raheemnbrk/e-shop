@@ -10,6 +10,7 @@ import {
   updateProductInput,
 } from "../../shared/types/sellerTypes";
 import { productQuery } from "../../shared/types/productTypes";
+import { productQuerySchema as customerProductQuerySchema } from "../../shared/validations/productValidations";
 import { productQuerySchema } from "../../shared/validations/adminValidation";
 
 export const createProductController = async (
@@ -49,17 +50,12 @@ export const getAllProductsController = async (
   next: NextFunction,
 ) => {
   try {
-    const { search, filter, category, minPrice, maxPrice } = req.query;
+    const input = customerProductQuerySchema.parse((req as any).query);
 
-    const products = await productServices.getAllProductsService(
-      search,
-      filter,
-      category,
-      minPrice,
-      maxPrice,
-    );
+    const { products, pagination } =
+      await productServices.getAllProductsService(input);
 
-    return res.status(200).json({ success: true, products });
+    return res.status(200).json({ success: true, products, pagination });
   } catch (err) {
     next(err);
   }

@@ -1,5 +1,6 @@
 import { Prisma } from "../../generated/prisma";
 import prisma from "../../shared/config/prisma";
+import { productQueryInput as customerProductQueryInput } from "../../shared/types/productTypes";
 import { productQueryInput } from "../../shared/types/adminType";
 import {
   createProductInput,
@@ -38,47 +39,61 @@ export const createProductService = async (
 };
 
 export const getAllProductsService = async (
-  search?: string,
-  filter?: string,
-  category?: string,
-  minPrice?: string,
-  maxPrice?: string,
+  input: customerProductQueryInput,
 ) => {
-  const orderBy =
-    filter === "lower price"
-      ? { price: "asc" as const }
-      : filter === "higher price"
-        ? { price: "desc" as const }
-        : filter === "name"
-          ? { name: "asc" as const }
-          : { createdAt: "desc" as const };
-  const products = await prisma.product.findMany({
-    where: {
-      available: true,
-      ...(search && { name: { contains: search, mode: "insensitive" } }),
-      ...(category && { category: { slug: category } }),
-      ...((minPrice || maxPrice) && {
-        price: {
-          ...(minPrice && { gte: Number(minPrice) }),
-          ...(maxPrice && { lte: Number(maxPrice) }),
-        },
-      }),
-    },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      price: true,
-      discount: true,
-      images: true,
-      available: true,
-      reviews: { select: { rating: true } },
-      category: { select: { name: true } },
-    },
-    orderBy,
-  });
+  const { category, search, maxPrice, minPrice, sortBy, page } = input;
 
-  return products;
+  const limit = 12;
+  const skip = (page - 1) * limit;
+
+  const where: Prisma.ProductWhereInput = {
+    ...(search && { name: { contains: search, mode: "insensitive" as const } }),
+    ...(category && { category: { slug: category } }),
+    ...(minPrice && { price: { gte: minPrice } }),
+    ...(maxPrice && { price: { lte: maxPrice } }),
+  };
+
+  const orderBy: Prisma.ProductOrderByWithRelationInput =
+    sortBy === "highest"
+      ? { price: "desc" }
+      : sortBy === "lowest"
+        ? { price: "asc" }
+        : sortBy === "discount"
+          ? { discount: "desc" }
+          : { createdAt: "desc" };
+
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        price: true,
+        discount: true,
+        images: true,
+        available: true,
+        stock: true,
+        reviews: { select: { rating: true } },
+        category: { select: { name: true, slug: true } },
+      },
+      orderBy,
+      skip,
+      take: limit,
+    }),
+    prisma.product.count({ where }),
+  ]);
+
+  return {
+    products,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalItems: total,
+      hasNextPage: page < Math.ceil(total / limit),
+      limit,
+    },
+  };
 };
 
 export const deleteProductService = async (id: string, sellerId: string) => {

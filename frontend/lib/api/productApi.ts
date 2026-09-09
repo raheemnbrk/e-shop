@@ -1,17 +1,18 @@
-import { addReviewInput, Product } from "@/types/productTypes";
+import {
+  addReviewInput,
+  allProductsResponse,
+  Product,
+  productQueryInput,
+} from "@/types/productTypes";
 import api from "./axios";
 
 export const getAllProducts = async (
-  search?: string,
-  filter?: string,
-  category?: string,
-  minPrice?: string,
-  maxPrice?: string,
-): Promise<Product[]> => {
+  input: productQueryInput,
+): Promise<allProductsResponse> => {
   const res = await api.get("/product/all", {
-    params: { search, filter, category, minPrice, maxPrice },
+    params: input,
   });
-  return res.data.products;
+  return res.data;
 };
 
 export const getSingleProduct = async (slug: string): Promise<Product> => {
