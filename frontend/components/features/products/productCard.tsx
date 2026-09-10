@@ -12,9 +12,9 @@ export default function ProductCard({ product }: { product: Product }) {
   const averageRating =
     (product.reviews?.length ?? 0) > 0
       ? Math.floor(
-          product.reviews.reduce((acc, r) => acc + r.rating, 0) /
-            product.reviews.length,
-        )
+        product.reviews.reduce((acc, r) => acc + r.rating, 0) /
+        product.reviews.length,
+      )
       : 0;
 
   const isNew = product.createdAt
@@ -35,16 +35,16 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addToCartHandler, isPending } = useAddToCart();
 
   return (
-    <div className="group overflow-hidden rounded-xl border border-border dark:border-dark-border bg-card dark:bg-dark-card transition-shadow duration-300 hover:shadow-md hover:border-primary dark:hover:border-primary">
-      <div className="relative h-44 w-full overflow-hidden bg-background dark:bg-dark-background">
-        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 dark:border-dark-border bg-card dark:bg-dark-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/40 dark:hover:border-primary/40">
+      <div className="relative aspect-square w-full overflow-hidden bg-linear-to-br from-gray-50 to-gray-100 dark:from-dark-background dark:to-dark-card">
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
           {product.discount > 0 && (
-            <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-red-500 text-white rounded">
+            <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-red-500 text-white rounded-full shadow-sm">
               -{product.discount}%
             </span>
           )}
           {isNew && (
-            <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-emerald-500 text-white rounded">
+            <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-emerald-500 text-white rounded-full shadow-sm">
               New
             </span>
           )}
@@ -52,37 +52,40 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <button
           type="button"
-          className="absolute top-2 right-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-card dark:bg-dark-card border border-border dark:border-dark-border shadow transition-colors hover:bg-primary hover:text-white hover:border-primary text-text-secondary dark:text-dark-text-secondary"
+          className="absolute top-3 right-3 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full bg-white/90 dark:bg-dark-card/90 backdrop-blur-sm border border-border/60 dark:border-dark-border shadow-sm transition-all duration-200 hover:bg-red-500 hover:border-red-500 hover:scale-110 text-text-secondary dark:text-dark-text-secondary hover:text-white"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
           }}
         >
-          <Heart className="h-4 w-4" />
+          <Heart className="size-4" />
         </button>
 
         <img
           src={product.images[0]}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
       </div>
 
-      <div className="space-y-1.5 p-3">
-        <p className="text-[10px] uppercase tracking-widest text-text-secondary dark:text-dark-text-secondary">
+      <div className="flex flex-1 flex-col gap-2 p-3.5">
+        <p className="text-xs font-medium uppercase tracking-widest text-text-secondary/80 dark:text-dark-text-secondary/80">
           {product.category.name}
         </p>
 
-        <h3 className="line-clamp-2 text-sm font-semibold leading-5 text-text dark:text-dark-text">
+        <h3 className="line-clamp-2 text-sm font-semibold leading-5 text-text dark:text-dark-text transition-colors group-hover:text-primary">
           {product.name}
         </h3>
 
-        <div className="flex items-center gap-1">
-          <div className="flex">
+        <div className="flex items-center gap-1.5">
+          <div className="flex gap-0.5">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
                 key={i}
-                className={`h-3 w-3 fill-current ${i < averageRating ? "text-yellow-400" : "text-gray-300"}`}
+                className={`size-3 ${i < averageRating
+                    ? "fill-amber-400 text-amber-400"
+                    : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
+                  }`}
               />
             ))}
           </div>
@@ -91,30 +94,36 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-text dark:text-dark-text">
-            ${newPrice}
-          </span>
-          {product.discount > 0 && (
-            <span className="text-xs text-text-secondary dark:text-dark-text-secondary line-through">
-              ${product.price}
+        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-lg font-bold text-text dark:text-dark-text">
+              ${newPrice}
             </span>
-          )}
-        </div>
+            {product.discount > 0 && (
+              <span className="text-xs text-text-secondary dark:text-dark-text-secondary line-through">
+                ${product.price}
+              </span>
+            )}
+          </div>
 
-        <button
-          type="button"
-          className="mt-2 flex h-9 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary text-sm font-medium text-white transition-colors hover:bg-primaryHover"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            addToCartHandler(cartItem);
-          }}
-          disabled={isPending}
-        >
-          <ShoppingCart className="h-4 w-4" />
-          Add to cart
-        </button>
+          <button
+            type="button"
+            className="relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary text-white shadow-sm transition-all duration-200 hover:bg-primaryHover hover:scale-110 hover:shadow-md active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addToCartHandler(cartItem);
+            }}
+            disabled={isPending}
+            aria-label="Add to cart"
+          >
+            {isPending ? (
+              <span className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            ) : (
+              <ShoppingCart className="size-4" />
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

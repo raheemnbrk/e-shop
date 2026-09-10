@@ -216,3 +216,20 @@ export const adminDeleteProductController = async (
     next(err);
   }
 };
+
+export const getHomePageDataControllers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { bestDeals, categoriesWithCount, newArrivals, topSelling } =
+      await productServices.getHomePageDataService();
+
+    return res
+      .status(200)
+      .json({ bestDeals, categoriesWithCount, newArrivals, topSelling });
+  } catch (err) {
+    next(err);
+  }
+};

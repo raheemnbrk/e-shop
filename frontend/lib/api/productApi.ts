@@ -1,6 +1,7 @@
 import {
   addReviewInput,
   allProductsResponse,
+  homePageDataResponse,
   Product,
   productQueryInput,
 } from "@/types/productTypes";
@@ -30,5 +31,10 @@ export const addReviewApi = async (
   input: addReviewInput,
 ): Promise<MessageResponse> => {
   const res = await api.post(`review/add/${productId}`, input);
+  return res.data;
+};
+
+export const getHomePageDataApi = async (): Promise<homePageDataResponse> => {
+  const res = await api.get("/product/home");
   return res.data;
 };

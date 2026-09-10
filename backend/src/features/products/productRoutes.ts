@@ -6,6 +6,7 @@ import {
   deleteProductController,
   getAdminProductsController,
   getAllProductsController,
+  getHomePageDataControllers,
   getRelatedProductsController,
   getSellerProductsController,
   getSingleProductController,
@@ -72,6 +73,8 @@ productRouter.delete(
   authorizeAdmin,
   adminDeleteProductController,
 );
+
+productRouter.get("/home", getHomePageDataControllers);
 
 productRouter.get("/:slug", getSingleProductController);
 

@@ -3,6 +3,7 @@ import {
   productQuerySchema,
 } from "@/lib/validators/product.schema";
 import z from "zod";
+import { Category } from "./categoryTypes";
 
 export interface ProductSeller {
   storeName: string;
@@ -56,4 +57,11 @@ export interface allProductsResponse {
   pagination: Pagination & {
     totalItems: number;
   };
+}
+
+export interface homePageDataResponse {
+  bestDeals: Product[];
+  newArrivals: Product[];
+  topSelling: Product[];
+  categoriesWithCount: Category[];
 }

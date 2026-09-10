@@ -1,6 +1,6 @@
 export default function Loader({ message }: { message?: string }) {
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-3">
+    <div className="flex flex-col items-center justify-center h-screen gap-3 bg-background dark:bg-dark-background">
       <svg width="64" height="64" viewBox="0 0 80 80">
         <circle
           cx="30"
@@ -45,7 +45,11 @@ export default function Loader({ message }: { message?: string }) {
           fill="var(--color-primary)"
         />
       </svg>
-      {message && <p className="text-text-secondary text-sm">{message}</p>}
+      {message && (
+        <p className="text-text-secondary dark:text-dark-text-secondary text-sm">
+          {message}
+        </p>
+      )}
 
       <style jsx>{`
         .box-drop {

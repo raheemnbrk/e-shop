@@ -3,16 +3,17 @@
 import { Input } from "@/components/ui/input";
 import { SelectDemo, SelectItemType } from "../layout/select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, Suspense } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { X } from "lucide-react";
+import CategoryFilter from "../products/categoryFilter";
 
 const items: SelectItemType[] = [
   { label: "All products", value: "newest" },
   { label: "Price: low to high", value: "lowest" },
   { label: "Price: high to low", value: "highest" },
   { label: "Most discounted", value: "discount" },
-]
+];
 
 export default function Search() {
   const router = useRouter();
@@ -44,7 +45,12 @@ export default function Search() {
     router.push(`${pathname}?${createQueryString("sortBy", value)}`);
   };
 
-  const hasFilters = searchParams.get("search") || searchParams.get("sortBy");
+  const hasFilters =
+    searchParams.get("search") ||
+    searchParams.get("sortBy") ||
+    searchParams.get("category") ||
+    searchParams.get("minPrice") ||
+    searchParams.get("maxPrice");
 
   const handleClear = () => {
     router.push(pathname);
@@ -53,13 +59,14 @@ export default function Search() {
   const currentSortBy = searchParams.get("sortBy") ?? "newest";
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
       <Input
         placeholder="Enter product name..."
         defaultValue={searchParams.get("search") ?? ""}
         onChange={(e) => handleSearch(e.target.value)}
-        className="focus-visible:ring-primary focus-visible:border-primary h-10 bg-card dark:bg-dark-card"
+        className="focus-visible:ring-primary focus-visible:border-primary h-10 bg-card dark:bg-dark-card flex-1 min-w-0"
       />
+
       <SelectDemo
         key={currentSortBy}
         items={items}
@@ -67,6 +74,15 @@ export default function Search() {
         value={currentSortBy}
         onchange={handleFilter}
       />
+
+      <Suspense
+        fallback={
+          <div className="h-10 w-28 bg-border dark:bg-dark-border rounded-xl animate-pulse" />
+        }
+      >
+        <CategoryFilter />
+      </Suspense>
+
       {hasFilters && (
         <button
           onClick={handleClear}

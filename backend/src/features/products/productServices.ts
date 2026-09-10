@@ -393,3 +393,73 @@ export const adminDeleteProductService = async (id: string) => {
 
   return { message: "Product deleted successfully." };
 };
+
+export const getHomePageDataService = async () => {
+  const [newArrivals, bestDeals, topSellingItems, categories] =
+    await Promise.all([
+      prisma.product.findMany({
+        where: { available: true },
+        include : {category : true , reviews : true},
+        orderBy: { createdAt: "desc" },
+        take: 4,
+      }),
+      prisma.product.findMany({
+        where: { discount: { gt: 0 }, available: true },
+        include : {category : true , reviews : true},
+        orderBy: { discount: "desc" },
+        take: 4,
+      }),
+      prisma.orderItem.groupBy({
+        by: ["productId"],
+        _sum: { quantity: true },
+        orderBy: { _sum: { quantity: "desc" } },
+        take: 4,
+      }),
+      prisma.category.findMany({
+        where: { parentId: null },
+        include: {
+          children: {
+            include: {
+              _count: {
+                select: { products: true },
+              },
+            },
+          },
+          _count: {
+            select: { products: true },
+          },
+        },
+      }),
+    ]);
+
+  const topSellingIds = topSellingItems
+    .map((item) => item.productId)
+    .filter(Boolean) as string[];
+
+  const topSelling = await prisma.product.findMany({
+    where: { id: { in: topSellingIds }, available: true },
+    include : {category : true , reviews : true},
+  });
+
+  const sortedTopSelling = topSellingIds
+    .map((id) => topSelling.find((p) => p.id === id))
+    .filter(Boolean);
+
+  const categoriesWithCount = categories.map((category) => {
+    const subCategoryProductCount = category.children.reduce(
+      (acc, child) => acc + child._count.products,
+      0,
+    );
+    return {
+      ...category,
+      productCount: category._count.products + subCategoryProductCount,
+    };
+  });
+
+  return {
+    newArrivals,
+    bestDeals,
+    topSelling: sortedTopSelling,
+    categoriesWithCount,
+  };
+};
