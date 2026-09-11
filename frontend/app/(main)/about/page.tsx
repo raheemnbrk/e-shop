@@ -1,12 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import {
     Shield,
     Truck,
     Award,
     Headphones,
     ShoppingBag,
-    CreditCard
+    CreditCard,
+    ChevronRight
 } from "lucide-react";
 
 export default function AboutPage() {
@@ -52,6 +54,19 @@ export default function AboutPage() {
     return (
         <div className="min-h-screen bg-background dark:bg-dark-background py-8 px-4">
             <div className="max-w-7xl mx-auto">
+                <nav className="flex items-center gap-1.5 text-sm mb-8">
+                    <Link
+                        href="/"
+                        className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
+                    >
+                        Home
+                    </Link>
+                    <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
+                    <span className="font-medium text-text dark:text-dark-text">
+                        About Us
+                    </span>
+                </nav>
+
                 <div className="text-center mb-12">
                     <h1 className="text-3xl font-bold text-text dark:text-dark-text mb-2">
                         About Our Store
@@ -122,13 +137,13 @@ export default function AboutPage() {
                     <p className="text-text-secondary dark:text-dark-text-secondary text-sm mb-4">
                         Explore our collection and find the perfect products for you.
                     </p>
-                    <a
+                    <Link
                         href="/products"
-                        className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors"
+                        className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primaryHover transition-colors"
                     >
                         Browse Products
                         <ShoppingBag className="h-4 w-4" />
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

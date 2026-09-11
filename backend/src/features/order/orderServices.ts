@@ -1,4 +1,4 @@
-import { OrderStatus, Prisma } from "../../generated/prisma";
+import { Prisma } from "../../generated/prisma";
 import prisma from "../../shared/config/prisma";
 import stripe from "../../shared/config/stripe";
 import {
@@ -8,7 +8,9 @@ import {
 } from "../../shared/types/orderTypes";
 import { ApiError } from "../../shared/utils/apiError";
 import { sendOrderConfirmationEmail } from "../../shared/utils/emails/emailActions";
+import { generateInvoicePDF } from "../../shared/utils/generateInvoice";
 import { generateOrderNumber } from "../../shared/utils/generateOrderNumber";
+import PDFDocument from "pdfkit";
 
 export const placeOrderService = async (
   userId: string,
@@ -160,7 +162,7 @@ export const placeOrderService = async (
     return {
       message: "Order placed successfully.",
       paymentMethod: "CASH",
-      orderId: order.id,
+      orderNumber: order.orderNumber,
       checkoutUrl: null,
     };
   }
@@ -213,7 +215,7 @@ export const placeOrderService = async (
   return {
     message: "Order created. Please complete your payment.",
     paymentMethod: "ONLINE",
-    orderId: order.id,
+    orderNumber: order.orderNumber,
     checkoutUrl: session.url,
   };
 };
@@ -412,21 +414,69 @@ export const getAdminOrdersService = async (input: allOrdersQueryInput) => {
 };
 
 export const cancelOrderService = async (id: string, userId: string) => {
-  const order = await prisma.order.update({
+  const order = await prisma.order.findFirst({
     where: { id, userId },
-    data: { status: "CANCELLED" },
+    include: { items: true },
   });
+
   if (!order) throw new ApiError(404, "Order not found.");
+  if (order.status === "CANCELLED")
+    throw new ApiError(400, "Order is already cancelled.");
+  if (order.status === "SHIPPED" || order.status === "DELIVERED")
+    throw new ApiError(
+      400,
+      "Cannot cancel an order that has been shipped or delivered.",
+    );
+
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({
+      where: { id },
+      data: { status: "CANCELLED" },
+    });
+
+    for (const item of order.items) {
+      if (item.productId) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { increment: item.quantity } },
+        });
+      }
+    }
+  });
 
   return { message: "Order cancelled successfully." };
 };
 
 export const adminCancelOrderService = async (id: string) => {
-  const order = await prisma.order.update({
+  const order = await prisma.order.findUnique({
     where: { id },
-    data: { status: "CANCELLED" },
+    include: { items: true },
   });
+
   if (!order) throw new ApiError(404, "Order not found.");
+  if (order.status === "CANCELLED")
+    throw new ApiError(400, "Order is already cancelled.");
+  if (order.status === "SHIPPED" || order.status === "DELIVERED")
+    throw new ApiError(
+      400,
+      "Cannot cancel an order that has been shipped or delivered.",
+    );
+
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({
+      where: { id },
+      data: { status: "CANCELLED" },
+    });
+
+    for (const item of order.items) {
+      if (item.productId) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { increment: item.quantity } },
+        });
+      }
+    }
+  });
 
   return { message: "Order cancelled successfully." };
 };
@@ -547,6 +597,43 @@ export const getSellerOrdersService = async (
       hasPreviousPage: page > 1,
     },
   };
+};
+
+export const generateOrderInvoiceService = async (
+  orderNumber: string,
+  userId: string,
+) => {
+  const order = await prisma.order.findFirst({
+    where: {
+      orderNumber,
+      userId,
+    },
+    include: {
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          phoneNumber: true,
+        },
+      },
+      address: true,
+      items: {
+        select: {
+          productName: true,
+          price: true,
+          quantity: true,
+          discount: true,
+        },
+      },
+    },
+  });
+
+  if (!order) {
+    throw new ApiError(404, "Order not found.");
+  }
+
+  return generateInvoicePDF(order);
 };
 
 // export const sellerCancelOrderService = async (

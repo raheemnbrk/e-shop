@@ -322,3 +322,31 @@ export const getSellerOrdersController = async (
     next(err);
   }
 };
+export const getOrderInvoiceController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { orderNumber } = req.params as { orderNumber: string };
+    const userId = (req as any).user.id;
+
+    const doc = await orderServices.generateOrderInvoiceService(
+      orderNumber,
+      userId,
+    );
+
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="invoice-${orderNumber}.pdf"`,
+    );
+
+    doc.pipe(res);
+
+    doc.end();
+  } catch (error) {
+    next(error);
+  }
+};

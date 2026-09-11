@@ -7,41 +7,13 @@ import { orderStatus } from "@/types/orderTypes";
 import { OrdersSkeleton } from "@/components/loading/orderSkeleton";
 
 const statusFilters = [
-    {
-        value: "all",
-        label: "All",
-        status: undefined,
-    },
-    {
-        value: "PENDING",
-        label: "Pending",
-        status: "PENDING",
-    },
-    {
-        value: "CONFIRMED",
-        label: "Confirmed",
-        status: "CONFIRMED",
-    },
-    {
-        value: "PROCESSING",
-        label: "Processing",
-        status: "PROCESSING",
-    },
-    {
-        value: "SHIPPED",
-        label: "Shipped",
-        status: "SHIPPED",
-    },
-    {
-        value: "DELIVERED",
-        label: "Delivered",
-        status: "DELIVERED",
-    },
-    {
-        value: "CANCELLED",
-        label: "Cancelled",
-        status: "CANCELLED",
-    },
+    { value: "all", label: "All", status: undefined },
+    { value: "PENDING", label: "Pending", status: "PENDING" },
+    { value: "CONFIRMED", label: "Confirmed", status: "CONFIRMED" },
+    { value: "PROCESSING", label: "Processing", status: "PROCESSING" },
+    { value: "SHIPPED", label: "Shipped", status: "SHIPPED" },
+    { value: "DELIVERED", label: "Delivered", status: "DELIVERED" },
+    { value: "CANCELLED", label: "Cancelled", status: "CANCELLED" },
 ] as const;
 
 const statuses: orderStatus[] = [
@@ -52,6 +24,21 @@ const statuses: orderStatus[] = [
     "DELIVERED",
     "CANCELLED",
 ];
+
+const statusColors: Record<orderStatus, string> = {
+    PENDING:
+        "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+    CONFIRMED:
+        "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    PROCESSING:
+        "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+    SHIPPED:
+        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
+    DELIVERED:
+        "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    CANCELLED:
+        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+};
 
 export default function OrdersList() {
     const router = useRouter();
@@ -129,8 +116,7 @@ export default function OrdersList() {
         );
     };
 
-
-    if(isLoading)return <OrdersSkeleton/>
+    if (isLoading) return <OrdersSkeleton />;
 
     return (
         <div className="space-y-6">
@@ -154,14 +140,13 @@ export default function OrdersList() {
                                 }`}
                         >
                             {filter.label} (
-                            {getStatusCount(filter.status)}
-                            )
+                            {getStatusCount(filter.status)})
                         </button>
                     );
                 })}
             </div>
 
-            {isLoading ? null : data?.orders.length ? (
+            {data?.orders.length ? (
                 <div className="space-y-4">
                     {data.orders.map((order) => (
                         <div
@@ -173,14 +158,15 @@ export default function OrdersList() {
                                     <p className="text-sm text-text-secondary dark:text-dark-text-secondary">
                                         Order
                                     </p>
-
                                     <p className="font-semibold text-text dark:text-dark-text">
                                         #{order.orderNumber}
                                     </p>
                                 </div>
 
                                 <div className="flex items-center gap-3">
-                                    <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                                    <span
+                                        className={`rounded-full px-3 py-1 text-sm font-medium ${statusColors[order.status]}`}
+                                    >
                                         {order.status}
                                     </span>
 
@@ -214,7 +200,6 @@ export default function OrdersList() {
                                             <p className="truncate font-medium text-text dark:text-dark-text">
                                                 {item.productName}
                                             </p>
-
                                             <p className="text-sm text-text-secondary dark:text-dark-text-secondary">
                                                 Quantity: {item.quantity}
                                             </p>
@@ -232,7 +217,6 @@ export default function OrdersList() {
                                     <span className="text-sm text-text-secondary dark:text-dark-text-secondary">
                                         Total
                                     </span>
-
                                     <p className="text-lg font-bold text-text dark:text-dark-text">
                                         ${order.total.toFixed(2)}
                                     </p>
@@ -256,50 +240,41 @@ export default function OrdersList() {
             ) : (
                 <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16 dark:border-dark-border dark:bg-dark-card">
                     <Package className="mb-4 h-12 w-12 text-text-secondary dark:text-dark-text-secondary" />
-
                     <h3 className="text-lg font-semibold text-text dark:text-dark-text">
                         No orders found
                     </h3>
-
                     <p className="mt-1 text-sm text-text-secondary dark:text-dark-text-secondary">
                         You don't have any orders with this status.
                     </p>
                 </div>
             )}
 
-            {data?.pagination &&
-                data.pagination.totalPages > 1 && (
-                    <div className="flex items-center justify-between">
-                        <button
-                            type="button"
-                            disabled={
-                                !data.pagination.hasPreviousPage
-                            }
-                            onClick={() =>
-                                handlePageChange(page - 1)
-                            }
-                            className="cursor-pointer rounded-lg border border-border px-4 py-2 text-sm font-medium text-text transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-50 dark:border-dark-border dark:text-dark-text"
-                        >
-                            Previous
-                        </button>
+            {data?.pagination && data.pagination.totalPages > 1 && (
+                <div className="flex items-center justify-between">
+                    <button
+                        type="button"
+                        disabled={!data.pagination.hasPreviousPage}
+                        onClick={() => handlePageChange(page - 1)}
+                        className="cursor-pointer rounded-lg border border-border px-4 py-2 text-sm font-medium text-text transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-50 dark:border-dark-border dark:text-dark-text"
+                    >
+                        Previous
+                    </button>
 
-                        <span className="text-sm text-text-secondary dark:text-dark-text-secondary">
-                            Page {data.pagination.currentPage} of{" "}
-                            {data.pagination.totalPages}
-                        </span>
+                    <span className="text-sm text-text-secondary dark:text-dark-text-secondary">
+                        Page {data.pagination.currentPage} of{" "}
+                        {data.pagination.totalPages}
+                    </span>
 
-                        <button
-                            type="button"
-                            disabled={!data.pagination.hasNextPage}
-                            onClick={() =>
-                                handlePageChange(page + 1)
-                            }
-                            className="cursor-pointer rounded-lg border border-border px-4 py-2 text-sm font-medium text-text transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-50 dark:border-dark-border dark:text-dark-text"
-                        >
-                            Next
-                        </button>
-                    </div>
-                )}
+                    <button
+                        type="button"
+                        disabled={!data.pagination.hasNextPage}
+                        onClick={() => handlePageChange(page + 1)}
+                        className="cursor-pointer rounded-lg border border-border px-4 py-2 text-sm font-medium text-text transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-50 dark:border-dark-border dark:text-dark-text"
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

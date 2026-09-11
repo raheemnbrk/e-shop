@@ -6,7 +6,7 @@ import { useGetAllProducts } from "@/lib/hooks/products/useGetAllProducts";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Search from "@/components/features/products/search";
-import { PackageSearch } from "lucide-react";
+import { PackageSearch, ChevronRight } from "lucide-react";
 import CardsLoading from "@/components/loading/cardsLoading";
 
 function NoFoundProduct() {
@@ -96,6 +96,19 @@ function ProductsContent() {
 export default function Products() {
   return (
     <div className="flex flex-col gap-8">
+      <nav className="flex items-center gap-1.5 text-sm">
+        <Link
+          href="/"
+          className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
+        >
+          Home
+        </Link>
+        <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
+        <span className="font-medium text-text dark:text-dark-text">
+          All Products
+        </span>
+      </nav>
+
       <div>
         <h1 className="text-2xl font-bold text-text dark:text-dark-text">
           All products

@@ -33,3 +33,19 @@ export const cancelOrderApi = async (id: string): Promise<MessageResponse> => {
   const res = await api.patch(`/orders/cancel/${id}`);
   return res.data;
 };
+
+export const getOrderInvoiceApi = async (orderNumber: string) => {
+  const res = await api.get(
+    `/orders/${encodeURIComponent(orderNumber)}/invoice`,
+    {
+      responseType: "blob",
+    },
+  );
+
+  const contentType = String(res.headers["content-type"] ?? "");
+  if (contentType.includes("application/json")) {
+    throw new Error("Invoice endpoint returned an error response.");
+  }
+
+  return res.data;
+};

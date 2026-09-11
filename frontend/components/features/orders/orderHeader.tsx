@@ -1,16 +1,32 @@
 "use client";
 
-import { ArrowLeft, Download, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Download, X } from "lucide-react";
 import type { Order } from "@/types/orderTypes";
 import { useCancelOrder } from "@/lib/hooks/orders/useCancelOrder";
+import { getOrderInvoiceApi } from "@/lib/api/ordersApi";
+import { toast } from "sonner";
+import { useState } from "react";
 
 interface OrderHeaderProps {
     order: Order;
 }
 
 export default function OrderHeader({ order }: OrderHeaderProps) {
-    const router = useRouter();
+
+    const [invoiceLoading, setInvoiceLoading] = useState(false)
+
+    const handleViewInvoice = async () => {
+        setInvoiceLoading(true)
+        try {
+            const blob = await getOrderInvoiceApi(order.orderNumber)
+            const url = window.URL.createObjectURL(blob)
+            window.open(url, "_blank")
+        } catch {
+            toast.error("Failed to load invoice.")
+        } finally {
+            setInvoiceLoading(false)
+        }
+    }
 
     const canCancel =
         order.status === "PENDING" ||
@@ -20,14 +36,6 @@ export default function OrderHeader({ order }: OrderHeaderProps) {
 
     return (
         <div className="rounded-xl border border-border bg-card p-5 dark:border-dark-border dark:bg-dark-card">
-            <button
-                type="button"
-                onClick={() => router.push("/my-orders")}
-                className="mb-5 flex cursor-pointer items-center gap-2 text-sm font-medium text-text-secondary transition hover:text-primary dark:text-dark-text-secondary"
-            >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Orders
-            </button>
 
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div>
@@ -69,10 +77,12 @@ export default function OrderHeader({ order }: OrderHeaderProps) {
                 <div className="flex flex-wrap gap-3">
                     <button
                         type="button"
-                        className="flex cursor-pointer items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-text transition hover:border-primary hover:text-primary dark:border-dark-border dark:text-dark-text dark:hover:border-primary dark:hover:text-primary"
+                        onClick={handleViewInvoice}
+                        disabled={invoiceLoading}
+                        className="flex cursor-pointer items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-text transition hover:border-primary hover:text-primary dark:hover:text-primary dark:hover:border-primary dark:border-dark-border dark:text-dark-text disabled:opacity-50"
                     >
                         <Download className="h-4 w-4" />
-                        Download Invoice
+                        {invoiceLoading ? "Loading..." : "Download Invoice"}
                     </button>
 
                     <button

@@ -15,7 +15,7 @@ export type placeOrderInput = z.infer<typeof placeOrderSchema>;
 export interface placeOrderResponse {
   success: boolean;
   message: string;
-  orderId: string;
+  orderNumber: string;
   paymentMethod: "ONLINE" | "CASH";
   checkoutUrl: string | null;
 }

@@ -49,7 +49,6 @@ export default function AdminOrdersPage() {
 
     const { data, isLoading } = useGetAllOrders({ status, page, from, to, paymentMethod, paymentStatus, search, sortBy })
 
-    console.log(data?.orders)
     const statusItems = [{ value: "all", label: "Status" }, { value: "PENDING", label: "pending" }, { value: "PROCESSING", label: "Processing" }, { value: "CONFIRMED", label: "Confirmed" }, { value: "SHIPPED", label: "Shipped" }, { value: "DELIVERED", label: "Delivered" }, { value: "CANCELLED", label: "Cancelled" }]
     const paymentMethodItems = [{ value: "all", label: "Payment method" }, { value: "cash", label: "Cash" }, { value: "online", label: "Online" }]
     const paymentStatusItems = [{ value: "all", label: "Payment status" }, { value: "PAID", label: "Paid" }, { value: "UNPAID", label: "Unpaid" }]

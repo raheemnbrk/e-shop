@@ -6,6 +6,7 @@ import {
     Camera,
     Loader2,
     ArrowLeft,
+    ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -59,13 +60,25 @@ export default function ApplySellerPage() {
     return (
         <div className="min-h-screen bg-background px-4 py-10 dark:bg-dark-background">
             <div className="mx-auto w-full max-w-2xl">
-                <Link
-                    href="/my-profile"
-                    className="mb-6 inline-flex items-center gap-2 text-sm text-text-secondary transition hover:text-primary dark:text-dark-text-secondary"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to profile
-                </Link>
+                <nav className="mb-6 flex items-center gap-1.5 text-sm">
+                    <Link
+                        href="/"
+                        className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
+                    >
+                        Home
+                    </Link>
+                    <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
+                    <Link
+                        href="/my-profile"
+                        className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
+                    >
+                        My Profile
+                    </Link>
+                    <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
+                    <span className="font-medium text-text dark:text-dark-text">
+                        Become a Seller
+                    </span>
+                </nav>
 
                 <div className="rounded-2xl border border-border bg-card p-6 shadow-sm dark:border-dark-border dark:bg-dark-card sm:p-8">
                     <div className="mb-8">

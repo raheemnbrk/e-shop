@@ -113,7 +113,7 @@ export function DataTable<T extends { id: string }>({
                                 <PaginationPrevious
                                     onClick={() =>
                                         pagination.hasPreviousPage &&
-                                        onPageChange?.(pagination.currentPage - 1)
+                                        onPageChange?.(Number(pagination.currentPage) - 1)
                                     }
                                     className={
                                         !pagination.hasPreviousPage
@@ -136,7 +136,11 @@ export function DataTable<T extends { id: string }>({
                                         <PaginationLink
                                             isActive={page === pagination.currentPage}
                                             onClick={() => onPageChange?.(page as number)}
-                                            className="cursor-pointer"
+                                            className={
+                                                page === pagination.currentPage
+                                                    ? "cursor-pointer bg-primary text-white border-primary hover:bg-primary hover:text-white"
+                                                    : "cursor-pointer"
+                                            }
                                         >
                                             {page}
                                         </PaginationLink>
@@ -148,7 +152,7 @@ export function DataTable<T extends { id: string }>({
                                 <PaginationNext
                                     onClick={() =>
                                         pagination.hasNextPage &&
-                                        onPageChange?.(pagination.currentPage + 1)
+                                        onPageChange?.(Number(pagination.currentPage) + 1)
                                     }
                                     className={
                                         !pagination.hasNextPage

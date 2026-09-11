@@ -12,7 +12,7 @@ export default function ({ children }: Children) {
 
   return (
     <div className="flex flex-col min-h-screen bg-background dark:bg-dark-background">
-      {!isDashboard && <Navbar />}
+      <Navbar />
       <div className="flex-1 px-4 md:px-8 py-4">{children}</div>
       {!isDashboard && <Footer />}
     </div>

@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import { ChevronRight } from "lucide-react"
 import OrderActions from "@/components/features/orders/orderActions"
 import OrderDeliveryInfo from "@/components/features/orders/orderDeliveryInfo"
 import OrderHeader from "@/components/features/orders/orderHeader"
@@ -9,22 +11,39 @@ import OrderStatusTimeline from "@/components/features/orders/orderStatusTimeLin
 import OrderSummary from "@/components/features/orders/orderSummary"
 import OrderDetailsSkeleton from "@/components/loading/orderDetailSkeleton"
 import { useGetSingleOrder } from "@/lib/hooks/orders/useGetSingleOrder"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 
 export default function Order() {
     const { orderNumber } = useParams<{ orderNumber: string }>()
 
     const { data, isLoading } = useGetSingleOrder(orderNumber)
 
-    const router = useRouter()
-
     const order = data?.order
 
-    if (isLoading) return <OrderDetailsSkeleton />
-    if (!order) return <div className="rounded-xl border border-border bg-card p-5 text-sm text-text-secondary dark:border-dark-border dark:bg-dark-card dark:text-dark-text-secondary">Order not found</div>
+    if (isLoading || !order) return <OrderDetailsSkeleton />
 
     return (
         <div className="space-y-6">
+            <nav className="flex items-center gap-1.5 text-sm">
+                <Link
+                    href="/"
+                    className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
+                >
+                    Home
+                </Link>
+                <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
+                <Link
+                    href="/my-orders"
+                    className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
+                >
+                    My Orders
+                </Link>
+                <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
+                <span className="font-medium text-text dark:text-dark-text">
+                    #{order.orderNumber}
+                </span>
+            </nav>
+
             <OrderHeader order={order} />
 
             <OrderStatusTimeline status={order.status} />

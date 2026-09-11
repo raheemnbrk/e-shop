@@ -6,6 +6,7 @@ import {
   getAdminOrdersController,
   getMyOrdersController,
   getMySingleOrderController,
+  getOrderInvoiceController,
   getSellerOrdersController,
   placeOrderController,
 } from "./orderController";
@@ -40,6 +41,12 @@ orderRouter.get(
   authorizeSeller,
   getSellerOrdersController,
 );
+
+orderRouter.get(
+  "/:orderNumber/invoice", 
+  authenticate,
+  getOrderInvoiceController,
+)
 
 orderRouter.get("/:orderNumber", authenticate, getMySingleOrderController);
 
