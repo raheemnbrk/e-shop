@@ -77,7 +77,7 @@ export const getAllCategoriesServices = async () => {
       image: category.image,
       parentId: category.parentId,
       createdAt: category.createdAt,
-      productsCount: totalProducts,
+      productCount: totalProducts,
 
       children: category.children.map((child) => ({
         id: child.id,
@@ -86,7 +86,7 @@ export const getAllCategoriesServices = async () => {
         image: child.image,
         parentId: category.parentId,
         createdAt: category.createdAt,
-        productsCount: child._count.products,
+        productCount: child._count.products,
       })),
     };
   });
@@ -96,14 +96,34 @@ export const getCategoryBySlugServices = async (slug: string) => {
   const category = await prisma.category.findUnique({
     where: { slug },
     include: {
-      children: true,
+      _count: {
+        select: {
+          products: true,
+        },
+      },
+      children: {
+        include: {
+          _count: {
+            select: {
+              products: true,
+            },
+          },
+        },
+      },
       products: { where: { available: true }, orderBy: { createdAt: "desc" } },
     },
   });
 
   if (!category) throw new ApiError(404, "Category not found.");
 
-  return category;
+  return {
+    ...category,
+    productCount: category._count.products,
+    children: category.children.map((child) => ({
+      ...child,
+      productCount: child._count.products,
+    })),
+  };
 };
 
 export const deleteCategoryServices = async (id: string) => {

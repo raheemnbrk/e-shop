@@ -15,6 +15,7 @@ import { ConfirmationDialog } from "@/components/features/layout/confirmationBut
 import { Button } from "@/components/ui/button";
 import { useApproveSeller } from "@/lib/hooks/admin/sellers/useApproveSeller";
 import { useRejectSeller } from "@/lib/hooks/admin/sellers/useRejectSeller";
+import Link from "next/link";
 
 const statusItems = [
     { value: "ALL", label: "All status" },
@@ -132,9 +133,11 @@ export default function AdminSellersPage() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card">
-                                <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary">
-                                    View profile
-                                </DropdownMenuItem>
+                                <Link href={`sellers/${user?.Seller.storeSlug}`} >
+                                    <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary">
+                                        View profile
+                                    </DropdownMenuItem>
+                                </Link>
                                 {user.Seller?.status === "APPROVED" && (
                                     <DropdownMenuItem
                                         className="cursor-pointer"

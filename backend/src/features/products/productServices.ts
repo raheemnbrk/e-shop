@@ -401,19 +401,19 @@ export const getHomePageDataService = async () => {
         where: { available: true },
         include : {category : true , reviews : true},
         orderBy: { createdAt: "desc" },
-        take: 4,
+        take: 8,
       }),
       prisma.product.findMany({
         where: { discount: { gt: 0 }, available: true },
         include : {category : true , reviews : true},
         orderBy: { discount: "desc" },
-        take: 4,
+        take: 8,
       }),
       prisma.orderItem.groupBy({
         by: ["productId"],
         _sum: { quantity: true },
         orderBy: { _sum: { quantity: "desc" } },
-        take: 4,
+        take: 8,
       }),
       prisma.category.findMany({
         where: { parentId: null },
@@ -429,6 +429,7 @@ export const getHomePageDataService = async () => {
             select: { products: true },
           },
         },
+
       }),
     ]);
 

@@ -3,6 +3,7 @@ import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
   applySellerController,
   getSellerCustomersController,
+  getSellerProfileForAdminController,
   updateSellerController,
 } from "./sellerController";
 import { upload } from "../../shared/config/multer";
@@ -11,6 +12,7 @@ import {
   updateSellerLimiter,
 } from "../../shared/middlewares/limiters/sellerLimiter";
 import { authorizeSeller } from "../../shared/middlewares/auth/authorizeSeller";
+import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
 
 const sellerRouter = Router();
 
@@ -37,5 +39,7 @@ sellerRouter.get(
   authorizeSeller,
   getSellerCustomersController,
 );
+
+sellerRouter.get("/admin/:slug"  , authenticate , authorizeAdmin , getSellerProfileForAdminController);
 
 export default sellerRouter;

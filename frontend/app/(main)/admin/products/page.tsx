@@ -190,7 +190,7 @@ export default function AdminProductsPage() {
               className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
 
             >
-              <Link href={`/sellers/${product.seller.storeSlug}`} >View seller</Link>
+              <Link href={`/admin/sellers/${product.seller.storeSlug}`} >View seller</Link>
             </DropdownMenuItem>
 
 

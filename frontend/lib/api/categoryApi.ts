@@ -10,6 +10,11 @@ export const getCategories = async (): Promise<Category[]> => {
   return res.data.categories;
 };
 
+export const getCategoryBySlugApi = async (slug: string): Promise<Category> => {
+  const res = await api.get(`/category/${slug}`);
+  return res.data.category;
+};
+
 export const addCategoryApi = async (
   input: addCategoryInput,
   file: File,

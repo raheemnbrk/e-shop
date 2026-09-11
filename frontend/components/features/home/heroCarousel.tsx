@@ -96,7 +96,7 @@ export default function HeroCarousel() {
 
     return (
         <section
-            className="relative w-full"
+            className="relative w-full mt-4"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onFocus={() => setIsPaused(true)}

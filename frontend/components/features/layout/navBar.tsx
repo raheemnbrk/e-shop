@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {  Menu, Moon, ShoppingBag, ShoppingCart, Sun } from "lucide-react";
+import {  Menu, Moon, ShoppingCart, Store, Sun } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
 import { DropdownMenuProfile } from "./dropDownNavbar";
@@ -32,7 +32,7 @@ export default function Navbar() {
         <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 md:px-8">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <ShoppingBag className="h-5 w-5 text-white" />
+              <Store className="h-5 w-5 text-white" />
             </div>
             <span className="text-2xl font-bold text-text dark:text-dark-text">
               e-shop

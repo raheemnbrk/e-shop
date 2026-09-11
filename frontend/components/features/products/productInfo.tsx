@@ -151,7 +151,7 @@ export default function ProductInfo({ product }: { product: Product }) {
         <button
           disabled={product.stock === 0 || isPending}
           onClick={() => addToCartHandler(cartItem)}
-          className="flex h-12 flex-1 cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-primary text-sm font-semibold text-white transition-all duration-200 hover:bg-primaryHover active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex h-12 flex-1 cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-primary text-sm font-semibold text-white transition-all duration-200 hover:bg-primaryHover active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? (
             <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -170,7 +170,7 @@ export default function ProductInfo({ product }: { product: Product }) {
               toast.error("Failed to add to cart")
             }
           }}
-          className="flex h-12 flex-1 cursor-pointer items-center justify-center gap-2.5 rounded-xl border-2 border-primary text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary hover:text-white active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex h-12 flex-1 cursor-pointer items-center justify-center gap-2.5 rounded-lg border-2 border-primary text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary hover:text-white active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Zap className="h-4 w-4" />
           Buy now

@@ -21,6 +21,9 @@ export default function ProductCard({ product }: { product: Product }) {
     ? Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000
     : false;
 
+  const isLowStock = product.stock > 0 && product.stock <= 5;
+  const isOutOfStock = product.stock === 0;
+
   const cartItem: CartItem = {
     productId: product.id,
     image: product.images[0],
@@ -35,7 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addToCartHandler, isPending } = useAddToCart();
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 dark:border-dark-border bg-card dark:bg-dark-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/40 dark:hover:border-primary/40">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 dark:border-dark-border bg-card dark:bg-dark-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/40 dark:hover:border-primary/40">
       <div className="relative aspect-square w-full overflow-hidden bg-linear-to-br from-gray-50 to-gray-100 dark:from-dark-background dark:to-dark-card">
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
           {product.discount > 0 && (
@@ -48,11 +51,17 @@ export default function ProductCard({ product }: { product: Product }) {
               New
             </span>
           )}
+          {isLowStock && (
+            <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-amber-500 text-white rounded-full shadow-sm">
+              {product.stock} left
+            </span>
+          )}
         </div>
 
         <button
           type="button"
-          className="absolute top-3 right-3 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full bg-white/90 dark:bg-dark-card/90 backdrop-blur-sm border border-border/60 dark:border-dark-border shadow-sm transition-all duration-200 hover:bg-red-500 hover:border-red-500 hover:scale-110 text-text-secondary dark:text-dark-text-secondary hover:text-white"
+          aria-label="Add to wishlist"
+          className="absolute top-3 right-3 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full bg-white/90 dark:bg-dark-card/90 backdrop-blur-sm border border-border/60 dark:border-dark-border shadow-sm transition-all duration-200 hover:bg-red-500 hover:border-red-500 hover:scale-110 dark:hover:bg-red-500 dark:hover:border-red-500 text-gray-600 dark:text-gray-300 hover:text-white dark:hover:text-white"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -60,6 +69,14 @@ export default function ProductCard({ product }: { product: Product }) {
         >
           <Heart className="size-4" />
         </button>
+
+        {isOutOfStock && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <span className="rounded-full bg-white/95 dark:bg-dark-card/95 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-text dark:text-dark-text shadow-lg">
+              Out of stock
+            </span>
+          </div>
+        )}
 
         <img
           src={product.images[0]}
@@ -83,8 +100,8 @@ export default function ProductCard({ product }: { product: Product }) {
               <Star
                 key={i}
                 className={`size-3 ${i < averageRating
-                    ? "fill-amber-400 text-amber-400"
-                    : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
+                  ? "fill-amber-400 text-amber-400"
+                  : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
                   }`}
               />
             ))}
@@ -108,14 +125,14 @@ export default function ProductCard({ product }: { product: Product }) {
 
           <button
             type="button"
+            aria-label="Add to cart"
             className="relative flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary text-white shadow-sm transition-all duration-200 hover:bg-primaryHover hover:scale-110 hover:shadow-md active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               addToCartHandler(cartItem);
             }}
-            disabled={isPending}
-            aria-label="Add to cart"
+            disabled={isPending || isOutOfStock}
           >
             {isPending ? (
               <span className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />

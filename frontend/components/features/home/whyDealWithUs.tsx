@@ -73,7 +73,7 @@ const guarantees = [
 
 export default function WhyDealWithUs() {
     return (
-        <section className="py-16">
+        <section>
             <div className="text-center mb-10">
                 <span className="inline-block rounded-full bg-primary/10 dark:bg-primary/20 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-primary mb-3">
                     Why Choose Us

@@ -31,7 +31,7 @@ export default function NewArrivals({ products }: NewArrivalsProps) {
             </div>
 
             {products.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
                     {products.map((product) => (
                         <Link key={product.id} href={`/products/${product.slug}`}>
                             <ProductCard product={product} />

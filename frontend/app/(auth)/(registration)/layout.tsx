@@ -1,4 +1,4 @@
-import { ShoppingBag } from "lucide-react";
+import { Store } from "lucide-react";
 import Image from "next/image";
 
 export default function AuthLayout({ children }: Children) {
@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: Children) {
         />
         <div className="relative z-10 flex items-center gap-2">
           <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center">
-            <ShoppingBag className="w-3.5 h-3.5 text-white fill-white" />
+            <Store className="w-3.5 h-3.5 text-white fill-white" />
           </div>
           <span className="text-white font-semibold text-sm tracking-tight">
             e-shop

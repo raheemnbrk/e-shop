@@ -16,7 +16,7 @@ export default function NoFoundProduct() {
           <PackageSearch className="h-8 w-8 text-primary" />
         </div>
 
-        <h3 className="mt-6 text-xl font-semibold text-text">
+        <h3 className="mt-6 text-xl font-semibold">
           No Related Products
         </h3>
 

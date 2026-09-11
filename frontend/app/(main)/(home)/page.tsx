@@ -15,7 +15,7 @@ export default function Home() {
     if (isLoading) return <HomeSkeleton />
     
     return (
-        <div className="flex flex-col space-y-6" >
+        <div className="flex flex-col space-y-8" >
             <HeroCarousel />
             <CategorySection categories={data?.categoriesWithCount ?? []} />
             <BestDeals products={data?.bestDeals ?? []} />

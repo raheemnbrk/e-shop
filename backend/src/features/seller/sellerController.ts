@@ -72,3 +72,19 @@ export const getSellerCustomersController = async (
     next(err);
   }
 };
+
+export const getSellerProfileForAdminController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { slug } = (req as any).params as { slug: string };
+    const { seller, stats } =
+      await sellerServices.getSellerProfileForAdminService(slug);
+
+    return res.status(200).json({ success: true, seller, stats });
+  } catch (err) {
+    next(err);
+  }
+};

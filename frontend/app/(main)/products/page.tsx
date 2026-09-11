@@ -89,12 +89,6 @@ function ProductsContent() {
       <div ref={observerRef} className="h-10" />
 
       {isFetchingNextPage && <CardsLoading />}
-
-      {!hasNextPage && products.length > 0 && (
-        <p className="text-center text-sm text-text-secondary dark:text-dark-text-secondary py-4">
-          You've seen all products
-        </p>
-      )}
     </div>
   );
 }

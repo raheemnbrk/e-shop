@@ -9,6 +9,7 @@ import z from "zod";
 import { Product } from "./productTypes";
 import { Order, ordersStatusCount } from "./orderTypes";
 import { TopCustomer, TopSellingProduct } from "./adminTypes";
+import { User } from "./authTypes";
 
 export type applySellerInput = z.infer<typeof sellerApplicationSchema>;
 
@@ -51,4 +52,22 @@ export interface sellerDashboardStatsResponse {
   topSellingProducts: TopSellingProduct[];
   topCustomers: TopCustomer[];
   ordersByStatus: ordersStatusCount[];
+}
+
+export interface sellerProfileResponse {
+  seller: {
+    userId: string;
+    storeName: string;
+    storeSlug: string;
+    description: string;
+    logo: string;
+    status: "PENDING" | "APPROVED" | "REJECTED";
+    user: User;
+    products: Product[];
+  };
+  stats: {
+    totalProducts: number;
+    totalOrders: number;
+    totalRevenue: number;
+  };
 }

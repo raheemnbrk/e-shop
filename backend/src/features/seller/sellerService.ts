@@ -117,7 +117,7 @@ export const updateSellerServices = async (
 export const getSellerCustomersServices = async (
   sellerId: string,
   input: sellerCustomersQueryInput,
-)=> {
+) => {
   const { customerType, page, sortBy, search } = input;
 
   const limit = 10;
@@ -272,6 +272,68 @@ export const getSellerCustomersServices = async (
       limit,
       total,
       totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+export const getSellerProfileForAdminService = async (slug: string) => {
+  const seller = await prisma.seller.findUnique({
+    where: { storeSlug: slug },
+    include: {
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          phoneNumber: true,
+          image: true,
+          createdAt: true,
+        },
+      },
+      products: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          price: true,
+          discount: true,
+          images: true,
+          stock: true,
+          available: true,
+          createdAt: true,
+          category: { select: { name: true } },
+        },
+      },
+    },
+  });
+
+  if (!seller) throw new ApiError(404, "Seller not found.");
+
+  const [totalOrders, revenueData] = await Promise.all([
+    prisma.orderItem.findMany({
+      where: { sellerId: seller.userId },
+      select: { orderId: true },
+      distinct: ["orderId"],
+    }),
+
+    prisma.order.findMany({
+      where: {
+        paymentStatus: "PAID",
+        status: { not: "CANCELLED" },
+        items: { some: { sellerId: seller.userId } },
+      },
+      select: { total: true },
+    }),
+  ]);
+
+  const totalRevenue = revenueData.reduce((acc, order) => acc + order.total, 0);
+
+  return {
+    seller,
+    stats: {
+      totalProducts: seller.products.length,
+      totalOrders: totalOrders.length,
+      totalRevenue: Number(totalRevenue.toFixed(2)),
     },
   };
 };
