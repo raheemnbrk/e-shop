@@ -72,3 +72,13 @@ export type changePasswordInput = Omit<
 >;
 
 export type updateProfileInput = z.infer<typeof updateProfileSchema>;
+
+export interface statsResponse {
+  success: boolean;
+  result: {
+    ordersCount: number;
+    totalSpent: number;
+    cartItemsCount: number;
+    reviewsCount: number;
+  };
+}

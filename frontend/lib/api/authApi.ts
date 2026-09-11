@@ -6,6 +6,7 @@ import {
   loginResponse,
   registerInput,
   resetPasswordInput,
+  statsResponse,
   updateProfileInput,
   User,
   verifyOtpInput,
@@ -94,5 +95,10 @@ export const updateProfileApi = async (
 
 export const deleteUserApi = async (): Promise<MessageResponse> => {
   const res = await api.delete("/user/delete");
+  return res.data;
+};
+
+export const getProfileStatsApi = async (): Promise<statsResponse> => {
+  const res = await api.get("/stats/customer");
   return res.data;
 };

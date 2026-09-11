@@ -6,7 +6,7 @@ import { useAuthStore } from "@/lib/store/authStore";
 import { useEffect } from "react";
 
 export default function AuthInitializer() {
-  const { setUser, setLoading, setAccessToken } = useAuthStore();
+  const { setUser, setLoading , setAccessToken } = useAuthStore();
 
   useEffect(() => {
     const init = async () => {

@@ -1,11 +1,18 @@
-const stats = [
-    { label: "Total orders", value: "24", icon: "🛍️" },
-    { label: "Total spent", value: "$1,840", icon: "💳" },
-    { label: "Wishlist items", value: "12", icon: "❤️" },
-    { label: "Reviews left", value: "8", icon: "⭐" },
-];
+import StatsCardsSkeleton from "@/components/loading/StatsCardsSkeleton";
+import { useGetProfileStats } from "@/lib/hooks/auth/useGetProfileStats";
 
 export function ProfileStats() {
+    const { data, isLoading } = useGetProfileStats()
+
+    const stats = [
+        { label: "Total orders", value: data?.result.ordersCount ?? 0, icon: "🛍️" },
+        { label: "Total spent", value: `$${data?.result.totalSpent ?? 0}`, icon: "💳" },
+        { label: "Cart items", value: data?.result.cartItemsCount ?? 0, icon: "🛒" },
+        { label: "Reviews left", value: data?.result.reviewsCount ?? 0, icon: "⭐" },
+    ];
+
+    if (isLoading) return <StatsCardsSkeleton />
+
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {stats.map((stat) => (

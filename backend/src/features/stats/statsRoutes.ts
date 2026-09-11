@@ -10,6 +10,7 @@ import {
   getSellerDashboardStatsController,
   sellerDashboardSalesController,
 } from "./seller/sellerStatsController";
+import { getCustomerStatsController } from "./customer/statsController";
 
 const statsRouter = Router();
 
@@ -37,6 +38,12 @@ statsRouter.get(
   authenticate,
   authorizeSeller,
   sellerDashboardSalesController,
+);
+
+statsRouter.get(
+  "/customer",
+  authenticate,
+  getCustomerStatsController,
 );
 
 export default statsRouter;

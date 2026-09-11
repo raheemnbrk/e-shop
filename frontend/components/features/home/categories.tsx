@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Category } from "@/types/categoryTypes";
 import { ArrowRight } from "lucide-react";
+import { Category } from "@/types/categoryTypes";
+import CategoryCard from "@/components/features/products/categoryCard";
 
 interface CategorySectionProps {
     categories: Category[];
@@ -32,39 +33,9 @@ export default function CategorySection({ categories }: CategorySectionProps) {
                     </Link>
                 </div>
 
-                <div className="flex flex-wrap overflow-x-scroll gap-4 md:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     {displayCategories.map((category) => (
-                        <Link
-                            key={category.id}
-                            href={`/categories/${category.slug}`}
-                            className="group block w-40 md:w-48"
-                        >
-                            <div className="bg-card dark:bg-dark-card rounded-xl border border-border dark:border-dark-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                                <div className="h-35 md:h-40 w-full overflow-hidden bg-gray-100 dark:bg-dark-background">
-                                    {category.image ? (
-                                        <img
-                                            src={category.image}
-                                            alt={category.name}
-                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-text-secondary dark:text-dark-text-secondary">
-                                            <span className="text-sm">No image</span>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="p-3 md:p-4">
-                                    <h3 className="text-sm md:text-base font-semibold text-text dark:text-dark-text group-hover:text-primary transition-colors line-clamp-1">
-                                        {category.name}
-                                    </h3>
-
-                                    <p className="text-xs text-text-secondary dark:text-dark-text-secondary mt-0.5">
-                                        {category.productCount || 0} products
-                                    </p>
-                                </div>
-                            </div>
-                        </Link>
+                        <CategoryCard key={category.id} category={category} />
                     ))}
                 </div>
             </div>

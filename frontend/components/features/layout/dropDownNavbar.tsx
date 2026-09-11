@@ -52,7 +52,7 @@ export function DropdownMenuProfile({ user }: { user: User }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-border dark:bg-dark-border" />
         <DropdownMenuItem
-          className="cursor-pointer text-red-700 data-highlighted:bg-red-300 data-highlighted:text-red-700"
+          className="cursor-pointer text-red-700 data-highlighted:bg-red-200 data-highlighted:text-red-700"
           onClick={handleLogout}
         >
           Log out

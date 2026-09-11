@@ -6,12 +6,13 @@ import Link from "next/link";
 import { ChevronRight, ArrowRight, PackageSearch, FolderTree } from "lucide-react";
 import ProductCard from "@/components/features/products/productCard";
 import CardsLoading from "@/components/loading/cardsLoading";
+import CategoryCard from "@/components/features/products/categoryCard";
 import { useGetCategoryBySlug } from "@/lib/hooks/categories/useGetCategoryBySlug";
 import { useGetAllProducts } from "@/lib/hooks/products/useGetAllProducts";
 
 function NoFoundProduct() {
     return (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
+        <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border dark:border-dark-border py-24 text-center">
             <div className="flex size-20 items-center justify-center rounded-full bg-border dark:bg-dark-border mb-5">
                 <PackageSearch className="size-10 text-text-secondary dark:text-dark-text-secondary" />
             </div>
@@ -130,8 +131,12 @@ function SubcategorySection() {
                     {Array.from({ length: 4 }).map((_, i) => (
                         <div
                             key={i}
-                            className="h-24 rounded-2xl bg-border dark:bg-dark-border animate-pulse"
-                        />
+                            className="flex flex-col items-center gap-3 rounded-2xl border border-border dark:border-dark-border bg-card dark:bg-dark-card p-4"
+                        >
+                            <div className="size-20 rounded-full bg-border dark:bg-dark-border animate-pulse" />
+                            <div className="h-4 w-24 bg-border dark:bg-dark-border rounded animate-pulse" />
+                            <div className="h-3 w-16 bg-border dark:bg-dark-border rounded animate-pulse" />
+                        </div>
                     ))}
                 </div>
             </div>
@@ -150,32 +155,10 @@ function SubcategorySection() {
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {category.children.map((child) => (
-                    <Link
+                    <CategoryCard
                         key={child.id}
-                        href={`/products?category=${child.slug}`}
-                        className="group flex flex-col items-center gap-3 rounded-2xl border border-border dark:border-dark-border bg-card dark:bg-dark-card p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/40 dark:hover:border-primary/40"
-                    >
-                        <div className="flex size-20 items-center justify-center overflow-hidden rounded-full bg-background dark:bg-dark-background border border-border dark:border-dark-border">
-                            {child.image ? (
-                                <img
-                                    src={child.image}
-                                    alt={child.name}
-                                    className="size-full object-cover transition-transform duration-300 group-hover:scale-110"
-                                />
-                            ) : (
-                                <PackageSearch className="size-7 text-text-secondary dark:text-dark-text-secondary" />
-                            )}
-                        </div>
-
-                        <div className="text-center min-w-0 w-full">
-                            <p className="text-sm font-semibold text-text dark:text-dark-text group-hover:text-primary transition-colors line-clamp-1">
-                                {child.name}
-                            </p>
-                            <p className="text-xs text-text-secondary dark:text-dark-text-secondary mt-0.5">
-                                {child.productCount ?? 0} products
-                            </p>
-                        </div>
-                    </Link>
+                        category={child}
+                    />
                 ))}
             </div>
         </div>
@@ -240,7 +223,7 @@ function ProductsGrid() {
                 </Link>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                 {products.map((product) => (
                     <Link key={product.id} href={`/products/${product.slug}`}>
                         <ProductCard product={product} />
@@ -280,8 +263,12 @@ export default function CategoryPage() {
                         {Array.from({ length: 4 }).map((_, i) => (
                             <div
                                 key={i}
-                                className="h-32 rounded-2xl bg-border dark:bg-dark-border animate-pulse"
-                            />
+                                className="flex flex-col items-center gap-3 rounded-2xl border border-border dark:border-dark-border bg-card dark:bg-dark-card p-4"
+                            >
+                                <div className="size-20 rounded-full bg-border dark:bg-dark-border animate-pulse" />
+                                <div className="h-4 w-24 bg-border dark:bg-dark-border rounded animate-pulse" />
+                                <div className="h-3 w-16 bg-border dark:bg-dark-border rounded animate-pulse" />
+                            </div>
                         ))}
                     </div>
                 }
