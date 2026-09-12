@@ -78,7 +78,7 @@ export default function OrderHeader({ order }: OrderHeaderProps) {
                     <button
                         type="button"
                         onClick={handleViewInvoice}
-                        disabled={invoiceLoading}
+                        disabled={invoiceLoading || order.paymentStatus !== "PAID" || order.status !== "CANCELLED"}
                         className="flex cursor-pointer items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-text transition hover:border-primary hover:text-primary dark:hover:text-primary dark:hover:border-primary dark:border-dark-border dark:text-dark-text disabled:opacity-50"
                     >
                         <Download className="h-4 w-4" />

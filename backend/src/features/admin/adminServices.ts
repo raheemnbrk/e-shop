@@ -1,6 +1,10 @@
 import prisma from "../../shared/config/prisma";
 import { ApiError } from "../../shared/utils/apiError";
-import { sellerQueryInput, userQueryInput } from "../../shared/types/adminType";
+import {
+  sellerQueryInput,
+  updateOrderStatusInput,
+  userQueryInput,
+} from "../../shared/types/adminType";
 import { Role } from "../../generated/prisma";
 
 export const approveSellerServices = async (userId: string) => {
@@ -309,4 +313,31 @@ export const getCustomerProfileService = async (userId: string) => {
     recentOrders: orders,
     cancelledOrders,
   };
+};
+
+export const updateOrderStatusService = async (
+  id: string,
+  input: updateOrderStatusInput,
+) => {
+  const { status } = input;
+  const order = await prisma.order.findUnique({ where: { id } });
+
+  if (!order) throw new ApiError(404, "Order not found.");
+
+  if (order.status === status)
+    throw new ApiError(400, `Order is already ${status}.`);
+
+  if (order.paymentMethod === "CASH" && status === "DELIVERED") {
+    await prisma.order.update({
+      where: { id },
+      data: { paymentStatus: "PAID", status: "DELIVERED" },
+    });
+  } else {
+    await prisma.order.update({
+      where: { id },
+      data: { status: status },
+    });
+  }
+
+  return { message: "Order is updated successfully." };
 };

@@ -8,6 +8,7 @@ import {
   getAllUsersController,
   getCustomerProfileController,
   rejectSellerController,
+  updateOrderStatusController,
 } from "./adminController";
 import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
 
@@ -55,6 +56,13 @@ adminRouter.get(
   authenticate,
   authorizeAdmin,
   getCustomerProfileController,
+);
+
+adminRouter.patch(
+  "/orders/update-status/:id",
+  authenticate,
+  authorizeAdmin,
+  updateOrderStatusController,
 );
 
 export default adminRouter;

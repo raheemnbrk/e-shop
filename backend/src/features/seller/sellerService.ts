@@ -3,6 +3,7 @@ import prisma from "../../shared/config/prisma";
 import {
   applySellerInput,
   sellerCustomersQueryInput,
+  updateOrderStatusInput,
   updateSellerInput,
 } from "../../shared/types/sellerTypes";
 import { ApiError } from "../../shared/utils/apiError";
@@ -336,4 +337,23 @@ export const getSellerProfileForAdminService = async (slug: string) => {
       totalRevenue: Number(totalRevenue.toFixed(2)),
     },
   };
+};
+
+export const updateOrderStatusService = async (
+  id: string,
+  sellerId: string,
+  input: updateOrderStatusInput,
+) => {
+  const order = await prisma.order.findFirst({
+    where: { id, items: { some: { sellerId } } },
+  });
+
+  if (!order) throw new ApiError(404, "Order not found.");
+
+  await prisma.order.update({
+    where: { id },
+    data: { status: input.status },
+  });
+
+  return { message: "Order is updated successfully." };
 };

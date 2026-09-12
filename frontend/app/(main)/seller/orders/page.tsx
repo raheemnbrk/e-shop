@@ -6,6 +6,7 @@ import { ConfirmationDialog } from "@/components/features/layout/confirmationBut
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useCancelOrder } from "@/lib/hooks/admin/orders/useCancelOrder";
+import { useUpdateOrderStatus } from "@/lib/hooks/seller/updateOrderStatus";
 import { useGetSellerOrders } from "@/lib/hooks/seller/useGetSellerOrder";
 import { Order } from "@/types/orderTypes";
 import { MoreHorizontalIcon } from "lucide-react";
@@ -82,6 +83,7 @@ export default function SellerOrdersPage() {
     };
 
     const { cancelOrder, cancelling } = useCancelOrder()
+    const { updateStatus, updating } = useUpdateOrderStatus()
 
     const columns = [
         {
@@ -210,6 +212,18 @@ export default function SellerOrdersPage() {
                         <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white">
                             <Link href={`${order.orderNumber}`} >View Order</Link>
                         </DropdownMenuItem>
+
+                        {(order.status === "PENDING" || order.status === "CONFIRMED") && (
+                            <DropdownMenuItem
+                                className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
+                                onClick={() => updateStatus({
+                                    id: order.id,
+                                    input: { status: order.status === "CONFIRMED" ? "PROCESSING" : "CONFIRMED" },
+                                })}
+                                disabled={updating}
+                            >
+                                {`Mark as ${order.status === "CONFIRMED" ? "Processing" : "Confirmed"}`}
+                            </DropdownMenuItem>)}
 
                         <DropdownMenuSeparator />
 

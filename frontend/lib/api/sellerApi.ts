@@ -5,6 +5,7 @@ import {
   SellerCustomersResponse,
   sellerDashboardStatsResponse,
   sellerProfileResponse,
+  updateOrderStatusInput,
   updateProductInput,
   updateSellerInput,
 } from "@/types/sellerTypes";
@@ -144,8 +145,17 @@ export const getSellerSalesStats = async (
   return res.data;
 };
 
-export const getSellerProfileForAdminApi =
-  async (slug : string): Promise<sellerProfileResponse> => {
-    const res = await api.get(`/seller/admin/${slug}`);
-    return res.data;
-  };
+export const getSellerProfileForAdminApi = async (
+  slug: string,
+): Promise<sellerProfileResponse> => {
+  const res = await api.get(`/seller/admin/${slug}`);
+  return res.data;
+};
+
+export const updateOrderStatusApi = async (
+  id: string,
+  input: updateOrderStatusInput,
+): Promise<MessageResponse> => {
+  const res = await api.patch(`/seller/orders/update-status/${id}`, input);
+  return res.data;
+};

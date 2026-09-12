@@ -1,6 +1,7 @@
 import {
   productQuerySchema,
   sellerQuerySchema,
+  updateOrderStatusSchema,
   userQuerySchema,
 } from "@/lib/validators/adminSchema";
 import z from "zod";
@@ -103,3 +104,5 @@ export type CustomerProfileResponse = {
     cancelledOrders: number;
   };
 };
+
+export type updateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;

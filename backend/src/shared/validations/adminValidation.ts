@@ -28,3 +28,7 @@ export const productQuerySchema = searchQuerySchema.extend({
 export const dashboardPeriodSchema = z.object({
   period: z.enum(["7d", "30d", "12m"]).default("30d"),
 });
+
+export const updateOrderStatusSchema = z.object({
+  status: z.enum(["DELIVERED", "SHIPPED"]),
+});

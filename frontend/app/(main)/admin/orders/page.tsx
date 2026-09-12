@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useCancelOrder } from "@/lib/hooks/admin/orders/useCancelOrder";
 import { useGetAllOrders } from "@/lib/hooks/admin/orders/useGetAllOrders";
+import { useUpdateOrderStatus } from "@/lib/hooks/admin/orders/useUpdateOrderStatus";
 import { Order } from "@/types/orderTypes";
 import { MoreHorizontalIcon } from "lucide-react";
 import Link from "next/link";
@@ -82,6 +83,7 @@ export default function AdminOrdersPage() {
     };
 
     const { cancelOrder, cancelling } = useCancelOrder()
+    const { updateStatus, updating } = useUpdateOrderStatus()
 
     const columns = [
         {
@@ -210,6 +212,18 @@ export default function AdminOrdersPage() {
                         <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white">
                             <Link href={`${order.orderNumber}`} >View Order</Link>
                         </DropdownMenuItem>
+
+                        {(order.status === "CONFIRMED" || order.status === "SHIPPED") && (
+                            <DropdownMenuItem
+                                className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white"
+                                onClick={() => updateStatus({
+                                    id: order.id,
+                                    input: { status: order.status === "SHIPPED" ? "DELIVERED" : "SHIPPED" },
+                                })}
+                                disabled={updating}
+                            >
+                                {`Mark as ${order.status === "SHIPPED" ? "Delivered" : "Shipped"}`}
+                            </DropdownMenuItem>)}
 
                         <DropdownMenuSeparator />
 

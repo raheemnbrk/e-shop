@@ -2,6 +2,7 @@ import {
   createProductSchema,
   sellerApplicationSchema,
   sellerCustomersQuerySchema,
+  updateOrderStatusSchema,
   updateProductSchema,
   updateSellerSchema,
 } from "@/lib/validators/seller.schema";
@@ -71,3 +72,5 @@ export interface sellerProfileResponse {
     totalRevenue: number;
   };
 }
+
+export type updateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;

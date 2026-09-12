@@ -3,6 +3,7 @@ import {
   applySellerSchema,
   createProductSchema,
   sellerCustomersQuerySchema,
+  updateOrderStatusSchema,
   updateProductSchema,
   updateSellerSchema,
 } from "../validations/sellerValidations";
@@ -18,3 +19,5 @@ export type updateSellerInput = z.infer<typeof updateSellerSchema>;
 export type sellerCustomersQueryInput = z.infer<
   typeof sellerCustomersQuerySchema
 >;
+
+export type updateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;

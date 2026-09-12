@@ -4,6 +4,7 @@ import {
   applySellerController,
   getSellerCustomersController,
   getSellerProfileForAdminController,
+  updateOrderStatusController,
   updateSellerController,
 } from "./sellerController";
 import { upload } from "../../shared/config/multer";
@@ -40,6 +41,18 @@ sellerRouter.get(
   getSellerCustomersController,
 );
 
-sellerRouter.get("/admin/:slug"  , authenticate , authorizeAdmin , getSellerProfileForAdminController);
+sellerRouter.get(
+  "/admin/:slug",
+  authenticate,
+  authorizeAdmin,
+  getSellerProfileForAdminController,
+);
+
+sellerRouter.patch(
+  "/orders/update-status/:id",
+  authenticate,
+  authorizeSeller,
+  updateOrderStatusController,
+);
 
 export default sellerRouter;

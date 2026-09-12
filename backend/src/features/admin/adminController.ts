@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import * as adminServices from "./adminServices";
 import {
   sellerQuerySchema,
+  updateOrderStatusSchema,
   userQuerySchema,
 } from "../../shared/validations/adminValidation";
 import { ApiError } from "../../shared/utils/apiError";
@@ -121,6 +122,24 @@ export const getCustomerProfileController = async (
     const result = await adminServices.getCustomerProfileService(userId);
 
     return res.status(200).json({ success: true, result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateOrderStatusController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = (req as any).params as { id: string };
+
+    const input = updateOrderStatusSchema.parse((req as any).body);
+
+    const { message } = await adminServices.updateOrderStatusService(id, input);
+
+    return res.status(200).json({ success: true, message });
   } catch (err) {
     next(err);
   }

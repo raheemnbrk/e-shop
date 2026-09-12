@@ -1,4 +1,4 @@
-import { Heart, ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart, Star } from "lucide-react";
 import { Product } from "@/types/productTypes";
 import { useAddToCart } from "@/lib/hooks/cart/useAddToCart";
 import { CartItem } from "@/types/cartTypes";
@@ -58,18 +58,6 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
-        <button
-          type="button"
-          aria-label="Add to wishlist"
-          className="absolute top-3 right-3 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full bg-white/90 dark:bg-dark-card/90 backdrop-blur-sm border border-border/60 dark:border-dark-border shadow-sm transition-all duration-200 hover:bg-red-500 hover:border-red-500 hover:scale-110 dark:hover:bg-red-500 dark:hover:border-red-500 text-gray-600 dark:text-gray-300 hover:text-white dark:hover:text-white"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        >
-          <Heart className="size-4" />
-        </button>
-
         {isOutOfStock && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <span className="rounded-full bg-white/95 dark:bg-dark-card/95 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-text dark:text-dark-text shadow-lg">
@@ -100,8 +88,8 @@ export default function ProductCard({ product }: { product: Product }) {
               <Star
                 key={i}
                 className={`size-3 ${i < averageRating
-                  ? "fill-amber-400 text-amber-400"
-                  : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
+                    ? "fill-amber-400 text-amber-400"
+                    : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
                   }`}
               />
             ))}

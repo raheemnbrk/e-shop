@@ -73,3 +73,7 @@ export const sellerCustomersQuerySchema = searchQuerySchema.extend({
     .enum(["newest", "highest_spending", "most_orders", "latest_order"])
     .default("newest"),
 });
+
+export const updateOrderStatusSchema = z.object({
+  status: z.enum(["CONFIRMED", "PROCESSING"]),
+});

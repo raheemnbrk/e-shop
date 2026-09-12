@@ -12,7 +12,7 @@ import { useGetAllProducts } from "@/lib/hooks/products/useGetAllProducts";
 
 function NoFoundProduct() {
     return (
-        <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border dark:border-dark-border py-24 text-center">
+        <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="flex size-20 items-center justify-center rounded-full bg-border dark:bg-dark-border mb-5">
                 <PackageSearch className="size-10 text-text-secondary dark:text-dark-text-secondary" />
             </div>
@@ -158,6 +158,7 @@ function SubcategorySection() {
                     <CategoryCard
                         key={child.id}
                         category={child}
+                        href={`/products?category=${child.slug}`}
                     />
                 ))}
             </div>
@@ -223,7 +224,7 @@ function ProductsGrid() {
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
                 {products.map((product) => (
                     <Link key={product.id} href={`/products/${product.slug}`}>
                         <ProductCard product={product} />
