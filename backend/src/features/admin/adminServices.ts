@@ -248,3 +248,65 @@ export const changeRoleService = async (id: string, role: Role) => {
 
   return { message: "User role is updated successfully." };
 };
+
+export const getCustomerProfileService = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      Seller: true,
+      _count: {
+        select: { orders: true },
+      },
+      orders: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: {
+          id: true,
+          orderNumber: true,
+          createdAt: true,
+          total: true,
+          status: true,
+        },
+      },
+    },
+  });
+
+  if (!user) throw new ApiError(404, "User not found.");
+
+  const { orders, _count, ...userData } = user;
+
+  const paidOrders = await prisma.order.findMany({
+    where: {
+      userId,
+      paymentStatus: "PAID",
+      status: { not: "CANCELLED" },
+    },
+    select: { total: true },
+  });
+
+  const totalSpent = paidOrders.reduce((acc, o) => acc + o.total, 0);
+
+  const lastOrderDate = orders[0]?.createdAt ?? null;
+
+  const avgOrderValue =
+    paidOrders.length > 0 ? totalSpent / paidOrders.length : 0;
+
+  const cancelledOrders = await prisma.order.count({
+    where: {
+      userId,
+      status: "CANCELLED",
+    },
+  });
+
+  return {
+    user: userData,
+    stats: {
+      totalOrders: _count.orders,
+      totalSpent: Number(totalSpent.toFixed(2)),
+      avgOrderValue: Number(avgOrderValue.toFixed(2)),
+      lastOrderDate,
+    },
+    recentOrders: orders,
+    cancelledOrders,
+  };
+};

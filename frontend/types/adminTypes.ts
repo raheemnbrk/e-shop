@@ -86,3 +86,20 @@ export interface dashboardSalesStatsResponse {
   success: boolean;
   salesChart: SalesChart;
 }
+
+export type CustomerProfileStats = {
+  totalOrders: number;
+  totalSpent: number;
+  avgOrderValue: number;
+  lastOrderDate: string | null;
+};
+
+export type CustomerProfileResponse = {
+  success: boolean;
+  result: {
+    user: User;
+    stats: CustomerProfileStats;
+    recentOrders: Order[];
+    cancelledOrders: number;
+  };
+};

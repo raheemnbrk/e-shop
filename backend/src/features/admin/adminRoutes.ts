@@ -6,6 +6,7 @@ import {
   deleteUserController,
   getAllSellersController,
   getAllUsersController,
+  getCustomerProfileController,
   rejectSellerController,
 } from "./adminController";
 import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
@@ -47,6 +48,13 @@ adminRouter.get(
   authenticate,
   authorizeAdmin,
   getAllSellersController,
+);
+
+adminRouter.get(
+  "/users/:id",
+  authenticate,
+  authorizeAdmin,
+  getCustomerProfileController,
 );
 
 export default adminRouter;

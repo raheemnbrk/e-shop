@@ -109,3 +109,19 @@ export const changeRoleController = async (
     next(err);
   }
 };
+
+export const getCustomerProfileController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).params.id as string;
+
+    const result = await adminServices.getCustomerProfileService(userId);
+
+    return res.status(200).json({ success: true, result });
+  } catch (err) {
+    next(err);
+  }
+};

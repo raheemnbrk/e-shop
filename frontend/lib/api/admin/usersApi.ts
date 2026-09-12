@@ -1,4 +1,8 @@
-import { allUserResponse, userQueryInput } from "@/types/adminTypes";
+import {
+  allUserResponse,
+  CustomerProfileResponse,
+  userQueryInput,
+} from "@/types/adminTypes";
 import api from "../axios";
 
 export const getAllUsers = async ({
@@ -22,5 +26,12 @@ export const changeRoleApi = async (
   role: Role,
 ): Promise<MessageResponse> => {
   const res = await api.patch(`/admin/users/change-role/${id}`, { role });
+  return res.data;
+};
+
+export const getCustomerProfileApi = async (
+  userId: string,
+): Promise<CustomerProfileResponse> => {
+  const res = await api.get(`/admin/users/${encodeURIComponent(userId)}`);
   return res.data;
 };
