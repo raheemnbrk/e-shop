@@ -1,10 +1,30 @@
 import axios from "axios";
 import { useAuthStore } from "../store/authStore";
 
+type RefreshResponse = {
+  accessToken: string;
+  user: ReturnType<typeof useAuthStore.getState>["user"];
+};
+
 const api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api`,
   withCredentials: true,
 });
+
+let refreshPromise: Promise<RefreshResponse> | null = null;
+
+const refreshAccessToken = async (): Promise<RefreshResponse> => {
+  if (!refreshPromise) {
+    refreshPromise = api
+      .post<RefreshResponse>("/auth/refresh")
+      .then((response) => response.data)
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
+};
 
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken;
@@ -17,28 +37,38 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
-    const isRefreshEndpoint = original.url?.includes("/auth/refresh");
+    const isRefreshEndpoint = original?.url?.includes("/auth/refresh");
 
     if (
       error.response?.status === 401 &&
+      original &&
       !original._retry &&
       !isRefreshEndpoint
     ) {
       original._retry = true;
       try {
-        const { data } = await api.post("/auth/refresh");
+        const data = await refreshAccessToken();
         const state = useAuthStore.getState();
-        const refreshedUser = data.user ?? state.user;
-        if (refreshedUser) {
-          useAuthStore.getState().setAuth(refreshedUser, data.accessToken);
+        if (data.user) {
+          state.setAuth(data.user, data.accessToken);
         } else {
-          useAuthStore.getState().setAccessToken(data.accessToken);
+          state.setAccessToken(data.accessToken);
         }
-        original.headers.Authorization = `Bearer ${data.accessToken}`;
+
+        if (original.headers?.set) {
+          original.headers.set("Authorization", `Bearer ${data.accessToken}`);
+        } else {
+          original.headers = {
+            ...original.headers,
+            Authorization: `Bearer ${data.accessToken}`,
+          };
+        }
+
         return api(original);
-      } catch {
+      } catch (refreshError) {
         useAuthStore.getState().clearAuth();
-        window.location.href = "/login";
+        if (typeof window !== "undefined") window.location.assign("/login");
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);
