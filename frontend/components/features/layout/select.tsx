@@ -17,6 +17,7 @@ interface SelectDemoProps {
   items: SelectItemType[];
   value?: string;
   placeholder?: string;
+  defaultValue?: string;   
   label?: string;
   onchange?: (value: string) => void;
 }
