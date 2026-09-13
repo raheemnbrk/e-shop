@@ -144,3 +144,19 @@ export const updateOrderStatusController = async (
     next(err);
   }
 };
+
+export const getOrderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { orderNumber } = (req as any).params as { orderNumber: string };
+
+    const order = await adminServices.getOrderService(orderNumber);
+
+    return res.status(200).json({ success: true, order });
+  } catch (err) {
+    next(err);
+  }
+};

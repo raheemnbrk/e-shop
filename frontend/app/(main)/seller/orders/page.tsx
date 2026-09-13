@@ -210,7 +210,7 @@ export default function SellerOrdersPage() {
 
                     <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card w-40">
                         <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary data-highlighted:text-white">
-                            <Link href={`${order.orderNumber}`} >View Order</Link>
+                            <Link href={`/seller/orders/${order.orderNumber}`} >View Order</Link>
                         </DropdownMenuItem>
 
                         {(order.status === "PENDING" || order.status === "CONFIRMED") && (

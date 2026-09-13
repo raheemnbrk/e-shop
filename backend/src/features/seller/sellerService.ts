@@ -295,7 +295,7 @@ export const getSellerProfileForAdminService = async (slug: string) => {
         select: {
           id: true,
           name: true,
-          slug: true,
+          productSlug: true,
           price: true,
           discount: true,
           images: true,
@@ -356,4 +356,61 @@ export const updateOrderStatusService = async (
   });
 
   return { message: "Order is updated successfully." };
+};
+
+export const getOrderService = async (
+  sellerId: string,
+  orderNumber: string,
+) => {
+  const order = await prisma.order.findFirst({
+    where: {
+      orderNumber,
+      items: {
+        some: { sellerId },
+      },
+    },
+    include: {
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+        },
+      },
+      address: true,
+      items: {
+        where: { sellerId },
+        select: {
+          id: true,
+          productName: true,
+          productImage: true,
+          productSlug: true,
+          price: true,
+          quantity: true,
+          discount: true,
+          sellerId: true,
+        },
+      },
+    },
+  });
+
+  if (!order) throw new ApiError(404, "Order not found.");
+
+  const sellerSubtotal = order.items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0,
+  );
+
+  const sellerDiscount = order.items.reduce(
+    (acc, item) => acc + (item.price * item.quantity * item.discount) / 100,
+    0,
+  );
+
+  const sellerTotal = sellerSubtotal - sellerDiscount;
+
+  return {
+    ...order,
+    sellerSubtotal: Number(sellerSubtotal.toFixed(2)),
+    sellerDiscount: Number(sellerDiscount.toFixed(2)),
+    sellerTotal: Number(sellerTotal.toFixed(2)),
+  };
 };

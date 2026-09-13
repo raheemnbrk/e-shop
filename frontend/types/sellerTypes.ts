@@ -8,9 +8,10 @@ import {
 } from "@/lib/validators/seller.schema";
 import z from "zod";
 import { Product } from "./productTypes";
-import { Order, ordersStatusCount } from "./orderTypes";
+import { Order, orderItem, ordersStatusCount, orderStatus } from "./orderTypes";
 import { TopCustomer, TopSellingProduct } from "./adminTypes";
 import { User } from "./authTypes";
+import { Address } from "./addressType";
 
 export type applySellerInput = z.infer<typeof sellerApplicationSchema>;
 
@@ -74,3 +75,21 @@ export interface sellerProfileResponse {
 }
 
 export type updateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;
+
+export type SellerOrderResponse = {
+  id: string;
+  orderNumber: string;
+  status: orderStatus;
+  createdAt: string;
+  paymentMethod: string;
+  paymentStatus: string;
+  note?: string | null;
+
+  user: User | null;
+  address: Address | null;
+  items: orderItem[];
+
+  sellerSubtotal: number;
+  sellerDiscount: number;
+  sellerTotal: number;
+};

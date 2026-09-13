@@ -106,8 +106,29 @@ export const updateOrderStatusController = async (
       input,
     );
 
-    return res.status(200).json({success : true , message})
+    return res.status(200).json({ success: true, message });
   } catch (err) {
     next(err);
+  }
+};
+
+export const getOrderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { orderNumber } = req.params as { orderNumber: string };
+    const sellerId = (req as any).seller.id;
+
+    if (!orderNumber) {
+      return res.status(400).json({ message: "Order number is required." });
+    }
+
+    const order = await sellerServices.getOrderService(sellerId, orderNumber);
+
+    return res.status(200).json(order);
+  } catch (error) {
+    next(error);
   }
 };

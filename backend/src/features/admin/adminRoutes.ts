@@ -7,6 +7,7 @@ import {
   getAllSellersController,
   getAllUsersController,
   getCustomerProfileController,
+  getOrderController,
   rejectSellerController,
   updateOrderStatusController,
 } from "./adminController";
@@ -63,6 +64,13 @@ adminRouter.patch(
   authenticate,
   authorizeAdmin,
   updateOrderStatusController,
+);
+
+adminRouter.get(
+  "/orders/:orderNumber",
+  authenticate,
+  authorizeAdmin,
+  getOrderController,
 );
 
 export default adminRouter;

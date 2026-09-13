@@ -71,19 +71,6 @@ export default function ContactPage() {
     return (
         <div className="min-h-screen bg-background dark:bg-dark-background py-8 px-4">
             <div className="max-w-7xl mx-auto">
-                <nav className="flex items-center gap-1.5 text-sm mb-8">
-                    <Link
-                        href="/"
-                        className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
-                    >
-                        Home
-                    </Link>
-                    <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
-                    <span className="font-medium text-text dark:text-dark-text">
-                        Contact
-                    </span>
-                </nav>
-
                 <div className="text-center mb-10">
                     <h1 className="text-3xl font-bold text-text dark:text-dark-text mb-2">
                         Get in Touch

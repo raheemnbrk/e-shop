@@ -1,4 +1,4 @@
-import { allOrderQueryInput, ordersResponse } from "@/types/orderTypes";
+import { allOrderQueryInput, Order, ordersResponse } from "@/types/orderTypes";
 import api from "../axios";
 import { updateOrderStatusInput } from "@/types/adminTypes";
 
@@ -20,4 +20,9 @@ export const updateOrderStatusApi = async (
 ): Promise<MessageResponse> => {
   const res = await api.patch(`/admin/orders/update-status/${id}`, input);
   return res.data;
+};
+
+export const getOrderApi = async (orderNumber: string): Promise<Order> => {
+  const res = await api.get(`/admin/orders/${orderNumber}`);
+  return res.data.order;
 };

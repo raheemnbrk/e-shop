@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth/authenticate";
 import {
   applySellerController,
+  getOrderController,
   getSellerCustomersController,
   getSellerProfileForAdminController,
   updateOrderStatusController,
@@ -53,6 +54,13 @@ sellerRouter.patch(
   authenticate,
   authorizeSeller,
   updateOrderStatusController,
+);
+
+sellerRouter.get(
+  "/orders/:orderNumber",
+  authenticate,
+  authorizeSeller,
+  getOrderController,
 );
 
 export default sellerRouter;

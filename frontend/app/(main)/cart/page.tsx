@@ -21,19 +21,6 @@ export default function CartPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <nav className="flex items-center gap-1.5 text-sm">
-        <Link
-          href="/"
-          className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
-        >
-          Home
-        </Link>
-        <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
-        <span className="font-medium text-text dark:text-dark-text">
-          Shopping Cart
-        </span>
-      </nav>
-
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text dark:text-dark-text">

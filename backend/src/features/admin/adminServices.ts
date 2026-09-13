@@ -341,3 +341,14 @@ export const updateOrderStatusService = async (
 
   return { message: "Order is updated successfully." };
 };
+
+export const getOrderService = async (orderNumber: string) => {
+  const order = await prisma.order.findUnique({
+    where: { orderNumber },
+    include: { items: true, user: true, address: true },
+  });
+
+  if (!order) throw new ApiError(404, "Order not found.");
+
+  return order;
+};

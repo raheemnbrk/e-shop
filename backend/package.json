@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node server.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc && cp -r src/generated dist/src/generated",
     "start": "node dist/server.js"
   },
   "keywords": [],

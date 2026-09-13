@@ -4,6 +4,7 @@ import {
   sellerCustomersQueryInput,
   SellerCustomersResponse,
   sellerDashboardStatsResponse,
+  SellerOrderResponse,
   sellerProfileResponse,
   updateOrderStatusInput,
   updateProductInput,
@@ -157,5 +158,14 @@ export const updateOrderStatusApi = async (
   input: updateOrderStatusInput,
 ): Promise<MessageResponse> => {
   const res = await api.patch(`/seller/orders/update-status/${id}`, input);
+  return res.data;
+};
+
+export const getSellerOrderApi = async (
+  orderNumber: string,
+): Promise<SellerOrderResponse> => {
+  const res = await api.get(
+    `/seller/orders/${encodeURIComponent(orderNumber)}`,
+  );
   return res.data;
 };
