@@ -46,11 +46,35 @@ export const getAllProductsService = async (
   const limit = 12;
   const skip = (page - 1) * limit;
 
+  let categoryIds: string[] | undefined;
+  if (category) {
+    const categoryData = await prisma.category.findUnique({
+      where: { slug: category },
+      select: { id: true, children: { select: { id: true } } },
+    });
+
+    if (!categoryData) {
+      categoryIds = [];
+    } else {
+      categoryIds = [
+        categoryData.id,
+        ...categoryData.children.map((child) => child.id),
+      ];
+    }
+  }
+
+  const price =
+    minPrice !== undefined || maxPrice !== undefined
+      ? {
+          ...(minPrice !== undefined ? { gte: minPrice } : {}),
+          ...(maxPrice !== undefined ? { lte: maxPrice } : {}),
+        }
+      : undefined;
+
   const where: Prisma.ProductWhereInput = {
     ...(search && { name: { contains: search, mode: "insensitive" as const } }),
-    ...(category && { category: { slug: category } }),
-    ...(minPrice && { price: { gte: minPrice } }),
-    ...(maxPrice && { price: { lte: maxPrice } }),
+    ...(categoryIds && { categoryId: { in: categoryIds } }),
+    ...(price && { price }),
   };
 
   const orderBy: Prisma.ProductOrderByWithRelationInput =
@@ -399,21 +423,21 @@ export const getHomePageDataService = async () => {
     await Promise.all([
       prisma.product.findMany({
         where: { available: true },
-        include : {category : true , reviews : true},
+        include: { category: true, reviews: true },
         orderBy: { createdAt: "desc" },
-        take: 8,
+        take: 5,
       }),
       prisma.product.findMany({
         where: { discount: { gt: 0 }, available: true },
-        include : {category : true , reviews : true},
+        include: { category: true, reviews: true },
         orderBy: { discount: "desc" },
-        take: 8,
+        take: 5,
       }),
       prisma.orderItem.groupBy({
         by: ["productId"],
         _sum: { quantity: true },
         orderBy: { _sum: { quantity: "desc" } },
-        take: 8,
+        take: 5,
       }),
       prisma.category.findMany({
         where: { parentId: null },
@@ -429,7 +453,6 @@ export const getHomePageDataService = async () => {
             select: { products: true },
           },
         },
-
       }),
     ]);
 
@@ -439,7 +462,7 @@ export const getHomePageDataService = async () => {
 
   const topSelling = await prisma.product.findMany({
     where: { id: { in: topSellingIds }, available: true },
-    include : {category : true , reviews : true},
+    include: { category: true, reviews: true },
   });
 
   const sortedTopSelling = topSellingIds

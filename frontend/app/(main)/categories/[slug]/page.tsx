@@ -158,7 +158,7 @@ function SubcategorySection() {
                     <CategoryCard
                         key={child.id}
                         category={child}
-                        href={`/products?category=${child.slug}`}
+                        href={`/categories/${child.slug}`}
                     />
                 ))}
             </div>
