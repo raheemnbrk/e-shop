@@ -6,7 +6,7 @@ import { useGetAllProducts } from "@/lib/hooks/products/useGetAllProducts";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Search from "@/components/features/products/search";
-import { PackageSearch, ChevronRight } from "lucide-react";
+import { PackageSearch } from "lucide-react";
 import CardsLoading from "@/components/loading/cardsLoading";
 
 function NoFoundProduct() {

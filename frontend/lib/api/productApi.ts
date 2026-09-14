@@ -22,7 +22,7 @@ export const getSingleProduct = async (slug: string): Promise<Product> => {
 };
 
 export const getRelatedProducts = async (slug: string): Promise<Product[]> => {
-  const res = await api.get(`/product/related/${slug}`);
+  const res = await api.get(`/product/related/${encodeURIComponent(slug)}`);
   return res.data.relatedProducts;
 };
 

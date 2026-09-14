@@ -181,7 +181,7 @@ export const googleCallbackController = [
 
       res.cookie("refreshToken", refreshToken, cookiesOptions);
 
-      res.redirect(`${process.env.CLIENT_URL}/callback`);
+      res.redirect(`${process.env.CLIENT_URL!}/callback`);
     } catch (err) {
       next(err);
     }

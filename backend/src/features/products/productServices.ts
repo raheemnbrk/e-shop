@@ -234,9 +234,11 @@ export const getRelatedProductsService = async (slug: string) => {
       price: true,
       discount: true,
       images: true,
+      stock: true,
+      createdAt: true,
       available: true,
       reviews: { select: { rating: true } },
-      category: { select: { name: true } },
+      category: { select: { name: true, slug: true, image: true } },
     },
     take: 5,
   });
