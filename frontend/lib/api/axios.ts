@@ -13,6 +13,28 @@ const api = axios.create({
 
 let refreshPromise: Promise<RefreshResponse> | null = null;
 
+const tokenExpiresSoon = (token: string, bufferSeconds = 30) => {
+  try {
+    const payload = token.split(".")[1];
+    const { exp } = JSON.parse(
+      window.atob(payload.replace(/-/g, "+").replace(/_/g, "/")),
+    ) as { exp?: number };
+
+    return !exp || exp * 1000 <= Date.now() + bufferSeconds * 1000;
+  } catch {
+    return true;
+  }
+};
+
+const saveRefreshResponse = (data: RefreshResponse) => {
+  const state = useAuthStore.getState();
+  if (data.user) {
+    state.setAuth(data.user, data.accessToken);
+  } else {
+    state.setAccessToken(data.accessToken);
+  }
+};
+
 export const refreshAccessToken = async (): Promise<RefreshResponse> => {
   if (!refreshPromise) {
     refreshPromise = api
@@ -26,9 +48,18 @@ export const refreshAccessToken = async (): Promise<RefreshResponse> => {
   return refreshPromise;
 };
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(async (config) => {
   const token = useAuthStore.getState().accessToken;
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  const isRefreshEndpoint = config.url?.includes("/auth/refresh");
+
+  if (token && !isRefreshEndpoint && tokenExpiresSoon(token)) {
+    const data = await refreshAccessToken();
+    saveRefreshResponse(data);
+    config.headers.Authorization = `Bearer ${data.accessToken}`;
+  } else if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
   return config;
 });
 
@@ -48,12 +79,7 @@ api.interceptors.response.use(
       original._retry = true;
       try {
         const data = await refreshAccessToken();
-        const state = useAuthStore.getState();
-        if (data.user) {
-          state.setAuth(data.user, data.accessToken);
-        } else {
-          state.setAccessToken(data.accessToken);
-        }
+        saveRefreshResponse(data);
 
         if (original.headers?.set) {
           original.headers.set("Authorization", `Bearer ${data.accessToken}`);
