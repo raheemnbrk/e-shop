@@ -51,7 +51,7 @@ export default function Products() {
         })) ?? []),
     ];
     const stockItems = [{ value: "all", label: "Stock" }, { value: "in", label: "In stock" }, { value: "out", label: "Out of stock" }, { value: "low", label: "Low stock" }]
-    const sortByItems = [{ value: "all", label: "Sort By" }, { value: "high", label: "Higher price" }, { value: "low", label: "Lower price" }, { value: "oldest", label: "oldest" }, { value: "top selling", label: "Top selling" }]
+    const sortByItems = [{ value: "all", label: "Sort By" }, { value: "high", label: "Higher price" }, { value: "low", label: "Lower price" }, { value: "oldest", label: "oldest" }, { value: "top", label: "Top selling" }]
 
     const handlePageChange = (newPage: number) => {
         const params = new URLSearchParams(searchParams.toString())

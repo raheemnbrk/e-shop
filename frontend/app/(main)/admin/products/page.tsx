@@ -48,7 +48,7 @@ export default function AdminProductsPage() {
     })) ?? []),
   ];
   const stockItems = [{ value: "all", label: "Stock" }, { value: "in", label: "In stock" }, { value: "out", label: "Out of stock" }, { value: "low", label: "Low stock" }]
-  const sortByItems = [{ value: "all", label: "Sort By" }, { value: "high", label: "Higher price" }, { value: "low", label: "Lower price" }, { value: "oldest", label: "oldest" }, { value: "top selling", label: "Top selling" }]
+  const sortByItems = [{ value: "all", label: "Sort By" }, { value: "high", label: "Higher price" }, { value: "low", label: "Lower price" }, { value: "oldest", label: "oldest" }, { value: "top", label: "Top selling" }]
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -100,7 +100,7 @@ export default function AdminProductsPage() {
         const discount = Number(product.discount ?? 0);
 
         const finalPrice = discount > 0
-          ? parseFloat((price * (1 - discount / 100)).toFixed(2))  
+          ? parseFloat((price * (1 - discount / 100)).toFixed(2))
           : price;
 
         return (

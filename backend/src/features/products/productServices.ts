@@ -11,6 +11,37 @@ import { takenSlug } from "../../shared/utils/logic/verifySlug";
 import { uploadImage } from "../../shared/utils/uploadImage";
 import slugify from "slugify";
 
+const getCategoryTreeIds = async (slug: string) => {
+  const root = await prisma.category.findUnique({
+    where: { slug },
+    select: { id: true },
+  });
+
+  if (!root) throw new ApiError(404, "Category not found.");
+
+  const categories = await prisma.category.findMany({
+    select: { id: true, parentId: true },
+  });
+  const categoryIds = new Set([root.id]);
+  let foundDescendant = true;
+
+  while (foundDescendant) {
+    foundDescendant = false;
+    for (const category of categories) {
+      if (
+        category.parentId &&
+        categoryIds.has(category.parentId) &&
+        !categoryIds.has(category.id)
+      ) {
+        categoryIds.add(category.id);
+        foundDescendant = true;
+      }
+    }
+  }
+
+  return [...categoryIds];
+};
+
 export const createProductService = async (
   sellerId: string,
   input: createProductInput,
@@ -254,17 +285,10 @@ export const getSellerProductsService = async (
   const limit = 10;
   const skip = (page - 1) * limit;
 
-  let categoryId: string | undefined;
-
-  if (category && category !== "all") {
-    const categoryData = await prisma.category.findUnique({
-      where: { slug: category },
-      select: { id: true },
-    });
-
-    if (!categoryData) throw new ApiError(404, "Category not found.");
-    categoryId = categoryData.id;
-  }
+  const categoryIds =
+    category && category !== "all"
+      ? await getCategoryTreeIds(category)
+      : undefined;
 
   const where: Prisma.ProductWhereInput = {
     sellerId: id,
@@ -274,7 +298,7 @@ export const getSellerProductsService = async (
         { description: { contains: search, mode: "insensitive" as const } },
       ],
     }),
-    ...(category && category !== "all" && { categoryId }),
+    ...(categoryIds && { categoryId: { in: categoryIds } }),
     ...(status && status !== "all" && { available: status === "available" }),
     ...(stock === "in" && { stock: { gt: 0 } }),
     ...(stock === "low" && { stock: { gt: 0, lte: 10 } }),
@@ -288,7 +312,9 @@ export const getSellerProductsService = async (
         ? { price: "desc" }
         : sortBy === "low"
           ? { price: "asc" }
-          : { createdAt: "desc" };
+          : sortBy === "top"
+            ? { orderItems: { _count: "desc" } }
+            : { createdAt: "desc" };
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({
@@ -330,20 +356,12 @@ export const getAdminProductsService = async (input: productQueryInput) => {
   const limit = 10;
   const skip = (page - 1) * limit;
 
-  let categoryId: string | undefined;
-
-  if (category && category !== "all") {
-    const categoryData = await prisma.category.findUnique({
-      where: { slug: category },
-      select: { id: true },
-    });
-
-    if (!categoryData) throw new ApiError(404, "Category not found.");
-    categoryId = categoryData.id;
-  }
+  const categoryIds =
+    category && category !== "all"
+      ? await getCategoryTreeIds(category)
+      : undefined;
 
   const where: Prisma.ProductWhereInput = {
-    available: true,
     ...(search &&
       searchBy === "seller" && {
         seller: {
@@ -358,7 +376,7 @@ export const getAdminProductsService = async (input: productQueryInput) => {
           { description: { contains: search, mode: "insensitive" as const } },
         ],
       }),
-    ...(category && category !== "all" && { categoryId }),
+    ...(categoryIds && { categoryId: { in: categoryIds } }),
     ...(stock === "in" && { stock: { gt: 0 } }),
     ...(stock === "low" && { stock: { gt: 0, lte: 10 } }),
     ...(stock === "out" && { stock: 0 }),
@@ -371,7 +389,9 @@ export const getAdminProductsService = async (input: productQueryInput) => {
         ? { price: "desc" }
         : sortBy === "low"
           ? { price: "asc" }
-          : { createdAt: "desc" };
+          : sortBy === "top"
+            ? { orderItems: { _count: "desc" } }
+            : { createdAt: "desc" };
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({
