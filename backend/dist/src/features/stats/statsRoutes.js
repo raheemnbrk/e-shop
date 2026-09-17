@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authenticate_1 = require("../../shared/middlewares/auth/authenticate");
+const authorizeAdmin_1 = require("../../shared/middlewares/auth/authorizeAdmin");
+const statsController_1 = require("./admin/statsController");
+const authorizeSeller_1 = require("../../shared/middlewares/auth/authorizeSeller");
+const sellerStatsController_1 = require("./seller/sellerStatsController");
+const statsController_2 = require("./customer/statsController");
+const statsRouter = (0, express_1.Router)();
+statsRouter.get("/dashboard", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, statsController_1.adminDashboardStatsController);
+statsRouter.get("/dashboard/sales", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, statsController_1.adminDashboardSalesController);
+statsRouter.get("/seller", authenticate_1.authenticate, authorizeSeller_1.authorizeSeller, sellerStatsController_1.getSellerDashboardStatsController);
+statsRouter.get("/seller/sales", authenticate_1.authenticate, authorizeSeller_1.authorizeSeller, sellerStatsController_1.sellerDashboardSalesController);
+statsRouter.get("/customer", authenticate_1.authenticate, statsController_2.getCustomerStatsController);
+exports.default = statsRouter;

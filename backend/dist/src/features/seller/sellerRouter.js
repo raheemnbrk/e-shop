@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authenticate_1 = require("../../shared/middlewares/auth/authenticate");
+const sellerController_1 = require("./sellerController");
+const multer_1 = require("../../shared/config/multer");
+const sellerLimiter_1 = require("../../shared/middlewares/limiters/sellerLimiter");
+const authorizeSeller_1 = require("../../shared/middlewares/auth/authorizeSeller");
+const authorizeAdmin_1 = require("../../shared/middlewares/auth/authorizeAdmin");
+const sellerRouter = (0, express_1.Router)();
+sellerRouter.post("/apply", sellerLimiter_1.applyLimiter, authenticate_1.authenticate, multer_1.upload.single("logo"), sellerController_1.applySellerController);
+sellerRouter.patch("/update", sellerLimiter_1.updateSellerLimiter, authenticate_1.authenticate, authorizeSeller_1.authorizeSeller, multer_1.upload.single("logo"), sellerController_1.updateSellerController);
+sellerRouter.get("/customers", authenticate_1.authenticate, authorizeSeller_1.authorizeSeller, sellerController_1.getSellerCustomersController);
+sellerRouter.get("/admin/:slug", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, sellerController_1.getSellerProfileForAdminController);
+sellerRouter.patch("/orders/update-status/:id", authenticate_1.authenticate, authorizeSeller_1.authorizeSeller, sellerController_1.updateOrderStatusController);
+sellerRouter.get("/orders/:orderNumber", authenticate_1.authenticate, authorizeSeller_1.authorizeSeller, sellerController_1.getOrderController);
+exports.default = sellerRouter;

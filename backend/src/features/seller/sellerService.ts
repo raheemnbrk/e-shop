@@ -278,8 +278,11 @@ export const getSellerCustomersServices = async (
 };
 
 export const getSellerProfileForAdminService = async (slug: string) => {
-  const seller = await prisma.seller.findUnique({
-    where: { storeSlug: slug },
+  const normalizedSlug = decodeURIComponent(slug).trim();
+  const seller = await prisma.seller.findFirst({
+    where: {
+      OR: [{ storeSlug: normalizedSlug }, { userId: normalizedSlug }],
+    },
     include: {
       user: {
         select: {
@@ -295,7 +298,7 @@ export const getSellerProfileForAdminService = async (slug: string) => {
         select: {
           id: true,
           name: true,
-          productSlug: true,
+          slug: true,
           price: true,
           discount: true,
           images: true,

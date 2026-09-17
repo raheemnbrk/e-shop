@@ -225,7 +225,7 @@ export default function AdminUserPage() {
                     </div>
 
                     <Link
-                        href={`/admin/sellers/${user.Seller.storeSlug}`}
+                        href={`/admin/sellers/${user.id}`}
                         className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
                     >
                         View seller profile

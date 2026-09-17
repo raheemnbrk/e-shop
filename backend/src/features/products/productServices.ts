@@ -74,7 +74,7 @@ export const getAllProductsService = async (
 ) => {
   const { category, search, maxPrice, minPrice, sortBy, page } = input;
 
-  const limit = 12;
+  const limit = 10;
   const skip = (page - 1) * limit;
 
   let categoryIds: string[] | undefined;

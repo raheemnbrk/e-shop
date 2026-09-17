@@ -4,7 +4,6 @@ import SellerProfileSkeleton from "@/components/loading/sellerProfileSkeleton";
 import { useGetSellerProfile } from "@/lib/hooks/admin/sellers/useGetSellerProfile";
 import { Product } from "@/types/productTypes";
 import {
-    ArrowLeft,
     Mail,
     Phone,
     Calendar,
@@ -13,6 +12,7 @@ import {
     DollarSign,
     Store,
     PackageSearch,
+    ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -80,13 +80,25 @@ export default function SellerProfilePage() {
 
     return (
         <div className="flex flex-col gap-6">
-            <Link
-                href="/admin/sellers"
-                className="inline-flex items-center gap-2 text-sm text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors w-fit"
-            >
-                <ArrowLeft className="size-4" />
-                Back to sellers
-            </Link>
+            <nav className="flex items-center gap-1.5 text-sm">
+                <Link
+                    href="/admin"
+                    className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
+                >
+                    Dashboard
+                </Link>
+                <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
+                <Link
+                    href="/admin/sellers"
+                    className="text-text-secondary dark:text-dark-text-secondary hover:text-primary transition-colors"
+                >
+                    Sellers
+                </Link>
+                <ChevronRight className="size-3.5 text-text-secondary dark:text-dark-text-secondary" />
+                <span className="font-medium text-text dark:text-dark-text">
+                    {seller.storeName}
+                </span>
+            </nav>
 
             <div className="rounded-2xl border border-border dark:border-dark-border bg-card dark:bg-dark-card p-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
@@ -265,8 +277,8 @@ export default function SellerProfilePage() {
                                             <td className="px-4 py-3">
                                                 <span
                                                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${product.available
-                                                            ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400"
-                                                            : "bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400"
+                                                        ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400"
+                                                        : "bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400"
                                                         }`}
                                                 >
                                                     {product.available ? "Available" : "Unavailable"}

@@ -6,6 +6,7 @@ import z from "zod";
 import { Category } from "./categoryTypes";
 
 export interface ProductSeller {
+  userId: string;
   storeName: string;
   storeSlug: string;
   logo: string;

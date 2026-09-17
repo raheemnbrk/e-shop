@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authorizeAdmin_1 = require("../../shared/middlewares/auth/authorizeAdmin");
+const couponController_1 = require("./couponController");
+const authenticate_1 = require("../../shared/middlewares/auth/authenticate");
+const couponRouter = (0, express_1.Router)();
+couponRouter.post("/create", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, couponController_1.createCouponController);
+couponRouter.patch("/update/:id", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, couponController_1.updateCouponController);
+couponRouter.patch("/toggle/:id", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, couponController_1.toggleCouponController);
+couponRouter.get("/all", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, couponController_1.getAllCouponsController);
+couponRouter.delete("/delete/:id", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, couponController_1.deleteCouponController);
+exports.default = couponRouter;

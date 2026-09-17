@@ -12,9 +12,9 @@ export default function ProductCard({ product }: { product: Product }) {
   const averageRating =
     (product.reviews?.length ?? 0) > 0
       ? Math.floor(
-        product.reviews.reduce((acc, r) => acc + r.rating, 0) /
-        product.reviews.length,
-      )
+          product.reviews.reduce((acc, r) => acc + r.rating, 0) /
+            product.reviews.length,
+        )
       : 0;
 
   const isNew = product.createdAt
@@ -38,7 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addToCartHandler, isPending } = useAddToCart();
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 dark:border-dark-border bg-card dark:bg-dark-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/40 dark:hover:border-primary/40">
+    <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 dark:border-dark-border bg-card dark:bg-dark-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/40 dark:hover:border-primary/40">
       <div className="relative aspect-square w-full overflow-hidden bg-linear-to-br from-gray-50 to-gray-100 dark:from-dark-background dark:to-dark-card">
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
           {product.discount > 0 && (
@@ -73,24 +73,25 @@ export default function ProductCard({ product }: { product: Product }) {
         />
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-3.5">
-        <p className="text-xs font-medium uppercase tracking-widest text-text-secondary/80 dark:text-dark-text-secondary/80">
+      <div className="flex flex-1 flex-col p-3.5">
+        <p className="text-xs font-medium uppercase tracking-widest text-text-secondary/80 dark:text-dark-text-secondary/80 line-clamp-1">
           {product.category.name}
         </p>
 
-        <h3 className="line-clamp-2 text-sm font-semibold leading-5 text-text dark:text-dark-text transition-colors group-hover:text-primary">
+        <h3 className="mt-1.5 line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-text dark:text-dark-text transition-colors group-hover:text-primary">
           {product.name}
         </h3>
 
-        <div className="flex items-center gap-1.5">
+        <div className="mt-1.5 flex items-center gap-1.5 h-4">
           <div className="flex gap-0.5">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
                 key={i}
-                className={`size-3 ${i < averageRating
+                className={`size-3 ${
+                  i < averageRating
                     ? "fill-amber-400 text-amber-400"
                     : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
-                  }`}
+                }`}
               />
             ))}
           </div>
@@ -99,9 +100,9 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
 
-        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-lg font-bold text-text dark:text-dark-text">
+        <div className="mt-auto flex items-end justify-between gap-2 pt-3">
+          <div className="flex min-h-7 min-w-0 flex-1 flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+            <span className="text-base font-bold text-text dark:text-dark-text sm:text-lg">
               ${newPrice}
             </span>
             {product.discount > 0 && (

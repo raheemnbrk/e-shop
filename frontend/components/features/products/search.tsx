@@ -59,39 +59,41 @@ export default function Search() {
   const currentSortBy = searchParams.get("sortBy") ?? "newest";
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
       <Input
         placeholder="Enter product name..."
         defaultValue={searchParams.get("search") ?? ""}
         onChange={(e) => handleSearch(e.target.value)}
-        className="focus-visible:ring-primary focus-visible:border-primary h-10 bg-card dark:bg-dark-card flex-1 min-w-0"
+        className="focus-visible:ring-primary focus-visible:border-primary h-10 bg-card dark:bg-dark-card w-full sm:flex-1 sm:min-w-0"
       />
 
-      <SelectDemo
-        key={currentSortBy}
-        items={items}
-        label="Sort by"
-        value={currentSortBy}
-        onchange={handleFilter}
-      />
+      <div className="flex items-center gap-3 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0 -mx-1 px-1 sm:mx-0 sm:px-0">
+        <SelectDemo
+          key={currentSortBy}
+          items={items}
+          label="Sort by"
+          value={currentSortBy}
+          onchange={handleFilter}
+        />
 
-      <Suspense
-        fallback={
-          <div className="h-10 w-28 bg-border dark:bg-dark-border rounded-xl animate-pulse" />
-        }
-      >
-        <CategoryFilter />
-      </Suspense>
-
-      {hasFilters && (
-        <button
-          onClick={handleClear}
-          className="flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-red-200 px-5 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950"
+        <Suspense
+          fallback={
+            <div className="h-10 w-28 shrink-0 bg-border dark:bg-dark-border rounded-xl animate-pulse" />
+          }
         >
-          <X className="h-4 w-4" />
-          Clear
-        </button>
-      )}
+          <CategoryFilter />
+        </Suspense>
+
+        {hasFilters && (
+          <button
+            onClick={handleClear}
+            className="flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-red-200 px-5 py-2 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950"
+          >
+            <X className="h-4 w-4" />
+            Clear
+          </button>
+        )}
+      </div>
     </div>
   );
 }

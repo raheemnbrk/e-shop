@@ -11,6 +11,7 @@ import {
   rejectSellerController,
   updateOrderStatusController,
 } from "./adminController";
+import { getSellerProfileForAdminController } from "../seller/sellerController";
 import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
 
 const adminRouter = Router();
@@ -50,6 +51,13 @@ adminRouter.get(
   authenticate,
   authorizeAdmin,
   getAllSellersController,
+);
+
+adminRouter.get(
+  "/sellers/:slug",
+  authenticate,
+  authorizeAdmin,
+  getSellerProfileForAdminController,
 );
 
 adminRouter.get(

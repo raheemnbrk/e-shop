@@ -5,5 +5,6 @@ export const useGetSellerProfile = (slug: string) => {
   return useQuery({
     queryKey: ["seller", slug],
     queryFn: () => getSellerProfileForAdminApi(slug),
+    enabled: Boolean(slug),
   });
 };

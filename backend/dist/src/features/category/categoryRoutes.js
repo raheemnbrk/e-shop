@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authenticate_1 = require("../../shared/middlewares/auth/authenticate");
+const authorizeAdmin_1 = require("../../shared/middlewares/auth/authorizeAdmin");
+const multer_1 = require("../../shared/config/multer");
+const CategoryController_1 = require("./CategoryController");
+const categoryRouter = (0, express_1.Router)();
+categoryRouter.post("/create-category", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, multer_1.upload.single("image"), CategoryController_1.createCategoryController);
+categoryRouter.get("/all", CategoryController_1.getCategoriesController);
+categoryRouter.delete("/delete/:id", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, CategoryController_1.deleteCategoryController);
+categoryRouter.patch("/update/:id", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, multer_1.upload.single("image"), CategoryController_1.updateCategoryController);
+categoryRouter.get("/:slug", CategoryController_1.getCategoryBySlugController);
+exports.default = categoryRouter;

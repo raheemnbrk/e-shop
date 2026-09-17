@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authenticate_1 = require("../../shared/middlewares/auth/authenticate");
+const orderController_1 = require("./orderController");
+const authorizeAdmin_1 = require("../../shared/middlewares/auth/authorizeAdmin");
+const authorizeSeller_1 = require("../../shared/middlewares/auth/authorizeSeller");
+const orderRouter = (0, express_1.Router)();
+orderRouter.post("/place-order", authenticate_1.authenticate, orderController_1.placeOrderController);
+orderRouter.get("/my-orders", authenticate_1.authenticate, orderController_1.getMyOrdersController);
+orderRouter.get("/admin/all", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, orderController_1.getAdminOrdersController);
+orderRouter.patch("/cancel/:id", authenticate_1.authenticate, orderController_1.cancelOrderController);
+orderRouter.patch("/admin/cancel/:id", authenticate_1.authenticate, authorizeAdmin_1.authorizeAdmin, orderController_1.adminCancelOrderController);
+orderRouter.get("/seller/all", authenticate_1.authenticate, authorizeSeller_1.authorizeSeller, orderController_1.getSellerOrdersController);
+orderRouter.get("/:orderNumber/invoice", authenticate_1.authenticate, orderController_1.getOrderInvoiceController);
+orderRouter.get("/:orderNumber", authenticate_1.authenticate, orderController_1.getMySingleOrderController);
+exports.default = orderRouter;

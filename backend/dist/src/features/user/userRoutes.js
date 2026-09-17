@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const multer_1 = require("../../shared/config/multer");
+const authenticate_1 = require("../../shared/middlewares/auth/authenticate");
+const userController_1 = require("./userController");
+const userRouter = (0, express_1.Router)();
+userRouter.get("/me", authenticate_1.authenticate, userController_1.getMeController);
+userRouter.patch("/update-profile", authenticate_1.authenticate, multer_1.upload.single("image"), userController_1.updateProfileController);
+userRouter.get("/addresses", authenticate_1.authenticate, userController_1.getAllAddressesController);
+userRouter.post("/add-address", authenticate_1.authenticate, userController_1.addAddressController);
+userRouter.patch("/update-address/:id", authenticate_1.authenticate, userController_1.updateAddressController);
+userRouter.delete("/delete-address/:id", authenticate_1.authenticate, userController_1.deleteAddressController);
+userRouter.delete("/delete", authenticate_1.authenticate, userController_1.deleteUserController);
+userRouter.patch("/address-default/:id", authenticate_1.authenticate, userController_1.setAddressAsDefaultController);
+exports.default = userRouter;

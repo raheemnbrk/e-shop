@@ -133,7 +133,7 @@ export default function AdminSellersPage() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="bg-card dark:bg-dark-card">
-                                <Link href={`sellers/${user?.Seller.storeSlug}`} >
+                                <Link href={`/admin/sellers/${user.Seller.storeSlug}`} >
                                     <DropdownMenuItem className="cursor-pointer data-highlighted:bg-primary">
                                         View profile
                                     </DropdownMenuItem>
