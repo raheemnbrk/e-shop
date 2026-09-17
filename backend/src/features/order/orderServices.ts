@@ -196,7 +196,7 @@ export const placeOrderService = async (
       orderNumber: order.orderNumber,
     },
 
-    success_url: `${process.env.CLIENT_URL}/my-orders/${order.orderNumber}`,
+    success_url: `${process.env.BACKEND_URL ?? `http://localhost:${process.env.PORT ?? 5000}`}/api/orders/stripe/success?session_id={CHECKOUT_SESSION_ID}`,
 
     cancel_url: `${process.env.CLIENT_URL}/checkout`,
   });
@@ -633,4 +633,3 @@ export const generateOrderInvoiceService = async (
 
   return generateInvoicePDF(order);
 };
-

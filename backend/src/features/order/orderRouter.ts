@@ -9,6 +9,7 @@ import {
   getOrderInvoiceController,
   getSellerOrdersController,
   placeOrderController,
+  stripeSuccessController,
 } from "./orderController";
 import { authorizeAdmin } from "../../shared/middlewares/auth/authorizeAdmin";
 import { authorizeSeller } from "../../shared/middlewares/auth/authorizeSeller";
@@ -16,6 +17,8 @@ import { authorizeSeller } from "../../shared/middlewares/auth/authorizeSeller";
 const orderRouter = Router();
 
 orderRouter.post("/place-order", authenticate, placeOrderController);
+
+orderRouter.get("/stripe/success", stripeSuccessController);
 
 orderRouter.get("/my-orders", authenticate, getMyOrdersController);
 
@@ -43,10 +46,10 @@ orderRouter.get(
 );
 
 orderRouter.get(
-  "/:orderNumber/invoice", 
+  "/:orderNumber/invoice",
   authenticate,
   getOrderInvoiceController,
-)
+);
 
 orderRouter.get("/:orderNumber", authenticate, getMySingleOrderController);
 

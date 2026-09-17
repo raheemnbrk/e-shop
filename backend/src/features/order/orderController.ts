@@ -29,6 +29,50 @@ export const placeOrderController = async (
   }
 };
 
+export const stripeSuccessController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const sessionId = req.query.session_id as string | undefined;
+
+    if (!sessionId) {
+      return res.status(400).json({ message: "Stripe session ID is missing." });
+    }
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const orderId = session.metadata?.orderId;
+
+    if (!orderId || session.payment_status !== "paid") {
+      return res.redirect(`${process.env.CLIENT_URL}/checkout?cancelled=true`);
+    }
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        paymentStatus: "PAID",
+        status: "CONFIRMED",
+      },
+    });
+
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: { orderNumber: true },
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    return res.redirect(
+      `${process.env.CLIENT_URL}/my-orders/${order.orderNumber}`,
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const stripeWebhookController = async (req: Request, res: Response) => {
   const signature = req.headers["stripe-signature"];
 
@@ -101,11 +145,6 @@ export const stripeWebhookController = async (req: Request, res: Response) => {
         });
       }
 
-      const paymentIntentId =
-        typeof session.payment_intent === "string"
-          ? session.payment_intent
-          : null;
-
       await prisma.order.update({
         where: {
           id: order.id,
@@ -114,10 +153,6 @@ export const stripeWebhookController = async (req: Request, res: Response) => {
           paymentStatus: "PAID",
 
           status: "CONFIRMED",
-
-          ...(paymentIntentId && {
-            paymentIntentId,
-          }),
         },
       });
 
