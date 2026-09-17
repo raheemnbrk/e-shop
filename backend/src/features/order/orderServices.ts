@@ -10,7 +10,6 @@ import { ApiError } from "../../shared/utils/apiError";
 import { sendOrderConfirmationEmail } from "../../shared/utils/emails/emailActions";
 import { generateInvoicePDF } from "../../shared/utils/generateInvoice";
 import { generateOrderNumber } from "../../shared/utils/generateOrderNumber";
-import PDFDocument from "pdfkit";
 
 export const placeOrderService = async (
   userId: string,
@@ -147,15 +146,15 @@ export const placeOrderService = async (
   });
 
   if (paymentMethod === "CASH") {
-    sendOrderConfirmationEmail(
+    await sendOrderConfirmationEmail(
       user.email,
       user.firstName,
       order.orderNumber,
       order.items,
-      order.discount,
       order.subtotal,
-      order.total,
+      order.discount,
       order.shippingCost,
+      order.total,
       order.deliveryMethod,
     );
 
@@ -197,10 +196,9 @@ export const placeOrderService = async (
       orderNumber: order.orderNumber,
     },
 
-    success_url:
-      `${process.env.CLIENT_URL}/orders/` + `${order.id}?success=true`,
+    success_url: `${process.env.CLIENT_URL}/my-orders/${order.orderNumber}`,
 
-    cancel_url: `${process.env.CLIENT_URL}/checkout?cancelled=true`,
+    cancel_url: `${process.env.CLIENT_URL}/checkout`,
   });
 
   await prisma.order.update({
@@ -636,9 +634,3 @@ export const generateOrderInvoiceService = async (
   return generateInvoicePDF(order);
 };
 
-// export const sellerCancelOrderService = async (
-//   sellerId: string,
-//   id: string,
-// ) => {
-//   const order = prisma.order.update({where : {}})
-// };

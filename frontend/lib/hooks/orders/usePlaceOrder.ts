@@ -20,8 +20,10 @@ export const usePlaceOrder = () => {
         return;
       }
 
-      toast.success(data.message ?? "Order placed successfully.");
-      router.push(`/my-orders/${data.orderNumber}`);
+      if (data.paymentMethod === "CASH") {
+        toast.success(data.message ?? "Order placed successfully.");
+        router.push(`/my-orders/${data.orderNumber}`);
+      }
     },
 
     onError: (err: any) => {
