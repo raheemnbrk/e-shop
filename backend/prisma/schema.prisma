@@ -256,6 +256,7 @@ enum OrderStatus {
 enum PaymentStatus{
   PAID
   UNPAID
+  REFUNDED
 }
 
 enum DeliveryMethod {

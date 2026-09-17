@@ -116,7 +116,7 @@ export default function AdminSellersPage() {
                                 Approve
                             </button>
                             <button
-                                onClick={() => handleApprove(user?.id)}
+                                onClick={() => handleReject(user?.id)}
                                 disabled={Rejecting}
                                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors text-xs font-medium cursor-pointer disabled:opacity-50"
                             >

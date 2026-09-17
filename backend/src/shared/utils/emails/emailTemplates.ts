@@ -236,3 +236,20 @@ export const orderConfirmationTemplate = ({
 
     </div>
 `;
+
+export const sellerApplicationStatusTemplate = ({
+  firstName,
+  storeName,
+  status,
+}: {
+  firstName: string;
+  storeName: string;
+  status: "APPROVED" | "REJECTED";
+}) => `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+        <h2>Seller application ${status === "APPROVED" ? "approved" : "rejected"}</h2>
+        <p>Hi ${firstName},</p>
+        <p>Your seller application for <strong>${storeName}</strong> has been ${status.toLowerCase()}.</p>
+        ${status === "APPROVED" ? "<p>You can now start selling on E-Shop.</p>" : "<p>You can submit a new application after reviewing your store information.</p>"}
+    </div>
+`;

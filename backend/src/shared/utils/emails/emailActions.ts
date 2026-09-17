@@ -2,6 +2,7 @@ import { sendEmail } from "./emailServices";
 import {
   orderConfirmationTemplate,
   passwordResetTemplate,
+  sellerApplicationStatusTemplate,
   sendOtpTemplate,
 } from "./emailTemplates";
 
@@ -50,5 +51,23 @@ export const sendOrderConfirmationEmail = async (
       total,
       deliveryMethod,
     }),
+  });
+};
+
+export const sendSellerApplicationStatusEmail = async ({
+  email,
+  firstName,
+  storeName,
+  status,
+}: {
+  email: string;
+  firstName: string;
+  storeName: string;
+  status: "APPROVED" | "REJECTED";
+}) => {
+  await sendEmail({
+    to: email,
+    subject: `Seller application ${status.toLowerCase()}`,
+    html: sellerApplicationStatusTemplate({ firstName, storeName, status }),
   });
 };

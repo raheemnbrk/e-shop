@@ -6,9 +6,13 @@ import {
   userQueryInput,
 } from "../../shared/types/adminType";
 import { Role } from "../../generated/prisma";
+import { sendSellerApplicationStatusEmail } from "../../shared/utils/emails/emailActions";
 
 export const approveSellerServices = async (userId: string) => {
-  const seller = await prisma.seller.findUnique({ where: { userId } });
+  const seller = await prisma.seller.findUnique({
+    where: { userId },
+    include: { user: true },
+  });
   if (!seller) throw new ApiError(404, "Seller not found.");
 
   if (seller.status === "APPROVED")
@@ -26,11 +30,21 @@ export const approveSellerServices = async (userId: string) => {
     }),
   ]);
 
+  await sendSellerApplicationStatusEmail({
+    email: seller.user.email,
+    firstName: seller.user.firstName,
+    storeName: seller.storeName,
+    status: "APPROVED",
+  });
+
   return { message: "Seller approved successfully." };
 };
 
 export const rejectSellerServices = async (userId: string) => {
-  const seller = await prisma.seller.findUnique({ where: { userId } });
+  const seller = await prisma.seller.findUnique({
+    where: { userId },
+    include: { user: true },
+  });
   if (!seller) throw new ApiError(404, "Seller not found.");
 
   if (seller.status === "REJECTED")
@@ -39,6 +53,13 @@ export const rejectSellerServices = async (userId: string) => {
   await prisma.seller.update({
     where: { userId },
     data: { status: "REJECTED" },
+  });
+
+  await sendSellerApplicationStatusEmail({
+    email: seller.user.email,
+    firstName: seller.user.firstName,
+    storeName: seller.storeName,
+    status: "REJECTED",
   });
 
   return { message: "Seller rejected successfully." };
